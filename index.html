@@ -530,6 +530,7 @@
         let bigMapInst = null;
         let bigMapMarkersLayer = null;
         let activeSearchMarker = null;
+        let activeSearchCircle = null;
         let densityMapInst = null;
         let densityHeatLayer = null;
         let densityMarkersLayer = null;
@@ -989,11 +990,25 @@
                             วันที่เริ่มป่วย: ${p.onsetDate || '-'}<br>
                             วันที่เข้ารับการรักษา: ${p.foundDate || '-'}
                         </div>
+                        <div class="mt-2 pt-2 border-t text-center">
+                            <a href="https://www.google.com/maps/search/?api=1&query=${lat},${lng}" target="_blank" class="text-xs bg-emerald-50 text-emerald-600 hover:bg-emerald-100 px-2 py-1.5 rounded-lg inline-block border border-emerald-200 font-bold shadow-sm w-full"><i class="fa-brands fa-google mr-1"></i> ดูใน Google Maps</a>
+                        </div>
                     </div>
                 `;
                 heatDot.bindPopup(dotPopupHtml, { closeButton: false });
                 heatDot.on('mouseover', function (e) { this.openPopup(); });
                 densityMarkersLayer.addLayer(heatDot);
+
+                // สร้างวงกลมรัศมี 100 เมตร (เส้นประ) สำหรับวางแผนควบคุมโรค
+                const controlCircle = L.circle([lat, lng], {
+                    radius: 100,
+                    color: '#e11d48',
+                    weight: 1.5,
+                    dashArray: '5, 5',
+                    fillColor: '#ffe4e6',
+                    fillOpacity: 0.15
+                });
+                densityMarkersLayer.addLayer(controlCircle);
 
                 // สำหรับ Pin Map (ตัวบน จัดกลุ่มตามหมู่บ้าน)
                 const key = `${p.subdistrict}_${p.moo}`;
@@ -1061,6 +1076,17 @@
             setTimeout(() => {
                 bigMapInst.setView([lat, lng], 17);
                 if(activeSearchMarker) bigMapInst.removeLayer(activeSearchMarker);
+                if(activeSearchCircle) bigMapInst.removeLayer(activeSearchCircle);
+
+                // สร้างวงกลมรัศมี 100 เมตร (เส้นประ)
+                activeSearchCircle = L.circle([lat, lng], {
+                    radius: 100,
+                    color: '#ef4444',
+                    weight: 2,
+                    dashArray: '5, 5',
+                    fillColor: '#fecdd3',
+                    fillOpacity: 0.3
+                }).addTo(bigMapInst);
 
                 const icon = L.divIcon({ className: 'custom-div-icon', html: `<div class="pin-marker pin-red"><i class="fa-solid fa-user"></i></div>`, iconSize: [30, 40], iconAnchor: [15, 40], popupAnchor: [0, -35] });
                 activeSearchMarker = L.marker([lat, lng], {icon: icon}).addTo(bigMapInst);
@@ -1070,6 +1096,9 @@
                         <b class="text-rose-700 text-lg">${name}</b><br>
                         <span class="text-sm">บ้านเลขที่: ${addressNo || '-'}, หมู่ ${moo || '-'}${vNameDisplay} ต.${subdistrict || '-'}</span><br>
                         <span class="text-xs text-slate-500">(พิกัดผู้ป่วยรายบุคคลที่เลือก)</span>
+                        <div class="mt-2 pt-2 border-t">
+                            <a href="https://www.google.com/maps/search/?api=1&query=${lat},${lng}" target="_blank" class="text-xs bg-emerald-50 text-emerald-600 hover:bg-emerald-100 px-3 py-1.5 rounded-lg inline-block border border-emerald-200 font-bold shadow-sm w-full"><i class="fa-brands fa-google mr-1"></i> เปิดดูใน Google Maps</a>
+                        </div>
                     </div>
                 `).openPopup();
             }, 500);
@@ -1216,11 +1245,23 @@
                     <td class="p-3"><span class="px-2 py-1 rounded text-xs font-bold ${String(p.dx || '').includes('DHF') ? 'bg-red-100 text-red-700' : 'bg-amber-100 text-amber-700'}">${p.dx || ''}</span></td>
                     <td class="p-3 text-center whitespace-nowrap">
                         <button onclick="viewOnMap('${p.latlng || ''}', '${p.fullName || ''}', '${p.addressNo || ''}', '${p.moo || ''}', '${p.subdistrict || ''}', '${p.villageName || ''}')" class="p-2 text-rose-500 hover:text-rose-700 hover:bg-rose-50 rounded transition-colors mr-1" title="ดูในแผนที่"><i class="fa-solid fa-location-dot text-lg"></i></button>
+                        <button onclick="openInGoogleMaps('${p.latlng || ''}')" class="p-2 text-emerald-500 hover:text-emerald-700 hover:bg-emerald-50 rounded transition-colors mr-1" title="ดูใน Google Maps"><i class="fa-brands fa-google text-lg"></i></button>
                         <button onclick="editRecord(${p.id})" class="p-2 text-orange-500 hover:text-orange-700 hover:bg-orange-50 rounded transition-colors mr-1" title="แก้ไขข้อมูล"><i class="fa-solid fa-pen-to-square text-lg"></i></button>
                         <button onclick="confirmDelete(${p.id})" class="p-2 text-red-500 hover:text-red-700 hover:bg-red-50 rounded transition-colors" title="ลบข้อมูล"><i class="fa-solid fa-trash-can text-lg"></i></button>
                     </td>`;
                 tbody.appendChild(tr);
             });
+        }
+
+        function openInGoogleMaps(latlngStr) {
+            if(!latlngStr) { alert('ผู้ป่วยรายนี้ไม่มีข้อมูลพิกัด'); return; }
+            const parts = String(latlngStr).split(',');
+            if(parts.length < 2) { alert('รูปแบบข้อมูลพิกัดไม่ถูกต้อง'); return; }
+            const lat = parseFloat(parts[0].trim());
+            const lng = parseFloat(parts[1].trim());
+            if(isNaN(lat) || isNaN(lng)) { alert('รูปแบบข้อมูลพิกัดไม่ถูกต้อง'); return; }
+            
+            window.open(`https://www.google.com/maps/search/?api=1&query=${lat},${lng}`, '_blank');
         }
 
         function downloadTemplate() {
