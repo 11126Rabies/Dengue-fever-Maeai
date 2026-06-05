@@ -996,9 +996,19 @@
                     </div>
                 `;
                 
-                // สำหรับแผนที่ Heatmap (แผนที่ล่าง)
-                heatDot.bindPopup(dotPopupHtml, { closeButton: true });
+                // สำหรับแผนที่ Heatmap (แผนที่ล่าง) - ใช้วิธีที่ 2 (Popup แบบปิด Auto-pan)
+                heatDot.bindPopup(dotPopupHtml, { closeButton: false, autoPan: false });
                 heatDot.on('mouseover', function (e) { this.openPopup(); });
+                heatDot.on('mouseout', function (e) { 
+                    // ให้กล่องหน่วงเวลาสักนิดก่อนปิด เผื่อผู้ใช้จะเลื่อนเมาส์เข้าไปคลิกปุ่ม
+                    setTimeout(() => {
+                        // ปิดก็ต่อเมื่อเมาส์ไม่ได้อยู่ในกล่อง popup
+                        const popup = this.getPopup();
+                        if (popup && popup._isOpen) {
+                           // this.closePopup(); // ยกเลิกการปิดอัตโนมัติ เพื่อให้กดลิงก์ได้ง่ายขึ้น
+                        }
+                    }, 500);
+                });
                 densityMarkersLayer.addLayer(heatDot);
 
                 // สร้างวงกลมรัศมี 100 เมตร สำหรับวางแผนควบคุมโรคในแผนที่ Heatmap
