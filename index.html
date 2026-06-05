@@ -189,8 +189,8 @@
                 <!-- Highlight Stat: Top 5 Subdistricts -->
                 <div class="bg-gradient-to-br from-orange-400 to-red-500 p-4 rounded-2xl shadow-sm border border-red-200 text-white flex flex-col justify-center relative overflow-hidden">
                     <i class="fa-solid fa-ranking-star absolute -right-4 -bottom-4 text-7xl opacity-20"></i>
-                    <p class="text-sm font-semibold opacity-90 mb-2 border-b border-white/30 pb-1">พื้นที่พบผู้ป่วยสูงสุด 5 ลำดับ (ตำบล)</p>
-                    <div id="stat-top-areas-list" class="text-sm space-y-1.5 font-medium relative z-10"></div>
+                    <p class="text-sm font-semibold opacity-90 mb-2 border-b border-white/30 pb-1">พื้นที่พบผู้ป่วยเรียงตามลำดับ (ตำบล)</p>
+                    <div id="stat-top-areas-list" class="text-sm space-y-1.5 font-medium relative z-10 max-h-[140px] overflow-y-auto custom-scrollbar pr-2"></div>
                 </div>
             </div>
 
@@ -383,7 +383,7 @@
                                     <div><label class="block text-sm font-bold text-slate-600 mb-1">วันที่เข้ารับการรักษา</label><input type="date" id="f-foundDate" class="w-full border border-slate-300 rounded-lg p-2 focus:ring-2 focus:ring-sky-500" /></div>
                                     <div><label class="block text-sm font-bold text-slate-600 mb-1">การวินิจฉัย (DX)</label>
                                         <select id="f-dx" class="w-full border border-slate-300 rounded-lg p-2 focus:ring-2 focus:ring-sky-500 bg-white">
-                                            <option value="DF">DF</option><option value="DHF">DHF</option><option value="R/O DF">R/O DF</option><option value="R/O DHF">R/O DHF</option><option value="อื่นๆ">อื่นๆ</option>
+                                            <option value="DF">DF</option><option value="DHF">DHF</option><option value="DSS">DSS</option><option value="อื่นๆ">อื่นๆ</option>
                                         </select>
                                     </div>
                                     <div><label class="block text-sm font-bold text-slate-600 mb-1">หน่วยบริการ</label>
@@ -418,6 +418,7 @@
                                             <script>for(let i=1; i<=18; i++) document.write(`<option value="${i}">${i}</option>`);</script>
                                         </select>
                                     </div>
+                                    <div class="col-span-2"><label class="block text-sm font-bold text-slate-600 mb-1">ชื่อหมู่บ้าน</label><input type="text" id="f-villageName" class="w-full border border-slate-300 rounded-lg p-2 focus:ring-2 focus:ring-sky-500" placeholder="ระบุชื่อหมู่บ้าน" /></div>
                                     <div class="col-span-2"><label class="block text-sm font-bold text-slate-600 mb-1">ตำบล <span class="text-red-500">*</span></label>
                                         <select id="f-subdistrict" class="w-full border border-slate-300 rounded-lg p-2 focus:ring-2 focus:ring-sky-500 bg-white" required>
                                             <option value="">- เลือกตำบล -</option>
@@ -545,10 +546,9 @@
 
         const getCleanDX = (raw) => {
             let d = (raw || '').toString().toUpperCase().trim();
-            if(d.includes('R/O DHF')) return 'R/O DHF';
-            if(d.includes('R/O DF') || d === 'R/O') return 'R/O DF';
-            if(d.includes('DHF')) return 'DHF';
-            if(d.includes('DF')) return 'DF';
+            if(d === 'DSS' || d === 'R/O DF' || d === 'R/O') return 'DSS';
+            if(d === 'DF') return 'DF';
+            if(d === 'DHF') return 'DHF';
             return 'อื่นๆ';
         };
 
@@ -589,7 +589,7 @@
                     patients = json.data.map(p => ({
                         id: parseInt(p.id) || 0, fullName: p.fullName || '', hn: p.hn || '',
                         age: parseInt(p.age) || 0, gender: getCleanGender(p.gender), addressNo: p.addressNo || '',
-                        moo: p.moo || '', subdistrict: p.subdistrict || 'แม่อาย', serviceUnit: p.serviceUnit || 'รพ.แม่อาย',
+                        moo: p.moo || '', villageName: p.villageName || '', subdistrict: p.subdistrict || 'แม่อาย', serviceUnit: p.serviceUnit || 'รพ.แม่อาย',
                         lat: parseFloat(p.lat) || '', lng: parseFloat(p.lng) || '',
                         onsetDate: p.onsetDate ? p.onsetDate.split('T')[0] : '', 
                         foundDate: p.foundDate ? p.foundDate.split('T')[0] : '', 
@@ -698,7 +698,7 @@
 
             const areaCounts = {};
             filteredPatients.forEach(p => { if(p.subdistrict) areaCounts[p.subdistrict] = (areaCounts[p.subdistrict] || 0) + 1; });
-            const sortedAreas = Object.entries(areaCounts).sort((a,b) => b[1] - a[1]).slice(0, 5);
+            const sortedAreas = Object.entries(areaCounts).sort((a,b) => b[1] - a[1]);
             let areaHtml = '';
             sortedAreas.forEach((area, index) => {
                 areaHtml += `<div class="flex justify-between border-b border-white/20 pb-1 last:border-0 last:pb-0"><span>${index+1}. ต.${area[0]}</span> <span>${area[1]} ราย</span></div>`;
@@ -736,7 +736,7 @@
         }
 
         function renderDXChart(dataToRender) {
-            const dxTypes = ['DF', 'DHF', 'R/O DF', 'R/O DHF', 'อื่นๆ'];
+            const dxTypes = ['DF', 'DHF', 'DSS', 'อื่นๆ'];
             const maleData = dxTypes.map(dx => dataToRender.filter(p => getCleanDX(p.dx) === dx && getCleanGender(p.gender) === 'ชาย').length);
             const femaleData = dxTypes.map(dx => dataToRender.filter(p => getCleanDX(p.dx) === dx && getCleanGender(p.gender) === 'หญิง').length);
 
@@ -1074,6 +1074,7 @@
                 fullName: document.getElementById('f-fullName').value, hn: document.getElementById('f-hn').value,
                 age: Number(document.getElementById('f-age').value), gender: document.getElementById('f-gender').value,
                 addressNo: document.getElementById('f-addressNo').value, moo: document.getElementById('f-moo').value,
+                villageName: document.getElementById('f-villageName').value,
                 subdistrict: document.getElementById('f-subdistrict').value, serviceUnit: document.getElementById('f-serviceUnit').value,
                 lat: parsedLat, lng: parsedLng,
                 onsetDate: document.getElementById('f-onsetDate').value, foundDate: document.getElementById('f-foundDate').value,
@@ -1111,7 +1112,7 @@
         function editRecord(id) {
             const patient = patients.find(p => p.id === id); if(!patient) return;
             document.getElementById('editing-id').value = patient.id; document.getElementById('f-id').value = patient.id;
-            const fields = ['fullName', 'hn', 'age', 'gender', 'addressNo', 'moo', 'subdistrict', 'serviceUnit', 'onsetDate', 'foundDate', 'dx', 'workplace', 'workplaceMoo'];
+            const fields = ['fullName', 'hn', 'age', 'gender', 'addressNo', 'moo', 'villageName', 'subdistrict', 'serviceUnit', 'onsetDate', 'foundDate', 'dx', 'workplace', 'workplaceMoo'];
             fields.forEach(f => { if(document.getElementById(`f-${f}`)) document.getElementById(`f-${f}`).value = patient[f] !== undefined ? patient[f] : ''; });
             if (patient.lat && patient.lng) { document.getElementById('f-latlng').value = `${patient.lat}, ${patient.lng}`; } else { document.getElementById('f-latlng').value = ''; }
 
@@ -1186,7 +1187,7 @@
                     <td class="p-3">${p.hn || '-'}</td>
                     <td class="p-3 whitespace-nowrap">${p.age || '-'} ปี / ${p.gender || '-'}</td>
                     <td class="p-3 whitespace-nowrap">${p.onsetDate || '-'}</td>
-                    <td class="p-3 whitespace-nowrap">ม.${p.moo || '-'} ต.${p.subdistrict || ''}</td>
+                    <td class="p-3 whitespace-nowrap">ม.${p.moo || '-'} ${p.villageName ? p.villageName + ' ' : ''}ต.${p.subdistrict || ''}</td>
                     <td class="p-3 whitespace-nowrap">${p.serviceUnit || '-'}</td>
                     <td class="p-3"><span class="px-2 py-1 rounded text-xs font-bold ${String(p.dx || '').includes('DHF') ? 'bg-red-100 text-red-700' : 'bg-amber-100 text-amber-700'}">${p.dx || ''}</span></td>
                     <td class="p-3 text-center whitespace-nowrap">
@@ -1202,7 +1203,7 @@
         function downloadTemplate() {
             const templateData = [{
                 "ลำดับ": 1, "ชื่อ-สกุล": "ตัวอย่าง ใจดี", "HN": "1234/67", "อายุ": 20, "เพศ": "ชาย", 
-                "บ้านเลขที่": "123", "หมู่": 1, "ตำบล": "แม่อาย", "หน่วยบริการ": "รพ.แม่อาย", 
+                "บ้านเลขที่": "123", "หมู่": 1, "ชื่อหมู่บ้าน": "บ้านมะลิกา", "ตำบล": "แม่อาย", "หน่วยบริการ": "รพ.แม่อาย", 
                 "Lat, Long": "20.030, 99.285", "วันที่เริ่มป่วย": "2026-05-01", "วันที่เข้ารับการรักษา": "2026-05-02", 
                 "DX": "DF", "สถานที่เรียน/ทำงาน": "โรงเรียน", "หมู่ที่เรียน/ที่ทำงาน": 2 
             }];
@@ -1213,7 +1214,7 @@
             if(patients.length === 0) return alert("ไม่มีข้อมูลให้ Export");
             const exportData = patients.map(p => ({ 
                 "ลำดับ": p.id, "ชื่อ-สกุล": p.fullName, "HN": p.hn, "อายุ": p.age, "เพศ": p.gender, 
-                "บ้านเลขที่": p.addressNo, "หมู่": p.moo, "ตำบล": p.subdistrict, "หน่วยบริการ": p.serviceUnit, 
+                "บ้านเลขที่": p.addressNo, "หมู่": p.moo, "ชื่อหมู่บ้าน": p.villageName || "", "ตำบล": p.subdistrict, "หน่วยบริการ": p.serviceUnit, 
                 "Lat, Long": (p.lat && p.lng) ? `${p.lat}, ${p.lng}` : "", 
                 "วันที่เริ่มป่วย": p.onsetDate, "วันที่เข้ารับการรักษา": p.foundDate, "DX": p.dx, 
                 "สถานที่เรียน/ทำงาน": p.workplace, "หมู่ที่เรียน/ที่ทำงาน": p.workplaceMoo 
@@ -1280,7 +1281,7 @@
                         patients.push({
                             id: r['ลำดับ'] ? parseInt(r['ลำดับ']) : nextId++, fullName: r['ชื่อ-สกุล'].toString().trim(), hn: r['HN'] ? r['HN'].toString() : '',
                             age: r['อายุ'] ? Number(r['อายุ']) : '', gender: getCleanGender(r['เพศ']), addressNo: r['บ้านเลขที่'] ? r['บ้านเลขที่'].toString() : '',
-                            moo: r['หมู่'] ? r['หมู่'].toString() : '', subdistrict: r['ตำบล'] ? r['ตำบล'].toString() : 'แม่อาย', serviceUnit: r['หน่วยบริการ'] ? r['หน่วยบริการ'].toString() : 'รพ.แม่อาย', 
+                            moo: r['หมู่'] ? r['หมู่'].toString() : '', villageName: r['ชื่อหมู่บ้าน'] ? r['ชื่อหมู่บ้าน'].toString() : '', subdistrict: r['ตำบล'] ? r['ตำบล'].toString() : 'แม่อาย', serviceUnit: r['หน่วยบริการ'] ? r['หน่วยบริการ'].toString() : 'รพ.แม่อาย', 
                             lat: parsedLat, lng: parsedLng, onsetDate: parseExcelDate(r['วันที่เริ่มป่วย']), foundDate: parseExcelDate(r['วันที่เข้ารับการรักษา'] || r['วันที่พบผู้ป่วย']), dx: getCleanDX(r['DX']),
                             workplace: r['สถานที่เรียน/ทำงาน'] ? r['สถานที่เรียน/ทำงาน'].toString() : '', workplaceMoo: wpMoo.toString()
                         });
