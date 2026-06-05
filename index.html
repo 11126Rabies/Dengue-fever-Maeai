@@ -487,6 +487,7 @@
                                     <th class="p-3 whitespace-nowrap">ที่อยู่</th>
                                     <th class="p-3 whitespace-nowrap">หน่วยบริการ</th>
                                     <th class="p-3">DX</th>
+                                    <th class="p-3 whitespace-nowrap">อัปเดตล่าสุด</th>
                                     <th class="p-3 text-center whitespace-nowrap">พิกัด / แก้ไข / ลบ</th>
                                 </tr>
                             </thead>
@@ -594,7 +595,8 @@
                         latlng: p.latlng || '', 
                         onsetDate: p.onsetDate ? p.onsetDate.split('T')[0] : '', 
                         foundDate: p.foundDate ? p.foundDate.split('T')[0] : '', 
-                        dx: getCleanDX(p.dx), workplace: p.workplace || '', workplaceMoo: p.workplaceMoo || ''
+                        dx: getCleanDX(p.dx), workplace: p.workplace || '', workplaceMoo: p.workplaceMoo || '',
+                        updatedAt: p.updatedAt || ''
                     })).filter(p => p.id > 0);
                     localStorage.setItem(storageKey, JSON.stringify(patients));
                 }
@@ -1079,6 +1081,10 @@
             e.preventDefault();
             const editId = document.getElementById('editing-id').value;
 
+            // บันทึกเวลาแบบจำลองชั่วคราวเพื่อโชว์ก่อนโหลดใหม่
+            const now = new Date();
+            const localTs = now.getFullYear() + '-' + String(now.getMonth()+1).padStart(2,'0') + '-' + String(now.getDate()).padStart(2,'0') + ' ' + String(now.getHours()).padStart(2,'0') + ':' + String(now.getMinutes()).padStart(2,'0') + ':' + String(now.getSeconds()).padStart(2,'0');
+
             const patientData = {
                 fullName: document.getElementById('f-fullName').value, hn: document.getElementById('f-hn').value,
                 age: Number(document.getElementById('f-age').value), gender: document.getElementById('f-gender').value,
@@ -1087,7 +1093,8 @@
                 subdistrict: document.getElementById('f-subdistrict').value, serviceUnit: document.getElementById('f-serviceUnit').value,
                 latlng: document.getElementById('f-latlng').value.trim(),
                 onsetDate: document.getElementById('f-onsetDate').value, foundDate: document.getElementById('f-foundDate').value,
-                dx: document.getElementById('f-dx').value, workplace: document.getElementById('f-workplace').value, workplaceMoo: document.getElementById('f-workplaceMoo').value
+                dx: document.getElementById('f-dx').value, workplace: document.getElementById('f-workplace').value, workplaceMoo: document.getElementById('f-workplaceMoo').value,
+                updatedAt: localTs
             };
             
             const btnSave = document.getElementById('btn-save'); const originalBtnHtml = btnSave.innerHTML;
@@ -1186,7 +1193,7 @@
                 (p.villageName && String(p.villageName).toLowerCase().includes(term))
             ).sort((a, b) => a.id - b.id);
             
-            if(filtered.length === 0) { tbody.innerHTML = `<tr><td colSpan="9" class="p-8 text-center text-slate-400"><i class="fa-solid fa-circle-exclamation text-3xl mb-2 opacity-50 block"></i>ไม่พบข้อมูลผู้ป่วย</td></tr>`; return; }
+            if(filtered.length === 0) { tbody.innerHTML = `<tr><td colSpan="10" class="p-8 text-center text-slate-400"><i class="fa-solid fa-circle-exclamation text-3xl mb-2 opacity-50 block"></i>ไม่พบข้อมูลผู้ป่วย</td></tr>`; return; }
 
             filtered.forEach(p => {
                 const tr = document.createElement('tr'); tr.className = "border-b border-slate-50 hover:bg-slate-50 transition-colors";
@@ -1200,6 +1207,7 @@
                     <td class="p-3 whitespace-nowrap">ม.${p.moo || '-'}${vNameDisplay} ต.${p.subdistrict || ''}</td>
                     <td class="p-3 whitespace-nowrap">${p.serviceUnit || '-'}</td>
                     <td class="p-3"><span class="px-2 py-1 rounded text-xs font-bold ${String(p.dx || '').includes('DHF') ? 'bg-red-100 text-red-700' : 'bg-amber-100 text-amber-700'}">${p.dx || ''}</span></td>
+                    <td class="p-3 whitespace-nowrap text-xs text-slate-500">${p.updatedAt || '-'}</td>
                     <td class="p-3 text-center whitespace-nowrap">
                         <button onclick="viewOnMap('${p.latlng || ''}', '${p.fullName || ''}', '${p.addressNo || ''}', '${p.moo || ''}', '${p.subdistrict || ''}', '${p.villageName || ''}')" class="p-2 text-rose-500 hover:text-rose-700 hover:bg-rose-50 rounded transition-colors mr-1" title="ดูในแผนที่"><i class="fa-solid fa-location-dot text-lg"></i></button>
                         <button onclick="editRecord(${p.id})" class="p-2 text-orange-500 hover:text-orange-700 hover:bg-orange-50 rounded transition-colors mr-1" title="แก้ไขข้อมูล"><i class="fa-solid fa-pen-to-square text-lg"></i></button>
@@ -1214,7 +1222,7 @@
                 "ลำดับ": 1, "ชื่อ-สกุล": "ตัวอย่าง ใจดี", "HN": "1234/67", "อายุ": 20, "เพศ": "ชาย", 
                 "บ้านเลขที่": "123", "หมู่": 1, "ชื่อหมู่บ้าน": "บ้านตัวอย่าง", "ตำบล": "แม่อาย", "หน่วยบริการ": "รพ.แม่อาย", 
                 "Lat, Long": "20.030, 99.285", "วันที่เริ่มป่วย": "2026-05-01", "วันที่เข้ารับการรักษา": "2026-05-02", 
-                "DX": "DF", "สถานที่เรียน/ทำงาน": "โรงเรียน", "หมู่ที่เรียน/ที่ทำงาน": 2 
+                "DX": "DF", "สถานที่เรียน/ทำงาน": "โรงเรียน", "หมู่ที่เรียน/ที่ทำงาน": 2, "อัปเดตล่าสุด": "2026-05-02 12:00:00"
             }];
             const worksheet = XLSX.utils.json_to_sheet(templateData); const workbook = XLSX.utils.book_new(); XLSX.utils.book_append_sheet(workbook, worksheet, "Template"); XLSX.writeFile(workbook, `template_import_dengue.xlsx`);
         }
@@ -1226,7 +1234,8 @@
                 "บ้านเลขที่": p.addressNo, "หมู่": p.moo, "ชื่อหมู่บ้าน": p.villageName, "ตำบล": p.subdistrict, "หน่วยบริการ": p.serviceUnit, 
                 "Lat, Long": p.latlng !== undefined ? p.latlng : "", 
                 "วันที่เริ่มป่วย": p.onsetDate, "วันที่เข้ารับการรักษา": p.foundDate, "DX": p.dx, 
-                "สถานที่เรียน/ทำงาน": p.workplace, "หมู่ที่เรียน/ที่ทำงาน": p.workplaceMoo 
+                "สถานที่เรียน/ทำงาน": p.workplace, "หมู่ที่เรียน/ที่ทำงาน": p.workplaceMoo,
+                "อัปเดตล่าสุด": p.updatedAt || ""
             }));
             const worksheet = XLSX.utils.json_to_sheet(exportData); const workbook = XLSX.utils.book_new(); XLSX.utils.book_append_sheet(workbook, worksheet, "Dengue Patients");
             const d = new Date(); const dateStr = `${d.getFullYear()}${String(d.getMonth()+1).padStart(2,'0')}${String(d.getDate()).padStart(2,'0')}`; XLSX.writeFile(workbook, `dengue_data_maeai_${dateStr}.xlsx`);
@@ -1260,7 +1269,8 @@
                             age: r['อายุ'] ? Number(r['อายุ']) : '', gender: getCleanGender(r['เพศ']), addressNo: r['บ้านเลขที่'] ? r['บ้านเลขที่'].toString() : '',
                             moo: r['หมู่'] ? r['หมู่'].toString() : '', villageName: r['ชื่อหมู่บ้าน'] ? r['ชื่อหมู่บ้าน'].toString() : '', subdistrict: r['ตำบล'] ? r['ตำบล'].toString() : 'แม่อาย', serviceUnit: r['หน่วยบริการ'] ? r['หน่วยบริการ'].toString() : 'รพ.แม่อาย', 
                             latlng: combinedLatLng.toString(), onsetDate: parseExcelDate(r['วันที่เริ่มป่วย']), foundDate: fDate, dx: getCleanDX(r['DX']),
-                            workplace: r['สถานที่เรียน/ทำงาน'] ? r['สถานที่เรียน/ทำงาน'].toString() : '', workplaceMoo: wpMoo.toString()
+                            workplace: r['สถานที่เรียน/ทำงาน'] ? r['สถานที่เรียน/ทำงาน'].toString() : '', workplaceMoo: wpMoo.toString(),
+                            updatedAt: r['อัปเดตล่าสุด'] ? r['อัปเดตล่าสุด'].toString() : ''
                         });
                         importedCount++;
                     });
