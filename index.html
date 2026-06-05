@@ -55,7 +55,7 @@
         /* Custom Hover Tooltip Map */
         .custom-map-tooltip { 
             background: rgba(255, 255, 255, 0.95); 
-            border: 1px solid #bae6fd; 
+            border: 1px solid #ffe4e6; 
             box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1); 
             border-radius: 8px; 
             padding: 10px; 
@@ -64,30 +64,30 @@
         /* Custom scrollbar for tooltips */
         .custom-scrollbar::-webkit-scrollbar { width: 5px; }
         .custom-scrollbar::-webkit-scrollbar-track { background: #f1f5f9; border-radius: 4px; }
-        .custom-scrollbar::-webkit-scrollbar-thumb { background: #94a3b8; border-radius: 4px; }
-        .custom-scrollbar::-webkit-scrollbar-thumb:hover { background: #64748b; }
+        .custom-scrollbar::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 4px; }
+        .custom-scrollbar::-webkit-scrollbar-thumb:hover { background: #94a3b8; }
     </style>
 </head>
 <body class="text-slate-800 pb-24 min-h-screen flex flex-col">
 
     <!-- Sync Loading Screen (ดึงข้อมูลจาก Google Sheets) -->
-    <div id="loading-overlay" class="fixed inset-0 bg-sky-900/80 z-[200] flex flex-col items-center justify-center transition-opacity hidden backdrop-blur-sm">
+    <div id="loading-overlay" class="fixed inset-0 bg-rose-900/80 z-[200] flex flex-col items-center justify-center transition-opacity hidden backdrop-blur-sm">
         <i class="fa-solid fa-cloud-arrow-down text-5xl text-white mb-4 animate-bounce"></i>
         <h2 class="text-2xl font-bold text-white mb-2">กำลังเชื่อมต่อฐานข้อมูล...</h2>
-        <p class="text-sky-200">กำลังดึงข้อมูลล่าสุดจาก Google Sheets</p>
+        <p class="text-rose-200">กำลังดึงข้อมูลล่าสุดจาก Google Sheets</p>
     </div>
 
     <!-- Login Screen -->
-    <div id="login-screen" class="fixed inset-0 bg-sky-900 z-[100] flex items-center justify-center transition-opacity">
-        <div class="bg-white p-8 rounded-2xl shadow-2xl max-w-md w-full mx-4 text-center border-t-8 border-sky-500">
+    <div id="login-screen" class="fixed inset-0 bg-rose-900 z-[100] flex items-center justify-center transition-opacity">
+        <div class="bg-white p-8 rounded-2xl shadow-2xl max-w-md w-full mx-4 text-center border-t-8 border-rose-500">
             <div class="w-32 h-32 mx-auto mb-4 flex items-center justify-center">
-                <img src="logo รพ.แม่อาย.jpg" alt="Logo โรงพยาบาลแม่อาย" class="max-w-full max-h-full object-contain" onerror="this.src='https://placehold.co/100x100/e0f2fe/0284c7?text=LOGO'">
+                <img src="logo รพ.แม่อาย.jpg" alt="Logo โรงพยาบาลแม่อาย" class="max-w-full max-h-full object-contain" onerror="this.src='https://placehold.co/100x100/ffe4e6/e11d48?text=LOGO'">
             </div>
-            <h1 class="text-2xl font-bold text-sky-700 mb-6 border-b pb-4">ระบบบันทึกข้อมูลผู้ป่วยไข้เลือดออก<br>อ.แม่อาย</h1>
+            <h1 class="text-2xl font-bold text-rose-700 mb-6 border-b pb-4">ระบบบันทึกข้อมูลผู้ป่วยไข้เลือดออก<br>อ.แม่อาย</h1>
             <p class="text-slate-500 mb-6 text-sm">กรุณาใส่รหัสผ่านเพื่อเข้าใช้งานระบบ</p>
             <form onsubmit="checkLogin(event)">
-                <input type="password" id="login-password" class="w-full border border-slate-300 rounded-lg p-3 mb-4 text-center tracking-widest text-lg font-bold focus:ring-2 focus:ring-sky-500 outline-none" placeholder="รหัสผ่าน" required autofocus>
-                <button type="submit" class="w-full bg-sky-600 hover:bg-sky-700 text-white font-bold py-3 rounded-lg transition-colors shadow-md">
+                <input type="password" id="login-password" class="w-full border border-slate-300 rounded-lg p-3 mb-4 text-center tracking-widest text-lg font-bold focus:ring-2 focus:ring-rose-500 outline-none" placeholder="รหัสผ่าน" required autofocus>
+                <button type="submit" class="w-full bg-rose-600 hover:bg-rose-700 text-white font-bold py-3 rounded-lg transition-colors shadow-md">
                     เข้าสู่ระบบ
                 </button>
             </form>
@@ -95,21 +95,21 @@
     </div>
 
     <!-- Header -->
-    <header class="bg-white shadow-sm border-b-4 border-sky-500 py-4 px-8 relative z-10">
+    <header class="bg-white shadow-sm border-b-4 border-rose-500 py-4 px-8 relative z-10">
         <div class="max-w-7xl mx-auto flex flex-col md:flex-row items-center justify-center gap-6 text-center md:text-left">
             <!-- Logo -->
-            <div class="w-24 h-24 flex-shrink-0 bg-white rounded-full p-1 shadow-md border border-sky-100 flex items-center justify-center overflow-hidden">
-                <img src="logo รพ.แม่อาย.jpg" alt="Logo" class="max-w-full max-h-full object-contain" onerror="this.src='https://placehold.co/100x100/e0f2fe/0284c7?text=LOGO'">
+            <div class="w-24 h-24 flex-shrink-0 bg-white rounded-full p-1 shadow-md border border-rose-100 flex items-center justify-center overflow-hidden">
+                <img src="logo รพ.แม่อาย.jpg" alt="Logo" class="max-w-full max-h-full object-contain" onerror="this.src='https://placehold.co/100x100/ffe4e6/e11d48?text=LOGO'">
             </div>
             <!-- Title -->
             <div class="flex flex-col items-center md:items-start">
-                <h1 class="text-3xl md:text-4xl font-bold text-sky-700 mb-2">
+                <h1 class="text-3xl md:text-4xl font-bold text-rose-700 mb-2">
                     ระบบบันทึกข้อมูลผู้ป่วยไข้เลือดออก อ.แม่อาย
                 </h1>
                 <div class="flex flex-wrap justify-center md:justify-start gap-2 text-sm md:text-base font-semibold text-slate-600">
-                    <span class="px-3 py-1 bg-sky-100 rounded-full">งานควบคุมโรค</span>
-                    <span class="px-3 py-1 bg-sky-100 rounded-full">กลุ่มงานบริการด้านปฐมภูมิและองค์รวม</span>
-                    <span class="px-3 py-1 bg-sky-100 rounded-full">โรงพยาบาลแม่อาย</span>
+                    <span class="px-3 py-1 bg-rose-50 text-rose-700 rounded-full">งานควบคุมโรค</span>
+                    <span class="px-3 py-1 bg-rose-50 text-rose-700 rounded-full">กลุ่มงานบริการด้านปฐมภูมิและองค์รวม</span>
+                    <span class="px-3 py-1 bg-rose-50 text-rose-700 rounded-full">โรงพยาบาลแม่อาย</span>
                     <span class="px-3 py-1 bg-emerald-100 text-emerald-700 rounded-full shadow-sm"><i class="fa-solid fa-code-commit mr-1"></i>V1.6.9</span>
                 </div>
             </div>
@@ -117,21 +117,21 @@
     </header>
 
     <!-- Navigation Tabs -->
-    <nav class="bg-sky-600 text-white shadow-md sticky top-0 z-40">
+    <nav class="bg-rose-500 text-white shadow-md sticky top-0 z-40">
         <div class="max-w-7xl mx-auto flex justify-start md:justify-center overflow-x-auto no-scrollbar">
-            <button onclick="switchTab('dashboard')" id="btn-dashboard" class="tab-btn flex items-center space-x-2 px-5 py-4 font-semibold transition-colors bg-sky-800 border-b-4 border-white whitespace-nowrap">
+            <button onclick="switchTab('dashboard')" id="btn-dashboard" class="tab-btn flex items-center space-x-2 px-5 py-4 font-semibold transition-colors bg-rose-700 border-b-4 border-white whitespace-nowrap">
                 <i class="fa-solid fa-chart-pie"></i><span>Dashboard</span>
             </button>
-            <button onclick="switchTab('village-stats')" id="btn-village-stats" class="tab-btn flex items-center space-x-2 px-5 py-4 font-semibold transition-colors hover:bg-sky-700 text-sky-100 whitespace-nowrap">
+            <button onclick="switchTab('village-stats')" id="btn-village-stats" class="tab-btn flex items-center space-x-2 px-5 py-4 font-semibold transition-colors hover:bg-rose-600 text-rose-50 whitespace-nowrap">
                 <i class="fa-solid fa-chart-simple"></i><span>สถิติ</span>
             </button>
-            <button onclick="switchTab('situation-map')" id="btn-situation-map" class="tab-btn flex items-center space-x-2 px-5 py-4 font-semibold transition-colors hover:bg-sky-700 text-sky-100 whitespace-nowrap">
+            <button onclick="switchTab('situation-map')" id="btn-situation-map" class="tab-btn flex items-center space-x-2 px-5 py-4 font-semibold transition-colors hover:bg-rose-600 text-rose-50 whitespace-nowrap">
                 <i class="fa-solid fa-map-location-dot"></i><span>แผนที่สถานการณ์</span>
             </button>
-            <button onclick="switchTab('entry')" id="btn-entry" class="tab-btn flex items-center space-x-2 px-5 py-4 font-semibold transition-colors hover:bg-sky-700 text-sky-100 whitespace-nowrap">
+            <button onclick="switchTab('entry')" id="btn-entry" class="tab-btn flex items-center space-x-2 px-5 py-4 font-semibold transition-colors hover:bg-rose-600 text-rose-50 whitespace-nowrap">
                 <i class="fa-solid fa-pen-to-square"></i><span>บันทึกข้อมูล</span>
             </button>
-            <button onclick="switchTab('manage')" id="btn-manage" class="tab-btn flex items-center space-x-2 px-5 py-4 font-semibold transition-colors hover:bg-sky-700 text-sky-100 whitespace-nowrap">
+            <button onclick="switchTab('manage')" id="btn-manage" class="tab-btn flex items-center space-x-2 px-5 py-4 font-semibold transition-colors hover:bg-rose-600 text-rose-50 whitespace-nowrap">
                 <i class="fa-solid fa-database"></i><span>จัดการข้อมูล/แก้ไข</span>
             </button>
         </div>
@@ -146,18 +146,18 @@
             <div class="bg-white p-4 border border-slate-200 rounded-2xl flex flex-wrap gap-4 items-center justify-between shadow-sm">
                 <div class="flex flex-wrap gap-4 items-center w-full md:w-auto">
                     <div class="flex items-center gap-2 mr-2">
-                        <i class="fa-solid fa-filter text-sky-600"></i>
+                        <i class="fa-solid fa-filter text-rose-600"></i>
                         <span class="font-bold text-slate-700 text-sm">กรองข้อมูล Dashboard:</span>
                     </div>
                     <div class="flex flex-col">
                         <label class="text-xs font-bold text-slate-500 mb-1">ปี (พ.ศ.)</label>
-                        <select id="dashFilterYear" class="border border-slate-300 rounded-lg px-3 py-1.5 text-sm focus:ring-2 focus:ring-sky-500 bg-white min-w-[100px]" onchange="renderDashboard()">
+                        <select id="dashFilterYear" class="border border-slate-300 rounded-lg px-3 py-1.5 text-sm focus:ring-2 focus:ring-rose-500 bg-white min-w-[100px]" onchange="renderDashboard()">
                             <option value="all">ทุกปี</option>
                         </select>
                     </div>
                     <div class="flex flex-col">
                         <label class="text-xs font-bold text-slate-500 mb-1">เดือน</label>
-                        <select id="dashFilterMonth" class="border border-slate-300 rounded-lg px-3 py-1.5 text-sm focus:ring-2 focus:ring-sky-500 bg-white" onchange="renderDashboard()">
+                        <select id="dashFilterMonth" class="border border-slate-300 rounded-lg px-3 py-1.5 text-sm focus:ring-2 focus:ring-rose-500 bg-white" onchange="renderDashboard()">
                             <option value="all">ทุกเดือน</option>
                             <option value="01">มกราคม</option><option value="02">กุมภาพันธ์</option><option value="03">มีนาคม</option><option value="04">เมษายน</option><option value="05">พฤษภาคม</option><option value="06">มิถุนายน</option><option value="07">กรกฎาคม</option><option value="08">สิงหาคม</option><option value="09">กันยายน</option><option value="10">ตุลาคม</option><option value="11">พฤศจิกายน</option><option value="12">ธันวาคม</option>
                         </select>
@@ -170,27 +170,27 @@
 
             <!-- Stats Top -->
             <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
-                <div class="bg-white p-5 rounded-2xl shadow-sm border border-sky-100 flex justify-between items-center">
-                    <div><p class="text-sm font-semibold text-slate-500 mb-1">ผู้ป่วยสะสมทั้งหมด</p><p class="text-4xl font-bold text-sky-700" id="stat-total">0</p></div>
-                    <div class="w-12 h-12 rounded-full bg-sky-100 text-sky-600 flex items-center justify-center text-xl"><i class="fa-solid fa-users"></i></div>
+                <div class="bg-white p-5 rounded-2xl shadow-sm border border-rose-100 flex justify-between items-center">
+                    <div><p class="text-sm font-semibold text-slate-500 mb-1">ผู้ป่วยสะสมทั้งหมด</p><p class="text-4xl font-bold text-rose-700" id="stat-total">0</p></div>
+                    <div class="w-12 h-12 rounded-full bg-rose-100 text-rose-600 flex items-center justify-center text-xl"><i class="fa-solid fa-users"></i></div>
                 </div>
-                <div class="bg-white p-5 rounded-2xl shadow-sm border border-sky-100 flex justify-between items-center">
+                <div class="bg-white p-5 rounded-2xl shadow-sm border border-rose-100 flex justify-between items-center">
                     <div><p class="text-sm font-semibold text-slate-500 mb-1">ชาย</p>
                         <div class="flex items-baseline gap-2"><p class="text-3xl font-bold text-slate-700" id="stat-male">0</p><p class="text-sm font-semibold text-blue-500" id="stat-male-percent">(0%)</p></div>
                     </div>
                     <div class="w-12 h-12 rounded-full bg-blue-100 text-blue-500 flex items-center justify-center text-xl"><i class="fa-solid fa-mars"></i></div>
                 </div>
-                <div class="bg-white p-5 rounded-2xl shadow-sm border border-sky-100 flex justify-between items-center">
+                <div class="bg-white p-5 rounded-2xl shadow-sm border border-rose-100 flex justify-between items-center">
                     <div><p class="text-sm font-semibold text-slate-500 mb-1">หญิง</p>
                         <div class="flex items-baseline gap-2"><p class="text-3xl font-bold text-slate-700" id="stat-female">0</p><p class="text-sm font-semibold text-pink-500" id="stat-female-percent">(0%)</p></div>
                     </div>
                     <div class="w-12 h-12 rounded-full bg-pink-100 text-pink-500 flex items-center justify-center text-xl"><i class="fa-solid fa-venus"></i></div>
                 </div>
-                <!-- Highlight Stat: Top 5 Subdistricts -->
-                <div class="bg-gradient-to-br from-orange-400 to-red-500 p-4 rounded-2xl shadow-sm border border-red-200 text-white flex flex-col justify-center relative overflow-hidden">
+                <!-- Highlight Stat: Top Areas (Scrollable) -->
+                <div class="bg-gradient-to-br from-rose-500 to-red-600 p-4 rounded-2xl shadow-sm border border-red-200 text-white flex flex-col relative overflow-hidden">
                     <i class="fa-solid fa-ranking-star absolute -right-4 -bottom-4 text-7xl opacity-20"></i>
-                    <p class="text-sm font-semibold opacity-90 mb-2 border-b border-white/30 pb-1">พื้นที่พบผู้ป่วยเรียงตามลำดับ (ตำบล)</p>
-                    <div id="stat-top-areas-list" class="text-sm space-y-1.5 font-medium relative z-10 max-h-[140px] overflow-y-auto custom-scrollbar pr-2"></div>
+                    <p class="text-sm font-semibold opacity-90 mb-2 border-b border-white/30 pb-1">พื้นที่พบผู้ป่วย (เรียงจากมากไปน้อย)</p>
+                    <div id="stat-top-areas-list" class="text-sm font-medium relative z-10 w-full h-full"></div>
                 </div>
             </div>
 
@@ -198,12 +198,12 @@
             <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
                 <!-- ช่วงอายุ -->
                 <div class="bg-white p-5 rounded-2xl shadow-sm border border-slate-200">
-                    <h3 class="text-lg font-bold text-slate-800 mb-4 flex items-center"><i class="fa-solid fa-person-cane text-sky-500 mr-2"></i>ผู้ป่วยสะสมแยกตามช่วงอายุ (ปี)</h3>
+                    <h3 class="text-lg font-bold text-slate-800 mb-4 flex items-center"><i class="fa-solid fa-person-cane text-rose-500 mr-2"></i>ผู้ป่วยสะสมแยกตามช่วงอายุ (ปี)</h3>
                     <div class="chart-container"><canvas id="barChartAge"></canvas></div>
                 </div>
                 <!-- Bar Chart (หน่วยบริการ) -->
                 <div class="bg-white p-5 rounded-2xl shadow-sm border border-slate-200">
-                    <h3 class="text-lg font-bold text-slate-800 mb-4 flex items-center"><i class="fa-solid fa-chart-column text-sky-500 mr-2"></i>จำนวนผู้ป่วยแยกตามหน่วยบริการ</h3>
+                    <h3 class="text-lg font-bold text-slate-800 mb-4 flex items-center"><i class="fa-solid fa-chart-column text-rose-500 mr-2"></i>จำนวนผู้ป่วยแยกตามหน่วยบริการ</h3>
                     <div class="chart-container"><canvas id="barChartServiceUnit"></canvas></div>
                 </div>
             </div>
@@ -211,7 +211,7 @@
             <!-- Charts Row 2: DX -->
             <div class="grid grid-cols-1 gap-6">
                 <div class="bg-white p-5 rounded-2xl shadow-sm border border-slate-200">
-                    <h3 class="text-lg font-bold text-slate-800 mb-4 flex items-center"><i class="fa-solid fa-virus-covid text-sky-500 mr-2"></i>การวินิจฉัย (DX) แยกตามเพศ</h3>
+                    <h3 class="text-lg font-bold text-slate-800 mb-4 flex items-center"><i class="fa-solid fa-virus-covid text-rose-500 mr-2"></i>การวินิจฉัย (DX) แยกตามเพศ</h3>
                     <div class="chart-container"><canvas id="barChartDX"></canvas></div>
                 </div>
             </div>
@@ -222,34 +222,34 @@
             <!-- Filter Bar for Stats -->
             <div class="bg-white p-4 border border-slate-200 rounded-2xl flex flex-wrap gap-4 items-end justify-between shadow-sm mb-6">
                 <div class="flex flex-wrap gap-4 items-end w-full md:w-auto">
-                    <div class="flex flex-col"><label class="text-xs font-bold text-slate-500 mb-1">สัปดาห์ (ISO)</label><input type="week" id="statFilterWeek" class="border border-slate-300 rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-sky-500"></div>
-                    <div class="flex flex-col"><label class="text-xs font-bold text-slate-500 mb-1">หรือ เลือกวันที่</label><input type="date" id="statFilterDate" class="border border-slate-300 rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-sky-500"></div>
+                    <div class="flex flex-col"><label class="text-xs font-bold text-slate-500 mb-1">สัปดาห์ (ISO)</label><input type="week" id="statFilterWeek" class="border border-slate-300 rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-rose-500"></div>
+                    <div class="flex flex-col"><label class="text-xs font-bold text-slate-500 mb-1">หรือ เลือกวันที่</label><input type="date" id="statFilterDate" class="border border-slate-300 rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-rose-500"></div>
                     <div class="flex flex-col"><label class="text-xs font-bold text-slate-500 mb-1">ปี (พ.ศ.)</label>
-                        <select id="statFilterYear" class="border border-slate-300 rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-sky-500 bg-white min-w-[100px]">
+                        <select id="statFilterYear" class="border border-slate-300 rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-rose-500 bg-white min-w-[100px]">
                             <option value="all">ทุกปี</option>
                         </select>
                     </div>
                     <div class="flex flex-col"><label class="text-xs font-bold text-slate-500 mb-1">อำเภอ</label><input type="text" value="แม่อาย" disabled class="border border-slate-300 rounded-lg px-3 py-2 text-sm bg-slate-100 text-slate-500 w-28"></div>
                     <div class="flex flex-col"><label class="text-xs font-bold text-slate-500 mb-1">ตำบล</label>
-                        <select id="statFilterSubdistrict" class="border border-slate-300 rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-sky-500 bg-white">
+                        <select id="statFilterSubdistrict" class="border border-slate-300 rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-rose-500 bg-white">
                             <option value="all">ทุกตำบล</option><option value="แม่อาย">แม่อาย</option><option value="มะลิกา">มะลิกา</option><option value="ท่าตอน">ท่าตอน</option><option value="แม่สาว">แม่สาว</option><option value="บ้านหลวง">บ้านหลวง</option><option value="แม่นาวาง">แม่นาวาง</option><option value="สันต้นหมื้อ">สันต้นหมื้อ</option>
                         </select>
                     </div>
                 </div>
                 <div class="flex gap-2 w-full md:w-auto justify-end mt-2 md:mt-0">
-                    <button onclick="renderVillageStats()" class="bg-blue-600 hover:bg-blue-700 text-white px-5 py-2 rounded-lg font-bold shadow-sm transition-colors flex items-center text-sm"><i class="fa-solid fa-filter mr-2"></i> กรอง</button>
+                    <button onclick="renderVillageStats()" class="bg-rose-600 hover:bg-rose-700 text-white px-5 py-2 rounded-lg font-bold shadow-sm transition-colors flex items-center text-sm"><i class="fa-solid fa-filter mr-2"></i> กรอง</button>
                     <button onclick="resetStatsFilters()" class="bg-slate-100 hover:bg-slate-200 border border-slate-300 text-slate-700 px-5 py-2 rounded-lg font-bold shadow-sm transition-colors text-sm">รีเซ็ต</button>
                 </div>
             </div>
 
             <div class="bg-white rounded-2xl shadow-sm border border-slate-200 overflow-hidden p-6 space-y-6">
                 <div class="flex flex-col md:flex-row justify-between items-start md:items-center pb-4 border-b border-slate-100 gap-4">
-                    <h2 class="text-2xl font-bold text-slate-800 flex items-center"><i class="fa-solid fa-chart-line text-sky-500 mr-2"></i> สถิติสถานการณ์ไข้เลือดออก</h2>
+                    <h2 class="text-2xl font-bold text-slate-800 flex items-center"><i class="fa-solid fa-chart-line text-rose-500 mr-2"></i> สถิติสถานการณ์ไข้เลือดออก</h2>
                     <div class="bg-emerald-600 text-white px-4 py-2 rounded-lg font-bold shadow-sm" id="matrix-total-badge">ผู้ป่วยสะสม: 0 ราย</div>
                 </div>
 
                 <div class="bg-slate-50 p-5 rounded-xl border border-slate-200">
-                    <h3 class="text-lg font-bold text-slate-800 mb-4 flex items-center"><i class="fa-solid fa-arrow-trend-up text-sky-500 mr-2"></i>แนวโน้มจำนวนผู้ป่วยรายตำบล (รายเดือน)</h3>
+                    <h3 class="text-lg font-bold text-slate-800 mb-4 flex items-center"><i class="fa-solid fa-arrow-trend-up text-rose-500 mr-2"></i>แนวโน้มจำนวนผู้ป่วยรายตำบล (รายเดือน)</h3>
                     <div class="chart-container"><canvas id="lineChartTrendStats"></canvas></div>
                 </div>
 
@@ -305,18 +305,18 @@
                 <div class="bg-white rounded-2xl shadow-sm border border-slate-200 flex flex-col p-4">
                     <div class="bg-slate-50 p-4 border border-slate-200 rounded-xl flex flex-wrap gap-4 items-center justify-between z-20 shadow-sm mb-4">
                         <div class="flex items-center gap-2">
-                            <i class="fa-solid fa-map-location-dot text-sky-600 text-xl"></i>
+                            <i class="fa-solid fa-map-location-dot text-rose-600 text-xl"></i>
                             <h2 class="text-lg font-bold text-slate-800">แผนที่พิกัดผู้ป่วยไข้เลือดออก</h2>
                         </div>
                         <div class="flex flex-wrap items-center gap-3 text-sm">
-                            <div class="flex flex-col"><label class="text-xs font-bold text-slate-500 mb-1">ปี (พ.ศ.)</label><select id="mapFilterYear" class="border border-slate-300 rounded-lg px-3 py-1.5 focus:ring-2 focus:ring-sky-500 bg-white" onchange="renderSituationMap()"><option value="all">ทุกปี</option></select></div>
+                            <div class="flex flex-col"><label class="text-xs font-bold text-slate-500 mb-1">ปี (พ.ศ.)</label><select id="mapFilterYear" class="border border-slate-300 rounded-lg px-3 py-1.5 focus:ring-2 focus:ring-rose-500 bg-white" onchange="renderSituationMap()"><option value="all">ทุกปี</option></select></div>
                             <div class="flex flex-col"><label class="text-xs font-bold text-slate-500 mb-1">เดือน</label>
-                                <select id="mapFilterMonth" class="border border-slate-300 rounded-lg px-3 py-1.5 focus:ring-2 focus:ring-sky-500 bg-white" onchange="renderSituationMap()">
+                                <select id="mapFilterMonth" class="border border-slate-300 rounded-lg px-3 py-1.5 focus:ring-2 focus:ring-rose-500 bg-white" onchange="renderSituationMap()">
                                     <option value="all">ทุกเดือน</option><option value="01">มกราคม</option><option value="02">กุมภาพันธ์</option><option value="03">มีนาคม</option><option value="04">เมษายน</option><option value="05">พฤษภาคม</option><option value="06">มิถุนายน</option><option value="07">กรกฎาคม</option><option value="08">สิงหาคม</option><option value="09">กันยายน</option><option value="10">ตุลาคม</option><option value="11">พฤศจิกายน</option><option value="12">ธันวาคม</option>
                                 </select>
                             </div>
                             <div class="flex flex-col"><label class="text-xs font-bold text-slate-500 mb-1">ตำบล</label>
-                                <select id="mapFilterSubdistrict" class="border border-slate-300 rounded-lg px-3 py-1.5 focus:ring-2 focus:ring-sky-500 bg-white" onchange="renderSituationMap()">
+                                <select id="mapFilterSubdistrict" class="border border-slate-300 rounded-lg px-3 py-1.5 focus:ring-2 focus:ring-rose-500 bg-white" onchange="renderSituationMap()">
                                     <option value="all">ทุกตำบล</option><option value="แม่อาย">แม่อาย</option><option value="มะลิกา">มะลิกา</option><option value="ท่าตอน">ท่าตอน</option><option value="แม่สาว">แม่สาว</option><option value="บ้านหลวง">บ้านหลวง</option><option value="แม่นาวาง">แม่นาวาง</option><option value="สันต้นหมื้อ">สันต้นหมื้อ</option>
                                 </select>
                             </div>
@@ -351,8 +351,8 @@
         <!-- Tab 4: Data Entry -->
         <div id="tab-entry" class="tab-content">
             <div class="bg-white rounded-2xl shadow-sm border border-slate-200 overflow-hidden max-w-5xl mx-auto">
-                <div class="bg-sky-50 px-6 py-4 border-b border-sky-100 flex justify-between items-center">
-                    <h2 id="form-title" class="text-xl font-bold text-sky-800 flex items-center"><i class="fa-solid fa-file-circle-plus mr-2"></i> บันทึกข้อมูลผู้ป่วยรายใหม่</h2>
+                <div class="bg-rose-50 px-6 py-4 border-b border-rose-200 flex justify-between items-center">
+                    <h2 id="form-title" class="text-xl font-bold text-rose-800 flex items-center"><i class="fa-solid fa-file-circle-plus mr-2"></i> บันทึกข้อมูลผู้ป่วยรายใหม่</h2>
                     <button type="button" onclick="cancelEdit()" id="btn-cancel-edit" class="hidden text-sm bg-slate-200 hover:bg-slate-300 text-slate-700 px-3 py-1 rounded-lg font-bold shadow-sm">ยกเลิกการแก้ไข</button>
                 </div>
                 
@@ -362,14 +362,14 @@
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
                         <div class="space-y-6">
                             <div>
-                                <h3 class="font-bold text-sky-700 border-b pb-2 mb-4"><i class="fa-solid fa-user mr-2"></i>ข้อมูลผู้ป่วย</h3>
+                                <h3 class="font-bold text-rose-700 border-b pb-2 mb-4"><i class="fa-solid fa-user mr-2"></i>ข้อมูลผู้ป่วย</h3>
                                 <div class="grid grid-cols-2 gap-4">
                                     <div><label class="block text-sm font-bold text-slate-600 mb-1">ลำดับ (ระบบ)</label><input type="text" id="f-id" disabled class="w-full bg-slate-100 border border-slate-300 rounded-lg p-2 font-bold text-slate-500 text-center" value="อัตโนมัติ" /></div>
-                                    <div><label class="block text-sm font-bold text-slate-600 mb-1">HN</label><input type="text" id="f-hn" class="w-full border border-slate-300 rounded-lg p-2 focus:ring-2 focus:ring-sky-500" /></div>
-                                    <div class="col-span-2"><label class="block text-sm font-bold text-slate-600 mb-1">ชื่อ-นามสกุล <span class="text-red-500">*</span></label><input required type="text" id="f-fullName" class="w-full border border-slate-300 rounded-lg p-2 focus:ring-2 focus:ring-sky-500" /></div>
-                                    <div><label class="block text-sm font-bold text-slate-600 mb-1">อายุ (ปี) <span class="text-red-500">*</span></label><input required type="number" id="f-age" class="w-full border border-slate-300 rounded-lg p-2 focus:ring-2 focus:ring-sky-500" /></div>
+                                    <div><label class="block text-sm font-bold text-slate-600 mb-1">HN</label><input type="text" id="f-hn" class="w-full border border-slate-300 rounded-lg p-2 focus:ring-2 focus:ring-rose-500" /></div>
+                                    <div class="col-span-2"><label class="block text-sm font-bold text-slate-600 mb-1">ชื่อ-นามสกุล <span class="text-red-500">*</span></label><input required type="text" id="f-fullName" class="w-full border border-slate-300 rounded-lg p-2 focus:ring-2 focus:ring-rose-500" /></div>
+                                    <div><label class="block text-sm font-bold text-slate-600 mb-1">อายุ (ปี) <span class="text-red-500">*</span></label><input required type="number" id="f-age" class="w-full border border-slate-300 rounded-lg p-2 focus:ring-2 focus:ring-rose-500" /></div>
                                     <div><label class="block text-sm font-bold text-slate-600 mb-1">เพศ</label>
-                                        <select id="f-gender" class="w-full border border-slate-300 rounded-lg p-2 focus:ring-2 focus:ring-sky-500 bg-white">
+                                        <select id="f-gender" class="w-full border border-slate-300 rounded-lg p-2 focus:ring-2 focus:ring-rose-500 bg-white">
                                             <option value="ชาย">ชาย</option><option value="หญิง">หญิง</option>
                                         </select>
                                     </div>
@@ -377,17 +377,17 @@
                             </div>
                             
                             <div>
-                                <h3 class="font-bold text-sky-700 border-b pb-2 mb-4"><i class="fa-solid fa-stethoscope mr-2"></i>การเจ็บป่วย</h3>
+                                <h3 class="font-bold text-rose-700 border-b pb-2 mb-4"><i class="fa-solid fa-stethoscope mr-2"></i>การเจ็บป่วย</h3>
                                 <div class="grid grid-cols-2 gap-4">
-                                    <div><label class="block text-sm font-bold text-slate-600 mb-1">วันที่เริ่มป่วย</label><input type="date" id="f-onsetDate" class="w-full border border-slate-300 rounded-lg p-2 focus:ring-2 focus:ring-sky-500" required/></div>
-                                    <div><label class="block text-sm font-bold text-slate-600 mb-1">วันที่เข้ารับการรักษา</label><input type="date" id="f-foundDate" class="w-full border border-slate-300 rounded-lg p-2 focus:ring-2 focus:ring-sky-500" /></div>
+                                    <div><label class="block text-sm font-bold text-slate-600 mb-1">วันที่เริ่มป่วย</label><input type="date" id="f-onsetDate" class="w-full border border-slate-300 rounded-lg p-2 focus:ring-2 focus:ring-rose-500" required/></div>
+                                    <div><label class="block text-sm font-bold text-slate-600 mb-1">วันที่เข้ารับการรักษา</label><input type="date" id="f-foundDate" class="w-full border border-slate-300 rounded-lg p-2 focus:ring-2 focus:ring-rose-500" /></div>
                                     <div><label class="block text-sm font-bold text-slate-600 mb-1">การวินิจฉัย (DX)</label>
-                                        <select id="f-dx" class="w-full border border-slate-300 rounded-lg p-2 focus:ring-2 focus:ring-sky-500 bg-white">
+                                        <select id="f-dx" class="w-full border border-slate-300 rounded-lg p-2 focus:ring-2 focus:ring-rose-500 bg-white">
                                             <option value="DF">DF</option><option value="DHF">DHF</option><option value="DSS">DSS</option><option value="อื่นๆ">อื่นๆ</option>
                                         </select>
                                     </div>
                                     <div><label class="block text-sm font-bold text-slate-600 mb-1">หน่วยบริการ</label>
-                                        <select id="f-serviceUnit" class="w-full border border-slate-300 rounded-lg p-2 focus:ring-2 focus:ring-sky-500 bg-white">
+                                        <select id="f-serviceUnit" class="w-full border border-slate-300 rounded-lg p-2 focus:ring-2 focus:ring-rose-500 bg-white">
                                             <option value="รพ.แม่อาย">รพ.แม่อาย</option>
                                             <option value="รพ.สต.บ้านใหม่ปูแช่">รพ.สต.บ้านใหม่ปูแช่</option>
                                             <option value="รพ.สต.ห้วยป่าซาง">รพ.สต.ห้วยป่าซาง</option>
@@ -400,7 +400,6 @@
                                             <option value="รพ.สต.ท่ามะแกง">รพ.สต.ท่ามะแกง</option>
                                             <option value="รพ.สต.บ้านเมืองงาม">รพ.สต.บ้านเมืองงาม</option>
                                             <option value="รพ.สต.บ้านท่าตอน">รพ.สต.บ้านท่าตอน</option>
-                                            <option value="อื่นๆ">อื่นๆ</option>
                                         </select>
                                     </div>
                                 </div>
@@ -409,27 +408,27 @@
 
                         <div class="space-y-6">
                             <div>
-                                <h3 class="font-bold text-sky-700 border-b pb-2 mb-4"><i class="fa-solid fa-house-chimney mr-2"></i>ที่อยู่ / พิกัด / สถานที่อื่น</h3>
+                                <h3 class="font-bold text-rose-700 border-b pb-2 mb-4"><i class="fa-solid fa-house-chimney mr-2"></i>ที่อยู่ / พิกัด / สถานที่อื่น</h3>
                                 <div class="grid grid-cols-2 gap-4">
-                                    <div><label class="block text-sm font-bold text-slate-600 mb-1">บ้านเลขที่</label><input type="text" id="f-addressNo" class="w-full border border-slate-300 rounded-lg p-2 focus:ring-2 focus:ring-sky-500" /></div>
+                                    <div><label class="block text-sm font-bold text-slate-600 mb-1">บ้านเลขที่</label><input type="text" id="f-addressNo" class="w-full border border-slate-300 rounded-lg p-2 focus:ring-2 focus:ring-rose-500" /></div>
                                     <div><label class="block text-sm font-bold text-slate-600 mb-1">หมู่ที่</label>
-                                        <select id="f-moo" class="w-full border border-slate-300 rounded-lg p-2 focus:ring-2 focus:ring-sky-500 bg-white">
+                                        <select id="f-moo" class="w-full border border-slate-300 rounded-lg p-2 focus:ring-2 focus:ring-rose-500 bg-white">
                                             <option value="">- เลือกหมู่ -</option>
                                             <script>for(let i=1; i<=18; i++) document.write(`<option value="${i}">${i}</option>`);</script>
                                         </select>
                                     </div>
-                                    <div class="col-span-2"><label class="block text-sm font-bold text-slate-600 mb-1">ชื่อหมู่บ้าน</label><input type="text" id="f-villageName" class="w-full border border-slate-300 rounded-lg p-2 focus:ring-2 focus:ring-sky-500" placeholder="ระบุชื่อหมู่บ้าน" /></div>
+                                    <div class="col-span-2"><label class="block text-sm font-bold text-slate-600 mb-1">ชื่อหมู่บ้าน</label><input type="text" id="f-villageName" placeholder="ระบุชื่อหมู่บ้าน (ถ้ามี)" class="w-full border border-slate-300 rounded-lg p-2 focus:ring-2 focus:ring-rose-500" /></div>
                                     <div class="col-span-2"><label class="block text-sm font-bold text-slate-600 mb-1">ตำบล <span class="text-red-500">*</span></label>
-                                        <select id="f-subdistrict" class="w-full border border-slate-300 rounded-lg p-2 focus:ring-2 focus:ring-sky-500 bg-white" required>
+                                        <select id="f-subdistrict" class="w-full border border-slate-300 rounded-lg p-2 focus:ring-2 focus:ring-rose-500 bg-white" required>
                                             <option value="">- เลือกตำบล -</option>
                                             <option value="แม่อาย">แม่อาย</option><option value="มะลิกา">มะลิกา</option><option value="ท่าตอน">ท่าตอน</option><option value="แม่สาว">แม่สาว</option><option value="บ้านหลวง">บ้านหลวง</option><option value="แม่นาวาง">แม่นาวาง</option><option value="สันต้นหมื้อ">สันต้นหมื้อ</option>
                                         </select>
                                     </div>
-                                    <div class="col-span-2"><label class="block text-sm font-bold text-slate-600 mb-1">ละติจูด, ลองจิจูด (Lat, Long)</label><input type="text" id="f-latlng" placeholder="ตัวอย่าง: 20.030, 99.285" class="w-full border border-slate-300 rounded-lg p-2 focus:ring-2 focus:ring-sky-500" /></div>
+                                    <div class="col-span-2"><label class="block text-sm font-bold text-slate-600 mb-1">Lat, Long (พิกัด)</label><input type="text" id="f-latlng" placeholder="ตัวอย่าง: 20.030, 99.285" class="w-full border border-slate-300 rounded-lg p-2 focus:ring-2 focus:ring-rose-500" /></div>
                                     
-                                    <div class="col-span-2 mt-2 border-t pt-4"><label class="block text-sm font-bold text-slate-600 mb-1">สถานที่เรียน/ทำงาน (ถ้ามี)</label><input type="text" id="f-workplace" class="w-full border border-slate-300 rounded-lg p-2 focus:ring-2 focus:ring-sky-500" /></div>
+                                    <div class="col-span-2 mt-2 border-t pt-4"><label class="block text-sm font-bold text-slate-600 mb-1">สถานที่เรียน/ทำงาน (ถ้ามี)</label><input type="text" id="f-workplace" class="w-full border border-slate-300 rounded-lg p-2 focus:ring-2 focus:ring-rose-500" /></div>
                                     <div class="col-span-2"><label class="block text-sm font-bold text-slate-600 mb-1">หมู่ที่เรียน/ที่ทำงาน</label>
-                                        <select id="f-workplaceMoo" class="w-full border border-slate-300 rounded-lg p-2 focus:ring-2 focus:ring-sky-500 bg-white">
+                                        <select id="f-workplaceMoo" class="w-full border border-slate-300 rounded-lg p-2 focus:ring-2 focus:ring-rose-500 bg-white">
                                             <option value="">- เลือกหมู่ -</option>
                                             <script>for(let i=1; i<=18; i++) document.write(`<option value="${i}">${i}</option>`);</script>
                                         </select>
@@ -440,7 +439,7 @@
                     </div>
 
                     <div class="mt-8 pt-6 border-t flex justify-end items-center">
-                        <button type="submit" id="btn-save" class="bg-sky-600 hover:bg-sky-700 text-white font-bold py-3 px-8 rounded-lg shadow-md transition-all text-lg">
+                        <button type="submit" id="btn-save" class="bg-rose-600 hover:bg-rose-700 text-white font-bold py-3 px-8 rounded-lg shadow-md transition-all text-lg">
                             <i class="fa-solid fa-save mr-2"></i> บันทึกข้อมูล
                         </button>
                     </div>
@@ -455,12 +454,12 @@
                 <div class="bg-white p-4 rounded-2xl shadow-sm border border-slate-200 flex flex-col xl:flex-row justify-between items-center gap-4">
                     <div class="relative w-full xl:w-96">
                         <i class="fa-solid fa-magnifying-glass absolute left-3 top-1/2 transform -translate-y-1/2 text-slate-400"></i>
-                        <input type="text" id="searchInput" onkeyup="renderTable()" placeholder="ค้นหา ชื่อ, HN, ตำบล..." class="w-full pl-10 pr-4 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-sky-500 font-medium" />
+                        <input type="text" id="searchInput" onkeyup="renderTable()" placeholder="ค้นหา ชื่อ, HN, ตำบล, หมู่บ้าน..." class="w-full pl-10 pr-4 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-rose-500 font-medium" />
                     </div>
                     
                     <div class="flex flex-wrap gap-2 justify-center">
                         <button onclick="downloadTemplate()" class="px-4 py-2 bg-slate-100 border border-slate-200 text-slate-700 hover:bg-slate-200 rounded-lg flex items-center font-bold transition-colors text-sm">
-                            <i class="fa-solid fa-download mr-2 text-sky-600"></i> โหลดไฟล์ตัวอย่าง
+                            <i class="fa-solid fa-download mr-2 text-rose-600"></i> โหลดไฟล์ตัวอย่าง
                         </button>
                         
                         <input type="file" id="importFile" accept=".xlsx, .xls" class="hidden" onchange="importExcel(event)" onclick="this.value=null;" />
@@ -468,7 +467,7 @@
                             <i class="fa-solid fa-file-import mr-2"></i> นำเข้า Excel
                         </button>
                         
-                        <button onclick="exportExcel()" class="px-4 py-2 bg-sky-600 text-white hover:bg-sky-700 rounded-lg flex items-center font-bold transition-colors text-sm shadow-sm">
+                        <button onclick="exportExcel()" class="px-4 py-2 bg-rose-600 text-white hover:bg-rose-700 rounded-lg flex items-center font-bold transition-colors text-sm shadow-sm">
                             <i class="fa-solid fa-file-export mr-2"></i> ส่งออก Excel
                         </button>
                     </div>
@@ -478,13 +477,13 @@
                 <div class="bg-white rounded-2xl shadow-sm border border-slate-200 overflow-hidden">
                     <div class="overflow-x-auto">
                         <table class="w-full text-left text-sm text-slate-600">
-                            <thead class="bg-sky-50 text-sky-800 font-bold border-b border-sky-200">
+                            <thead class="bg-rose-50 text-rose-800 font-bold border-b border-rose-200">
                                 <tr>
                                     <th class="p-3">ลำดับ</th>
                                     <th class="p-3 whitespace-nowrap">ชื่อ-สกุล</th>
                                     <th class="p-3">HN</th>
                                     <th class="p-3 whitespace-nowrap">อายุ/เพศ</th>
-                                    <th class="p-3 whitespace-nowrap">วันที่ป่วย</th>
+                                    <th class="p-3 whitespace-nowrap">วันที่เข้ารับการรักษา</th>
                                     <th class="p-3 whitespace-nowrap">ที่อยู่</th>
                                     <th class="p-3 whitespace-nowrap">หน่วยบริการ</th>
                                     <th class="p-3">DX</th>
@@ -520,7 +519,7 @@
     </div>
 
     <script>
-        // URL Google Apps Script 
+        // URL Google Apps Script ที่อัปเดตใหม่สุด
         const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbxy0TsodTv5jvD-lOZTjN1JvGC0AeJUiaUYrJMm7xIt0g0BSIykPbPHTbqPP2bGbBmOCA/exec';
         const storageKey = 'dengue_patients_data_maeai_v169'; 
         
@@ -546,9 +545,10 @@
 
         const getCleanDX = (raw) => {
             let d = (raw || '').toString().toUpperCase().trim();
-            if(d === 'DSS' || d === 'R/O DF' || d === 'R/O') return 'DSS';
-            if(d === 'DF') return 'DF';
-            if(d === 'DHF') return 'DHF';
+            // จัดการ DX เป็น DF, DHF, DSS, อื่นๆ
+            if(d.includes('R/O DF') || d === 'R/O' || d === 'DSS') return 'DSS';
+            if(d.includes('DHF')) return 'DHF';
+            if(d.includes('DF')) return 'DF';
             return 'อื่นๆ';
         };
 
@@ -568,6 +568,7 @@
         function checkLogin(e) {
             e.preventDefault();
             const pwd = document.getElementById('login-password').value;
+            // รหัสผ่านใหม่ 11126
             if(pwd === '11126') {
                 sessionStorage.setItem('isLoggedIn', 'true');
                 document.getElementById('login-screen').classList.add('hidden');
@@ -590,7 +591,7 @@
                         id: parseInt(p.id) || 0, fullName: p.fullName || '', hn: p.hn || '',
                         age: parseInt(p.age) || 0, gender: getCleanGender(p.gender), addressNo: p.addressNo || '',
                         moo: p.moo || '', villageName: p.villageName || '', subdistrict: p.subdistrict || 'แม่อาย', serviceUnit: p.serviceUnit || 'รพ.แม่อาย',
-                        lat: parseFloat(p.lat) || '', lng: parseFloat(p.lng) || '',
+                        latlng: p.latlng || '', 
                         onsetDate: p.onsetDate ? p.onsetDate.split('T')[0] : '', 
                         foundDate: p.foundDate ? p.foundDate.split('T')[0] : '', 
                         dx: getCleanDX(p.dx), workplace: p.workplace || '', workplaceMoo: p.workplaceMoo || ''
@@ -646,13 +647,13 @@
             document.getElementById(`tab-${tabId}`).classList.add('active');
             
             document.querySelectorAll('.tab-btn').forEach(el => {
-                el.classList.remove('bg-sky-800', 'border-b-4', 'border-white', 'text-white');
-                el.classList.add('hover:bg-sky-700', 'text-sky-100');
+                el.classList.remove('bg-rose-700', 'border-b-4', 'border-white', 'text-white');
+                el.classList.add('hover:bg-rose-600', 'text-rose-50');
             });
             const activeBtn = document.getElementById(`btn-${tabId}`);
             if(activeBtn) {
-                activeBtn.classList.remove('hover:bg-sky-700', 'text-sky-100');
-                activeBtn.classList.add('bg-sky-800', 'border-b-4', 'border-white', 'text-white');
+                activeBtn.classList.remove('hover:bg-rose-600', 'text-rose-50');
+                activeBtn.classList.add('bg-rose-700', 'border-b-4', 'border-white', 'text-white');
             }
 
             if(tabId === 'dashboard') renderDashboard();
@@ -696,14 +697,16 @@
             document.getElementById('stat-female').innerText = female;
             document.getElementById('stat-female-percent').innerText = `(${total > 0 ? Math.round((female / total) * 100) : 0}%)`;
 
+            // พื้นที่พบผู้ป่วยสูงสุด (จัดเรียงทั้งหมด)
             const areaCounts = {};
             filteredPatients.forEach(p => { if(p.subdistrict) areaCounts[p.subdistrict] = (areaCounts[p.subdistrict] || 0) + 1; });
             const sortedAreas = Object.entries(areaCounts).sort((a,b) => b[1] - a[1]);
-            let areaHtml = '';
+            let areaHtml = '<div class="max-h-36 overflow-y-auto custom-scrollbar pr-2 space-y-1.5">';
             sortedAreas.forEach((area, index) => {
                 areaHtml += `<div class="flex justify-between border-b border-white/20 pb-1 last:border-0 last:pb-0"><span>${index+1}. ต.${area[0]}</span> <span>${area[1]} ราย</span></div>`;
             });
-            document.getElementById('stat-top-areas-list').innerHTML = areaHtml || '- ไม่มีข้อมูล -';
+            areaHtml += '</div>';
+            document.getElementById('stat-top-areas-list').innerHTML = sortedAreas.length > 0 ? areaHtml : '- ไม่มีข้อมูล -';
 
             renderAgeChart(filteredPatients); 
             renderDXChart(filteredPatients); 
@@ -722,9 +725,9 @@
             if(barChartAge) barChartAge.destroy();
             barChartAge = new Chart(document.getElementById('barChartAge'), {
                 type: 'bar',
-                data: { labels: ageGroups.map(g => `${g} ปี`), datasets: [{ label: 'จำนวน (ราย)', data: counts, backgroundColor: '#0ea5e9', borderRadius: 4 }] },
+                data: { labels: ageGroups.map(g => `${g} ปี`), datasets: [{ label: 'จำนวน (ราย)', data: counts, backgroundColor: '#f43f5e', borderRadius: 4 }] },
                 options: { responsive: true, maintainAspectRatio: false, scales: { y: { beginAtZero: true, ticks: { stepSize: 1, precision: 0 } } },
-                    plugins: { datalabels: { display: true, anchor: 'end', align: 'top', font: { weight: 'bold' }, color: '#0369a1', formatter: (value) => {
+                    plugins: { datalabels: { display: true, anchor: 'end', align: 'top', font: { weight: 'bold' }, color: '#9f1239', formatter: (value) => {
                                 if(value === 0) return '';
                                 let total = dataToRender.length; let pct = total > 0 ? (value * 100 / total).toFixed(1) + '%' : '';
                                 return [`${value}`, `(${pct})`];
@@ -767,7 +770,7 @@
                 type: 'bar',
                 data: { 
                     labels: sortedData.map(d => d.unit), 
-                    datasets: [{ label: 'จำนวนผู้ป่วย (ราย)', data: sortedData.map(d => d.count), backgroundColor: '#8b5cf6', borderRadius: 4 }] 
+                    datasets: [{ label: 'จำนวนผู้ป่วย (ราย)', data: sortedData.map(d => d.count), backgroundColor: '#fb7185', borderRadius: 4 }] 
                 },
                 options: { 
                     responsive: true, maintainAspectRatio: false, indexAxis: 'y',
@@ -775,7 +778,7 @@
                     scales: { x: { beginAtZero: true, ticks: { stepSize: 1 }, grace: '10%' } },
                     plugins: { 
                         datalabels: { 
-                            display: true, anchor: 'end', align: 'right', font: { weight: 'bold' }, color: '#4c1d95', clip: false,
+                            display: true, anchor: 'end', align: 'right', font: { weight: 'bold' }, color: '#881337', clip: false,
                             formatter: (value) => {
                                 if (value === 0) return '';
                                 let pct = totalValid > 0 ? Math.round((value / totalValid) * 100) : 0;
@@ -821,7 +824,7 @@
             const villageMap = {}; let totalValidCases = 0;
             filteredPatients.forEach(p => {
                 const key = `${p.subdistrict}_${p.moo}`;
-                if(!villageMap[key]) villageMap[key] = { subdistrict: p.subdistrict, moo: p.moo, cases: [], total: 0 };
+                if(!villageMap[key]) villageMap[key] = { subdistrict: p.subdistrict, moo: p.moo, villageName: p.villageName || '', cases: [], total: 0 };
                 villageMap[key].cases.push(p); villageMap[key].total++; totalValidCases++;
             });
 
@@ -838,7 +841,8 @@
                     else if (st.level === 'green' && maxRank < 2) { finalLevel = 'green'; maxRank = 2; }
                 });
                 if(maxRank === 4) finalLevel = recent14Days > 2 ? 'red' : 'orange';
-                const displayStr = `<i class="fa-solid fa-location-dot mr-1 text-slate-400"></i> ต.${v.subdistrict} หมู่ ${v.moo} <span class="text-xs text-slate-400 ml-1">(${v.total} ราย)</span>`;
+                const vNameDisplay = v.villageName ? ` ${v.villageName}` : '';
+                const displayStr = `<i class="fa-solid fa-location-dot mr-1 text-slate-400"></i> ต.${v.subdistrict} หมู่ ${v.moo}${vNameDisplay} <span class="text-xs text-slate-400 ml-1">(${v.total} ราย)</span>`;
                 statusSummary[finalLevel].push(displayStr);
                 finalVillageStatus[`${v.subdistrict}_${v.moo}`] = { level: finalLevel, total: v.total };
             });
@@ -857,7 +861,7 @@
 
             const subdistrictsToRender = fSubdist === 'all' ? SUBDISTRICTS : [fSubdist];
             subdistrictsToRender.forEach(sd => {
-                let rowHtml = `<tr><td class="py-2 px-4 text-left border-r border-slate-200 bg-slate-50 sticky left-0 z-10 font-bold text-sky-800">${sd}</td>`;
+                let rowHtml = `<tr><td class="py-2 px-4 text-left border-r border-slate-200 bg-slate-50 sticky left-0 z-10 font-bold text-rose-800">${sd}</td>`;
                 for(let i=1; i<=18; i++) {
                     const stat = finalVillageStatus[`${sd}_${i}`];
                     rowHtml += `<td class="py-1 px-1 border-b border-slate-50">${stat ? getIcon(stat.level, stat.total) : getIcon(null)}</td>`;
@@ -898,7 +902,7 @@
                 if (monthsMap[month][p.subdistrict] !== undefined) monthsMap[month][p.subdistrict]++;
             });
             const sortedMonths = Object.keys(monthsMap).sort();
-            const colors = ['#ef4444', '#f97316', '#3b82f6', '#10b981', '#8b5cf6', '#ec4899', '#06b6d4'];
+            const colors = ['#e11d48', '#f97316', '#3b82f6', '#10b981', '#8b5cf6', '#ec4899', '#06b6d4'];
             const datasets = SUBDISTRICTS.map((sd, index) => {
                 return { label: sd, data: sortedMonths.map(m => monthsMap[m][sd]), borderColor: colors[index], backgroundColor: colors[index], tension: 0.3, fill: false, borderWidth: 3, pointRadius: 4 };
             });
@@ -951,27 +955,35 @@
             const heatData = [];
             
             patients.forEach(p => {
-                if(!p.lat || !p.lng || !p.subdistrict || !p.moo) return;
+                if(!p.latlng || !p.subdistrict || !p.moo) return;
                 if(filterSd !== 'all' && p.subdistrict !== filterSd) return;
                 if(filterYear !== 'all' && p.onsetDate && !p.onsetDate.startsWith(filterYear)) return;
                 if(filterMonth !== 'all' && p.onsetDate) {
                     const pMonth = p.onsetDate.split('-')[1]; // YYYY-MM
                     if(pMonth !== filterMonth) return;
                 }
-                // --- อัปเดต: จุดปักสำหรับแต่ละบุคคลแยกกัน บนแผนที่ Heatmap ---
-                heatData.push([p.lat, p.lng, 1]); // ให้รัศมีความร้อน
                 
-                const heatDot = L.circleMarker([p.lat, p.lng], {
-                    radius: 6, color: '#fff', weight: 1.5, fillColor: '#0ea5e9', fillOpacity: 0.9
+                // ดึงพิกัดจากข้อความช่องเดียว
+                const latlngStr = String(p.latlng).trim();
+                const parts = latlngStr.split(',');
+                if(parts.length < 2) return;
+                const lat = parseFloat(parts[0].trim());
+                const lng = parseFloat(parts[1].trim());
+                if(isNaN(lat) || isNaN(lng)) return;
+
+                heatData.push([lat, lng, 1]); // ให้รัศมีความร้อน
+                
+                const heatDot = L.circleMarker([lat, lng], {
+                    radius: 6, color: '#fff', weight: 1.5, fillColor: '#e11d48', fillOpacity: 0.9
                 });
                 
-                // --- อัปเดต: เปลี่ยนจาก Tooltip เป็น Popup เพื่อให้เลื่อนเมาส์ไปคลิก/Scroll ได้ ---
+                const vNameDisplay = p.villageName ? ` (${p.villageName})` : '';
                 const dotPopupHtml = `
                     <div class="font-sans text-left min-w-[180px]">
-                        <h4 class="font-bold text-sky-700 border-b pb-1 mb-2">${p.fullName || 'ไม่ระบุชื่อ'}</h4>
+                        <h4 class="font-bold text-rose-700 border-b pb-1 mb-2">${p.fullName || 'ไม่ระบุชื่อ'}</h4>
                         <div class="text-xs text-slate-600 leading-relaxed">
                             <span class="text-red-500 font-bold">DX: ${p.dx || '-'}</span><br>
-                            บ้านเลขที่: ${p.addressNo || '-'} หมู่: ${p.moo || '-'}<br>
+                            บ้านเลขที่: ${p.addressNo || '-'} หมู่: ${p.moo || '-'}${vNameDisplay}<br>
                             ตำบล: ${p.subdistrict || '-'}<br>
                             วันที่เริ่มป่วย: ${p.onsetDate || '-'}<br>
                             วันที่เข้ารับการรักษา: ${p.foundDate || '-'}
@@ -984,7 +996,7 @@
 
                 // สำหรับ Pin Map (ตัวบน จัดกลุ่มตามหมู่บ้าน)
                 const key = `${p.subdistrict}_${p.moo}`;
-                if(!villageMap[key]) villageMap[key] = { lat: p.lat, lng: p.lng, subdistrict: p.subdistrict, moo: p.moo, cases: [], latestOnset: null };
+                if(!villageMap[key]) villageMap[key] = { lat: lat, lng: lng, subdistrict: p.subdistrict, moo: p.moo, villageName: p.villageName || '', cases: [], latestOnset: null };
                 villageMap[key].cases.push(p);
                 if(!villageMap[key].latestOnset || new Date(p.onsetDate) > new Date(villageMap[key].latestOnset)) villageMap[key].latestOnset = p.onsetDate;
             });
@@ -1000,16 +1012,16 @@
                 const icon = L.divIcon({ className: 'custom-div-icon', html: `<div class="pin-marker ${pinClass}">${v.cases.length}</div>`, iconSize: [30, 40], iconAnchor: [15, 40], popupAnchor: [0, -35] });
                 const marker = L.marker([v.lat, v.lng], { icon: icon });
                 
-                // --- อัปเดต: เปลี่ยนเป็น Popup เพื่อให้เลื่อนเมาส์เข้าไป Scroll ได้อย่างอิสระ ---
                 let casesListHtml = v.cases.map(c => `
                     <div class="border-b border-slate-200 pb-2 mb-2 last:border-0 last:pb-0 last:mb-0">
                         • <b class="text-slate-800">${c.fullName}</b> <span class="text-xs text-red-500 font-bold ml-1">(${c.dx})</span><br>
-                        <span class="pl-2 text-slate-500">บ.เลขที่: ${c.addressNo || '-'} | เข้ารับการรักษา: ${c.foundDate || '-'}</span>
+                        <span class="pl-2 text-slate-500">บ.เลขที่: ${c.addressNo || '-'} | เข้ารักษา: ${c.foundDate || '-'}</span>
                     </div>`).join('');
-                    
+                
+                const vNameDisplay = v.villageName ? ` ${v.villageName}` : '';
                 const popupHtml = `
                     <div class="font-sans text-left min-w-[220px]">
-                        <h4 class="font-bold text-sky-700 border-b pb-1 mb-2">หมู่ ${v.moo} ต.${v.subdistrict} <span class="text-xs text-slate-500 block">ผู้ป่วยตามเงื่อนไข: ${v.cases.length} ราย</span></h4>
+                        <h4 class="font-bold text-rose-700 border-b pb-1 mb-2">หมู่ ${v.moo} ต.${v.subdistrict}${vNameDisplay} <span class="text-xs text-slate-500 block">ผู้ป่วยตามเงื่อนไข: ${v.cases.length} ราย</span></h4>
                         <div class="text-xs text-slate-600 max-h-[160px] overflow-y-auto leading-relaxed pr-2 custom-scrollbar">
                             ${casesListHtml}
                         </div>
@@ -1029,8 +1041,14 @@
             }
         }
 
-        function viewOnMap(lat, lng, name, addressNo, moo, subdistrict) {
-            if(!lat || !lng) { alert('ผู้ป่วยรายนี้ไม่มีข้อมูลพิกัด'); return; }
+        function viewOnMap(latlngStr, name, addressNo, moo, subdistrict, villageName) {
+            if(!latlngStr) { alert('ผู้ป่วยรายนี้ไม่มีข้อมูลพิกัด'); return; }
+            const parts = String(latlngStr).split(',');
+            if(parts.length < 2) { alert('รูปแบบข้อมูลพิกัดไม่ถูกต้อง'); return; }
+            const lat = parseFloat(parts[0].trim());
+            const lng = parseFloat(parts[1].trim());
+            if(isNaN(lat) || isNaN(lng)) { alert('รูปแบบข้อมูลพิกัดไม่ถูกต้อง'); return; }
+
             switchTab('situation-map');
             
             // ยกเลิกฟิลเตอร์เพื่อให้เห็นหมุดทุกคนในแผนที่
@@ -1045,10 +1063,11 @@
 
                 const icon = L.divIcon({ className: 'custom-div-icon', html: `<div class="pin-marker pin-red"><i class="fa-solid fa-user"></i></div>`, iconSize: [30, 40], iconAnchor: [15, 40], popupAnchor: [0, -35] });
                 activeSearchMarker = L.marker([lat, lng], {icon: icon}).addTo(bigMapInst);
+                const vNameDisplay = villageName ? ` (${villageName})` : '';
                 activeSearchMarker.bindPopup(`
                     <div class="text-center font-sans p-2 min-w-[150px]">
-                        <b class="text-sky-700 text-lg">${name}</b><br>
-                        <span class="text-sm">บ้านเลขที่: ${addressNo || '-'}, หมู่ ${moo || '-'} ต.${subdistrict || '-'}</span><br>
+                        <b class="text-rose-700 text-lg">${name}</b><br>
+                        <span class="text-sm">บ้านเลขที่: ${addressNo || '-'}, หมู่ ${moo || '-'}${vNameDisplay} ต.${subdistrict || '-'}</span><br>
                         <span class="text-xs text-slate-500">(พิกัดผู้ป่วยรายบุคคลที่เลือก)</span>
                     </div>
                 `).openPopup();
@@ -1059,16 +1078,6 @@
         function saveData(e) {
             e.preventDefault();
             const editId = document.getElementById('editing-id').value;
-            const latlngInput = document.getElementById('f-latlng').value;
-            let parsedLat = ''; let parsedLng = '';
-            if (latlngInput) {
-                const parts = latlngInput.split(',');
-                if (parts.length >= 2) { parsedLat = Number(parts[0].trim()); parsedLng = Number(parts[1].trim()); } 
-                else if (parts.length === 1 && parts[0].trim() !== '') {
-                    const spaceParts = parts[0].trim().split(/\s+/);
-                    if (spaceParts.length >= 2) { parsedLat = Number(spaceParts[0]); parsedLng = Number(spaceParts[1]); }
-                }
-            }
 
             const patientData = {
                 fullName: document.getElementById('f-fullName').value, hn: document.getElementById('f-hn').value,
@@ -1076,7 +1085,7 @@
                 addressNo: document.getElementById('f-addressNo').value, moo: document.getElementById('f-moo').value,
                 villageName: document.getElementById('f-villageName').value,
                 subdistrict: document.getElementById('f-subdistrict').value, serviceUnit: document.getElementById('f-serviceUnit').value,
-                lat: parsedLat, lng: parsedLng,
+                latlng: document.getElementById('f-latlng').value.trim(),
                 onsetDate: document.getElementById('f-onsetDate').value, foundDate: document.getElementById('f-foundDate').value,
                 dx: document.getElementById('f-dx').value, workplace: document.getElementById('f-workplace').value, workplaceMoo: document.getElementById('f-workplaceMoo').value
             };
@@ -1112,13 +1121,12 @@
         function editRecord(id) {
             const patient = patients.find(p => p.id === id); if(!patient) return;
             document.getElementById('editing-id').value = patient.id; document.getElementById('f-id').value = patient.id;
-            const fields = ['fullName', 'hn', 'age', 'gender', 'addressNo', 'moo', 'villageName', 'subdistrict', 'serviceUnit', 'onsetDate', 'foundDate', 'dx', 'workplace', 'workplaceMoo'];
+            const fields = ['fullName', 'hn', 'age', 'gender', 'addressNo', 'moo', 'villageName', 'subdistrict', 'serviceUnit', 'latlng', 'onsetDate', 'foundDate', 'dx', 'workplace', 'workplaceMoo'];
             fields.forEach(f => { if(document.getElementById(`f-${f}`)) document.getElementById(`f-${f}`).value = patient[f] !== undefined ? patient[f] : ''; });
-            if (patient.lat && patient.lng) { document.getElementById('f-latlng').value = `${patient.lat}, ${patient.lng}`; } else { document.getElementById('f-latlng').value = ''; }
 
             document.getElementById('form-title').innerHTML = '<i class="fa-solid fa-pen mr-2"></i> แก้ไขข้อมูลผู้ป่วย';
             document.getElementById('btn-save').innerHTML = '<i class="fa-solid fa-check mr-2"></i> อัปเดตข้อมูล';
-            document.getElementById('btn-save').classList.replace('bg-sky-600', 'bg-orange-500'); document.getElementById('btn-save').classList.replace('hover:bg-sky-700', 'hover:bg-orange-600');
+            document.getElementById('btn-save').classList.replace('bg-rose-600', 'bg-orange-500'); document.getElementById('btn-save').classList.replace('hover:bg-rose-700', 'hover:bg-orange-600');
             document.getElementById('btn-cancel-edit').classList.remove('hidden'); switchTab('entry'); window.scrollTo(0,0);
         }
 
@@ -1127,7 +1135,7 @@
             const nextId = patients.length > 0 ? Math.max(...patients.map(p => p.id)) + 1 : 1; document.getElementById('f-id').value = nextId;
             document.getElementById('form-title').innerHTML = '<i class="fa-solid fa-file-circle-plus mr-2"></i> บันทึกข้อมูลผู้ป่วยรายใหม่';
             document.getElementById('btn-save').innerHTML = '<i class="fa-solid fa-save mr-2"></i> บันทึกข้อมูล';
-            document.getElementById('btn-save').classList.replace('bg-orange-500', 'bg-sky-600'); document.getElementById('btn-save').classList.replace('hover:bg-orange-600', 'hover:bg-sky-700');
+            document.getElementById('btn-save').classList.replace('bg-orange-500', 'bg-rose-600'); document.getElementById('btn-save').classList.replace('hover:bg-orange-600', 'hover:bg-rose-700');
             document.getElementById('btn-cancel-edit').classList.add('hidden');
         }
 
@@ -1174,24 +1182,26 @@
             const filtered = patients.filter(p => 
                 (p.fullName && String(p.fullName).toLowerCase().includes(term)) || 
                 (p.hn && String(p.hn).toLowerCase().includes(term)) || 
-                (p.subdistrict && String(p.subdistrict).toLowerCase().includes(term))
+                (p.subdistrict && String(p.subdistrict).toLowerCase().includes(term)) ||
+                (p.villageName && String(p.villageName).toLowerCase().includes(term))
             ).sort((a, b) => a.id - b.id);
             
             if(filtered.length === 0) { tbody.innerHTML = `<tr><td colSpan="9" class="p-8 text-center text-slate-400"><i class="fa-solid fa-circle-exclamation text-3xl mb-2 opacity-50 block"></i>ไม่พบข้อมูลผู้ป่วย</td></tr>`; return; }
 
             filtered.forEach(p => {
                 const tr = document.createElement('tr'); tr.className = "border-b border-slate-50 hover:bg-slate-50 transition-colors";
+                const vNameDisplay = p.villageName ? ` (${p.villageName})` : '';
                 tr.innerHTML = `
                     <td class="p-3 font-medium text-slate-900">${p.id}</td>
                     <td class="p-3 whitespace-nowrap">${p.fullName || ''}</td>
                     <td class="p-3">${p.hn || '-'}</td>
                     <td class="p-3 whitespace-nowrap">${p.age || '-'} ปี / ${p.gender || '-'}</td>
-                    <td class="p-3 whitespace-nowrap">${p.onsetDate || '-'}</td>
-                    <td class="p-3 whitespace-nowrap">ม.${p.moo || '-'} ${p.villageName ? p.villageName + ' ' : ''}ต.${p.subdistrict || ''}</td>
+                    <td class="p-3 whitespace-nowrap">${p.foundDate || '-'}</td>
+                    <td class="p-3 whitespace-nowrap">ม.${p.moo || '-'}${vNameDisplay} ต.${p.subdistrict || ''}</td>
                     <td class="p-3 whitespace-nowrap">${p.serviceUnit || '-'}</td>
                     <td class="p-3"><span class="px-2 py-1 rounded text-xs font-bold ${String(p.dx || '').includes('DHF') ? 'bg-red-100 text-red-700' : 'bg-amber-100 text-amber-700'}">${p.dx || ''}</span></td>
                     <td class="p-3 text-center whitespace-nowrap">
-                        <button onclick="viewOnMap(${p.lat ? `'${p.lat}'` : null}, ${p.lng ? `'${p.lng}'` : null}, '${p.fullName || ''}', '${p.addressNo || ''}', '${p.moo || ''}', '${p.subdistrict || ''}')" class="p-2 text-sky-500 hover:text-sky-700 hover:bg-sky-50 rounded transition-colors mr-1" title="ดูในแผนที่"><i class="fa-solid fa-location-dot text-lg"></i></button>
+                        <button onclick="viewOnMap('${p.latlng || ''}', '${p.fullName || ''}', '${p.addressNo || ''}', '${p.moo || ''}', '${p.subdistrict || ''}', '${p.villageName || ''}')" class="p-2 text-rose-500 hover:text-rose-700 hover:bg-rose-50 rounded transition-colors mr-1" title="ดูในแผนที่"><i class="fa-solid fa-location-dot text-lg"></i></button>
                         <button onclick="editRecord(${p.id})" class="p-2 text-orange-500 hover:text-orange-700 hover:bg-orange-50 rounded transition-colors mr-1" title="แก้ไขข้อมูล"><i class="fa-solid fa-pen-to-square text-lg"></i></button>
                         <button onclick="confirmDelete(${p.id})" class="p-2 text-red-500 hover:text-red-700 hover:bg-red-50 rounded transition-colors" title="ลบข้อมูล"><i class="fa-solid fa-trash-can text-lg"></i></button>
                     </td>`;
@@ -1199,11 +1209,10 @@
             });
         }
 
-        // --- ตรงกับ A ถึง O ทุกประการตามที่ตกลง ---
         function downloadTemplate() {
             const templateData = [{
                 "ลำดับ": 1, "ชื่อ-สกุล": "ตัวอย่าง ใจดี", "HN": "1234/67", "อายุ": 20, "เพศ": "ชาย", 
-                "บ้านเลขที่": "123", "หมู่": 1, "ชื่อหมู่บ้าน": "บ้านมะลิกา", "ตำบล": "แม่อาย", "หน่วยบริการ": "รพ.แม่อาย", 
+                "บ้านเลขที่": "123", "หมู่": 1, "ชื่อหมู่บ้าน": "บ้านตัวอย่าง", "ตำบล": "แม่อาย", "หน่วยบริการ": "รพ.แม่อาย", 
                 "Lat, Long": "20.030, 99.285", "วันที่เริ่มป่วย": "2026-05-01", "วันที่เข้ารับการรักษา": "2026-05-02", 
                 "DX": "DF", "สถานที่เรียน/ทำงาน": "โรงเรียน", "หมู่ที่เรียน/ที่ทำงาน": 2 
             }];
@@ -1214,36 +1223,13 @@
             if(patients.length === 0) return alert("ไม่มีข้อมูลให้ Export");
             const exportData = patients.map(p => ({ 
                 "ลำดับ": p.id, "ชื่อ-สกุล": p.fullName, "HN": p.hn, "อายุ": p.age, "เพศ": p.gender, 
-                "บ้านเลขที่": p.addressNo, "หมู่": p.moo, "ชื่อหมู่บ้าน": p.villageName || "", "ตำบล": p.subdistrict, "หน่วยบริการ": p.serviceUnit, 
-                "Lat, Long": (p.lat && p.lng) ? `${p.lat}, ${p.lng}` : "", 
+                "บ้านเลขที่": p.addressNo, "หมู่": p.moo, "ชื่อหมู่บ้าน": p.villageName, "ตำบล": p.subdistrict, "หน่วยบริการ": p.serviceUnit, 
+                "Lat, Long": p.latlng !== undefined ? p.latlng : "", 
                 "วันที่เริ่มป่วย": p.onsetDate, "วันที่เข้ารับการรักษา": p.foundDate, "DX": p.dx, 
                 "สถานที่เรียน/ทำงาน": p.workplace, "หมู่ที่เรียน/ที่ทำงาน": p.workplaceMoo 
             }));
             const worksheet = XLSX.utils.json_to_sheet(exportData); const workbook = XLSX.utils.book_new(); XLSX.utils.book_append_sheet(workbook, worksheet, "Dengue Patients");
             const d = new Date(); const dateStr = `${d.getFullYear()}${String(d.getMonth()+1).padStart(2,'0')}${String(d.getDate()).padStart(2,'0')}`; XLSX.writeFile(workbook, `dengue_data_maeai_${dateStr}.xlsx`);
-        }
-
-        function exportMatrixExcel() {
-            const fYear = document.getElementById('statFilterYear').value; const fDate = document.getElementById('statFilterDate').value;
-            const fWeek = document.getElementById('statFilterWeek').value; const fSubdist = document.getElementById('statFilterSubdistrict').value;
-            let filteredPatients = patients.filter(p => {
-                if(!p.subdistrict || !p.moo || !p.onsetDate) return false;
-                if(fSubdist !== 'all' && p.subdistrict !== fSubdist) return false;
-                if(fDate && p.onsetDate !== fDate) return false;
-                if(fYear !== 'all' && p.onsetDate && !p.onsetDate.startsWith(fYear) && !fDate && !fWeek) return false;
-                return true;
-            });
-            const villageMap = {};
-            filteredPatients.forEach(p => { const key = `${p.subdistrict}_${p.moo}`; if(!villageMap[key]) villageMap[key] = 0; villageMap[key]++; });
-            const exportData = []; const subdistrictsToRender = fSubdist === 'all' ? SUBDISTRICTS : [fSubdist];
-            subdistrictsToRender.forEach(sd => {
-                const row = { "ตำบล": sd };
-                for(let i=1; i<=18; i++) row[`หมู่ ${i}`] = villageMap[`${sd}_${i}`] || 0;
-                exportData.push(row);
-            });
-            const worksheet = XLSX.utils.json_to_sheet(exportData); const workbook = XLSX.utils.book_new();
-            XLSX.utils.book_append_sheet(workbook, worksheet, "สรุปรายหมู่บ้าน");
-            XLSX.writeFile(workbook, `ตารางสรุปรายหมู่บ้าน_${fYear !== 'all' ? `ปี${parseInt(fYear)+543}` : "ทุกปี"}.xlsx`);
         }
 
         function importExcel(event) {
@@ -1264,25 +1250,16 @@
                             return excelDate.toString();
                         };
 
-                        let parsedLat = ''; let parsedLng = ''; 
-                        let combinedLatLng = r['Lat, Long'] || r['Lat,long'] || r['lat,long'] || r['Lat,lomg'] || r['lat,lomg'] || r['พิกัด'] || '';
-                        if (!combinedLatLng && typeof r['Lat'] === 'string' && r['Lat'].includes(',')) combinedLatLng = r['Lat'];
-                        if (combinedLatLng) {
-                            const parts = combinedLatLng.toString().split(',');
-                            if (parts.length >= 2) { parsedLat = Number(parts[0].trim()); parsedLng = Number(parts[1].trim()); } 
-                            else { const spaceParts = combinedLatLng.toString().trim().split(/\s+/); if (spaceParts.length >= 2) { parsedLat = Number(spaceParts[0]); parsedLng = Number(spaceParts[1]); } }
-                        } else { 
-                            parsedLat = r['Lat'] ? Number(r['Lat']) : ''; 
-                            parsedLng = r['Long'] ? Number(r['Long']) : ''; 
-                        }
+                        let combinedLatLng = r['Lat, Long'] || r['Lat,long'] || r['พิกัด'] || '';
 
                         let wpMoo = r['หมู่ที่เรียน/ที่ทำงาน'] || r['หมู่ที่เรียน/ทำงาน'] || r['หมู่ที่เรียน'] || '';
+                        let fDate = parseExcelDate(r['วันที่เข้ารับการรักษา'] || r['วันที่พบผู้ป่วย']);
 
                         patients.push({
                             id: r['ลำดับ'] ? parseInt(r['ลำดับ']) : nextId++, fullName: r['ชื่อ-สกุล'].toString().trim(), hn: r['HN'] ? r['HN'].toString() : '',
                             age: r['อายุ'] ? Number(r['อายุ']) : '', gender: getCleanGender(r['เพศ']), addressNo: r['บ้านเลขที่'] ? r['บ้านเลขที่'].toString() : '',
                             moo: r['หมู่'] ? r['หมู่'].toString() : '', villageName: r['ชื่อหมู่บ้าน'] ? r['ชื่อหมู่บ้าน'].toString() : '', subdistrict: r['ตำบล'] ? r['ตำบล'].toString() : 'แม่อาย', serviceUnit: r['หน่วยบริการ'] ? r['หน่วยบริการ'].toString() : 'รพ.แม่อาย', 
-                            lat: parsedLat, lng: parsedLng, onsetDate: parseExcelDate(r['วันที่เริ่มป่วย']), foundDate: parseExcelDate(r['วันที่เข้ารับการรักษา'] || r['วันที่พบผู้ป่วย']), dx: getCleanDX(r['DX']),
+                            latlng: combinedLatLng.toString(), onsetDate: parseExcelDate(r['วันที่เริ่มป่วย']), foundDate: fDate, dx: getCleanDX(r['DX']),
                             workplace: r['สถานที่เรียน/ทำงาน'] ? r['สถานที่เรียน/ทำงาน'].toString() : '', workplaceMoo: wpMoo.toString()
                         });
                         importedCount++;
