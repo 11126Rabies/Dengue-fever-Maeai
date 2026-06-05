@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ระบบบันทึกข้อมูลผู้ป่วยไข้เลือดออก อ.แม่อาย V1.6.9</title>
+    <title>ระบบบันทึกข้อมูลผู้ป่วยไข้เลือดออก อ.แม่อาย V1.7.2</title>
     
     <!-- ฟอนต์และไอคอน -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -110,7 +110,7 @@
                     <span class="px-3 py-1 bg-rose-50 text-rose-700 rounded-full">งานควบคุมโรค</span>
                     <span class="px-3 py-1 bg-rose-50 text-rose-700 rounded-full">กลุ่มงานบริการด้านปฐมภูมิและองค์รวม</span>
                     <span class="px-3 py-1 bg-rose-50 text-rose-700 rounded-full">โรงพยาบาลแม่อาย</span>
-                    <span class="px-3 py-1 bg-emerald-100 text-emerald-700 rounded-full shadow-sm"><i class="fa-solid fa-code-commit mr-1"></i>V1.6.9</span>
+                    <span class="px-3 py-1 bg-emerald-100 text-emerald-700 rounded-full shadow-sm"><i class="fa-solid fa-code-commit mr-1"></i>V1.7.2</span>
                 </div>
             </div>
         </div>
@@ -991,24 +991,35 @@
                             วันที่เข้ารับการรักษา: ${p.foundDate || '-'}
                         </div>
                         <div class="mt-2 pt-2 border-t text-center">
-                            <a href="https://www.google.com/maps/search/?api=1&query=${lat},${lng}" target="_blank" class="text-xs bg-emerald-50 text-emerald-600 hover:bg-emerald-100 px-2 py-1.5 rounded-lg inline-block border border-emerald-200 font-bold shadow-sm w-full"><i class="fa-brands fa-google mr-1"></i> ดูใน Google Maps</a>
+                            <a href="https://www.google.com/maps/search/?api=1&query=${lat},${lng}" target="_blank" class="text-xs bg-emerald-50 text-emerald-600 hover:bg-emerald-100 px-2 py-1.5 rounded-lg inline-block border border-emerald-200 font-bold shadow-sm w-full"><i class="fa-brands fa-google mr-1"></i> เปิดดูใน Google Maps</a>
                         </div>
                     </div>
                 `;
-                heatDot.bindPopup(dotPopupHtml, { closeButton: false });
+                
+                // สำหรับแผนที่ Heatmap (แผนที่ล่าง)
+                heatDot.bindPopup(dotPopupHtml, { closeButton: true });
                 heatDot.on('mouseover', function (e) { this.openPopup(); });
                 densityMarkersLayer.addLayer(heatDot);
 
-                // สร้างวงกลมรัศมี 100 เมตร (เส้นประ) สำหรับวางแผนควบคุมโรค
+                // สร้างวงกลมรัศมี 100 เมตร สำหรับวางแผนควบคุมโรคในแผนที่ Heatmap
                 const controlCircle = L.circle([lat, lng], {
-                    radius: 100,
-                    color: '#e11d48',
-                    weight: 1.5,
-                    dashArray: '5, 5',
-                    fillColor: '#ffe4e6',
-                    fillOpacity: 0.15
+                    radius: 100, color: '#ff0000', weight: 3, dashArray: '6, 6', fillColor: '#ff0000', fillOpacity: 0.35
                 });
                 densityMarkersLayer.addLayer(controlCircle);
+
+                // ---> NEW: เพิ่มวงกลม 100 เมตร และหมุดรายบุคคล ลงในแผนที่สถานการณ์หลัก (แผนที่บน) อัตโนมัติ เพื่อดูการทับซ้อน
+                const mainMapCircle = L.circle([lat, lng], {
+                    radius: 100, color: '#ff0000', weight: 3, dashArray: '6, 6', fillColor: '#ff0000', fillOpacity: 0.35
+                });
+                bigMapMarkersLayer.addLayer(mainMapCircle);
+
+                const mainMapDot = L.circleMarker([lat, lng], {
+                    radius: 5, color: '#fff', weight: 1.5, fillColor: '#f43f5e', fillOpacity: 1
+                });
+                mainMapDot.bindPopup(dotPopupHtml, { closeButton: true });
+                mainMapDot.on('mouseover', function (e) { this.openPopup(); });
+                bigMapMarkersLayer.addLayer(mainMapDot);
+                // <--- END NEW
 
                 // สำหรับ Pin Map (ตัวบน จัดกลุ่มตามหมู่บ้าน)
                 const key = `${p.subdistrict}_${p.moo}`;
@@ -1028,11 +1039,17 @@
                 const icon = L.divIcon({ className: 'custom-div-icon', html: `<div class="pin-marker ${pinClass}">${v.cases.length}</div>`, iconSize: [30, 40], iconAnchor: [15, 40], popupAnchor: [0, -35] });
                 const marker = L.marker([v.lat, v.lng], { icon: icon });
                 
-                let casesListHtml = v.cases.map(c => `
+                // เพิ่มปุ่ม Google Maps เข้าไปในรายชื่อแต่ละคนในหมุดกลุ่ม
+                let casesListHtml = v.cases.map(c => {
+                    const cLatLng = String(c.latlng || '').trim();
+                    const btnHtml = cLatLng ? `<br><a href="https://www.google.com/maps/search/?api=1&query=${cLatLng.replace(/\s/g, '')}" target="_blank" class="mt-1 text-[11px] text-emerald-600 hover:text-emerald-700 inline-flex items-center"><i class="fa-brands fa-google mr-1"></i> เปิดดูพิกัด (Google Maps)</a>` : '';
+                    return `
                     <div class="border-b border-slate-200 pb-2 mb-2 last:border-0 last:pb-0 last:mb-0">
                         • <b class="text-slate-800">${c.fullName}</b> <span class="text-xs text-red-500 font-bold ml-1">(${c.dx})</span><br>
                         <span class="pl-2 text-slate-500">บ.เลขที่: ${c.addressNo || '-'} | เข้ารักษา: ${c.foundDate || '-'}</span>
-                    </div>`).join('');
+                        ${btnHtml}
+                    </div>`;
+                }).join('');
                 
                 const vNameDisplay = v.villageName ? ` ${v.villageName}` : '';
                 const popupHtml = `
@@ -1078,14 +1095,14 @@
                 if(activeSearchMarker) bigMapInst.removeLayer(activeSearchMarker);
                 if(activeSearchCircle) bigMapInst.removeLayer(activeSearchCircle);
 
-                // สร้างวงกลมรัศมี 100 เมตร (เส้นประ)
+                // สร้างวงกลมรัศมี 100 เมตร (เส้นประ) แบบสีเข้มชัดเจน
                 activeSearchCircle = L.circle([lat, lng], {
                     radius: 100,
-                    color: '#ef4444',
-                    weight: 2,
-                    dashArray: '5, 5',
-                    fillColor: '#fecdd3',
-                    fillOpacity: 0.3
+                    color: '#ff0000',
+                    weight: 3,
+                    dashArray: '6, 6',
+                    fillColor: '#ff0000',
+                    fillOpacity: 0.35
                 }).addTo(bigMapInst);
 
                 const icon = L.divIcon({ className: 'custom-div-icon', html: `<div class="pin-marker pin-red"><i class="fa-solid fa-user"></i></div>`, iconSize: [30, 40], iconAnchor: [15, 40], popupAnchor: [0, -35] });
@@ -1101,6 +1118,7 @@
                         </div>
                     </div>
                 `).openPopup();
+                activeSearchMarker.on('mouseover', function (e) { this.openPopup(); });
             }, 500);
         }
 
