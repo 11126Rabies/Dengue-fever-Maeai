@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ระบบบันทึกข้อมูลผู้ป่วยไข้เลือดออก อ.แม่อาย V1.7.2</title>
+    <title>ระบบบันทึกข้อมูลผู้ป่วยไข้เลือดออก อ.แม่อาย V1.6.9</title>
     
     <!-- ฟอนต์และไอคอน -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -1190,15 +1190,23 @@
                 (p.hn && String(p.hn).toLowerCase().includes(term)) || 
                 (p.subdistrict && String(p.subdistrict).toLowerCase().includes(term)) ||
                 (p.villageName && String(p.villageName).toLowerCase().includes(term))
-            ).sort((a, b) => a.id - b.id);
+            ).sort((a, b) => {
+                // เรียงลำดับตามวันที่เข้ารับการรักษา (ใหม่สุดขึ้นก่อน)
+                const dateA = new Date(a.foundDate || '1970-01-01');
+                const dateB = new Date(b.foundDate || '1970-01-01');
+                if (dateB > dateA) return 1;
+                if (dateB < dateA) return -1;
+                return b.id - a.id; // ถ้าวันที่ตรงกัน เอาคนที่บันทึกทีหลังขึ้นก่อน
+            });
             
             if(filtered.length === 0) { tbody.innerHTML = `<tr><td colSpan="9" class="p-8 text-center text-slate-400"><i class="fa-solid fa-circle-exclamation text-3xl mb-2 opacity-50 block"></i>ไม่พบข้อมูลผู้ป่วย</td></tr>`; return; }
 
-            filtered.forEach(p => {
+            // เพิ่ม index + 1 เพื่อให้คอลัมน์ ลำดับ รัน 1, 2, 3... ตามปกติ
+            filtered.forEach((p, index) => {
                 const tr = document.createElement('tr'); tr.className = "border-b border-slate-50 hover:bg-slate-50 transition-colors";
                 const vNameDisplay = p.villageName ? ` (${p.villageName})` : '';
                 tr.innerHTML = `
-                    <td class="p-3 font-medium text-slate-900">${p.id}</td>
+                    <td class="p-3 font-medium text-slate-900">${index + 1}</td>
                     <td class="p-3 whitespace-nowrap">${p.fullName || ''}</td>
                     <td class="p-3">${p.hn || '-'}</td>
                     <td class="p-3 whitespace-nowrap">${p.age || '-'} ปี / ${p.gender || '-'}</td>
