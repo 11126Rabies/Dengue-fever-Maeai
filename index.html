@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ระบบบันทึกข้อมูลผู้ป่วยไข้เลือดออก อ.แม่อาย V1.7.7</title>
+    <title>ระบบบันทึกข้อมูลผู้ป่วยไข้เลือดออก อ.แม่อาย V1.7.8</title>
     
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -27,7 +27,7 @@
     <script src="https://unpkg.com/leaflet.heat@0.2.0/dist/leaflet-heat.js"></script>
 
     <style>
-        body { background-color: #f3f4f6; }
+        body { background-color: #f1f5f9; } /* พื้นหลังสว่างขึ้นนิดนึงให้กล่องลอยขึ้น */
         .tab-content { display: none; animation: fadeIn 0.3s ease-in-out; }
         .tab-content.active { display: block; }
         @keyframes fadeIn { from { opacity: 0; transform: translateY(5px); } to { opacity: 1; transform: translateY(0); } }
@@ -35,7 +35,7 @@
         .alert-pulse { animation: pulseAlert 2s infinite; }
         .chart-container { position: relative; height: 320px; width: 100%; }
         .chart-container-sm { position: relative; height: 250px; width: 100%; }
-        .modal-overlay { background-color: rgba(0, 0, 0, 0.5); backdrop-filter: blur(2px); }
+        .modal-overlay { background-color: rgba(0, 0, 0, 0.6); backdrop-filter: blur(3px); }
         .leaflet-control-attribution { display: none; }
         
         .custom-div-icon { background: transparent; border: none; }
@@ -51,11 +51,15 @@
         
         .counter-btn { width: 40px; height: 40px; display: flex; align-items: center; justify-content: center; font-size: 1.25rem; font-weight: bold; cursor: pointer; user-select: none;}
         .hi-white { background-color: #ffffff; border: 2px solid #e2e8f0; color: #10b981; } 
-        .hi-gray { background-color: #e2e8f0; border: 2px solid #cbd5e1; color: #475569; }  
+        .hi-gray { background-color: #f1f5f9; border: 2px solid #94a3b8; color: #334155; }  
         .hi-black { background-color: #0f172a; border: 2px solid #000000; color: #ffffff; } 
 
         .sig-input { border: none; border-bottom: 1px dotted #64748b; background: transparent; text-align: center; color: #0f172a; outline: none; padding: 2px; }
         .sig-input:focus { border-bottom: 2px solid #059669; }
+        
+        /* เพิ่มเงาให้กล่องสถิติมีมิติ */
+        .stat-card { transition: all 0.2s ease; box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06); }
+        .stat-card:hover { transform: translateY(-2px); box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05); }
     </style>
 </head>
 <body class="text-slate-800 pb-24 min-h-screen flex flex-col">
@@ -80,7 +84,7 @@
         </div>
     </div>
 
-    <header class="bg-white shadow-sm border-b-4 border-rose-500 py-4 px-8 relative z-10">
+    <header class="bg-white shadow-md border-b-4 border-rose-500 py-4 px-8 relative z-10">
         <div class="max-w-7xl mx-auto flex flex-col md:flex-row items-center justify-between gap-6 text-center md:text-left">
             <div class="flex flex-col md:flex-row items-center gap-6">
                 <div class="w-24 h-24 flex-shrink-0 bg-white rounded-full p-1 shadow-md border border-rose-100 flex items-center justify-center overflow-hidden">
@@ -89,27 +93,27 @@
                 <div class="flex flex-col items-center md:items-start">
                     <h1 class="text-3xl md:text-4xl font-bold text-rose-700 mb-2">ระบบบันทึกข้อมูลผู้ป่วยไข้เลือดออก อ.แม่อาย</h1>
                     <div class="flex flex-wrap justify-center md:justify-start gap-2 text-sm font-semibold text-slate-600">
-                        <span class="px-3 py-1 bg-rose-50 text-rose-700 rounded-full">งานควบคุมโรค</span>
-                        <span class="px-3 py-1 bg-rose-50 text-rose-700 rounded-full">โรงพยาบาลแม่อาย</span>
-                        <span class="px-3 py-1 bg-emerald-100 text-emerald-700 rounded-full shadow-sm"><i class="fa-solid fa-code-commit mr-1"></i>V1.7.7</span>
+                        <span class="px-3 py-1 bg-rose-50 text-rose-700 rounded-full border border-rose-100">งานควบคุมโรค</span>
+                        <span class="px-3 py-1 bg-rose-50 text-rose-700 rounded-full border border-rose-100">โรงพยาบาลแม่อาย</span>
+                        <span class="px-3 py-1 bg-emerald-100 text-emerald-700 rounded-full border border-emerald-200"><i class="fa-solid fa-code-commit mr-1"></i>V1.7.8</span>
                     </div>
                 </div>
             </div>
             
-            <button onclick="logout()" class="bg-rose-100 hover:bg-rose-200 text-rose-700 border border-rose-300 font-bold py-2 px-4 rounded-lg shadow-sm flex items-center transition-colors">
+            <button onclick="logout()" class="bg-slate-100 hover:bg-slate-200 text-slate-600 border border-slate-300 font-bold py-2 px-4 rounded-lg shadow-sm flex items-center transition-colors">
                 <i class="fa-solid fa-arrow-right-from-bracket mr-2"></i> ออกจากระบบ
             </button>
         </div>
     </header>
 
-    <nav class="bg-rose-500 text-white shadow-md sticky top-0 z-40">
+    <nav class="bg-rose-600 text-white shadow-md sticky top-0 z-40">
         <div class="max-w-7xl mx-auto flex justify-start md:justify-center overflow-x-auto no-scrollbar">
-            <button onclick="switchTab('dashboard')" id="btn-dashboard" class="tab-btn flex items-center space-x-2 px-5 py-4 font-semibold transition-colors bg-rose-700 border-b-4 border-white whitespace-nowrap"><i class="fa-solid fa-chart-pie"></i><span>Dashboard</span></button>
-            <button onclick="switchTab('village-stats')" id="btn-village-stats" class="tab-btn flex items-center space-x-2 px-5 py-4 font-semibold transition-colors hover:bg-rose-600 text-rose-50 whitespace-nowrap"><i class="fa-solid fa-chart-simple"></i><span>สถิติ</span></button>
-            <button onclick="switchTab('situation-map')" id="btn-situation-map" class="tab-btn flex items-center space-x-2 px-5 py-4 font-semibold transition-colors hover:bg-rose-600 text-rose-50 whitespace-nowrap"><i class="fa-solid fa-map-location-dot"></i><span>แผนที่สถานการณ์</span></button>
-            <button onclick="switchTab('entry')" id="btn-entry" class="tab-btn flex items-center space-x-2 px-5 py-4 font-semibold transition-colors hover:bg-rose-600 text-rose-50 whitespace-nowrap"><i class="fa-solid fa-pen-to-square"></i><span>บันทึกข้อมูลผู้ป่วย</span></button>
-            <button onclick="switchTab('manage')" id="btn-manage" class="tab-btn flex items-center space-x-2 px-5 py-4 font-semibold transition-colors hover:bg-rose-600 text-rose-50 whitespace-nowrap"><i class="fa-solid fa-database"></i><span>จัดการข้อมูล</span></button>
-            <button onclick="switchTab('larvae')" id="btn-larvae" class="tab-btn flex items-center space-x-2 px-5 py-4 font-semibold transition-colors hover:bg-rose-600 text-rose-50 whitespace-nowrap bg-amber-500 hover:bg-amber-600"><i class="fa-solid fa-mosquito text-white"></i><span class="text-white">จัดการควบคุมโรค (HI/CI)</span></button>
+            <button onclick="switchTab('dashboard')" id="btn-dashboard" class="tab-btn flex items-center space-x-2 px-5 py-4 font-semibold transition-colors bg-rose-800 border-b-4 border-white whitespace-nowrap"><i class="fa-solid fa-chart-pie"></i><span>Dashboard</span></button>
+            <button onclick="switchTab('village-stats')" id="btn-village-stats" class="tab-btn flex items-center space-x-2 px-5 py-4 font-semibold transition-colors hover:bg-rose-700 text-rose-50 whitespace-nowrap"><i class="fa-solid fa-chart-simple"></i><span>สถิติ และ HI/CI</span></button>
+            <button onclick="switchTab('situation-map')" id="btn-situation-map" class="tab-btn flex items-center space-x-2 px-5 py-4 font-semibold transition-colors hover:bg-rose-700 text-rose-50 whitespace-nowrap"><i class="fa-solid fa-map-location-dot"></i><span>แผนที่สถานการณ์</span></button>
+            <button onclick="switchTab('entry')" id="btn-entry" class="tab-btn flex items-center space-x-2 px-5 py-4 font-semibold transition-colors hover:bg-rose-700 text-rose-50 whitespace-nowrap"><i class="fa-solid fa-pen-to-square"></i><span>บันทึกผู้ป่วยใหม่</span></button>
+            <button onclick="switchTab('manage')" id="btn-manage" class="tab-btn flex items-center space-x-2 px-5 py-4 font-semibold transition-colors hover:bg-rose-700 text-rose-50 whitespace-nowrap"><i class="fa-solid fa-database"></i><span>จัดการข้อมูล</span></button>
+            <button onclick="switchTab('larvae')" id="btn-larvae" class="tab-btn flex items-center space-x-2 px-5 py-4 font-semibold transition-colors hover:bg-emerald-600 text-rose-50 whitespace-nowrap bg-emerald-500"><i class="fa-solid fa-mosquito text-white"></i><span class="text-white">จัดการควบคุมโรค</span></button>
         </div>
     </nav>
 
@@ -128,37 +132,19 @@
             </div>
 
             <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
-                <div class="bg-white p-5 rounded-2xl shadow-sm border border-rose-100 flex justify-between items-center">
-                    <div><p class="text-sm font-semibold text-slate-500 mb-1">ผู้ป่วยสะสมทั้งหมด</p><p class="text-4xl font-bold text-rose-700" id="stat-total">0</p></div><div class="w-12 h-12 rounded-full bg-rose-100 text-rose-600 flex items-center justify-center text-xl"><i class="fa-solid fa-users"></i></div>
+                <div class="bg-white p-5 rounded-2xl stat-card border-t-4 border-rose-500 flex justify-between items-center">
+                    <div><p class="text-sm font-semibold text-slate-500 mb-1">ผู้ป่วยสะสมทั้งหมด</p><p class="text-4xl font-black text-rose-700" id="stat-total">0</p></div><div class="w-12 h-12 rounded-full bg-rose-100 text-rose-600 flex items-center justify-center text-xl"><i class="fa-solid fa-users"></i></div>
                 </div>
-                <div class="bg-white p-5 rounded-2xl shadow-sm border border-rose-100 flex justify-between items-center">
-                    <div><p class="text-sm font-semibold text-slate-500 mb-1">ชาย</p><div class="flex items-baseline gap-2"><p class="text-3xl font-bold text-slate-700" id="stat-male">0</p><p class="text-sm font-semibold text-blue-500" id="stat-male-percent">(0%)</p></div></div><div class="w-12 h-12 rounded-full bg-blue-100 text-blue-500 flex items-center justify-center text-xl"><i class="fa-solid fa-mars"></i></div>
+                <div class="bg-white p-5 rounded-2xl stat-card border-t-4 border-blue-500 flex justify-between items-center">
+                    <div><p class="text-sm font-semibold text-slate-500 mb-1">ชาย</p><div class="flex items-baseline gap-2"><p class="text-3xl font-black text-slate-700" id="stat-male">0</p><p class="text-sm font-bold text-blue-500" id="stat-male-percent">(0%)</p></div></div><div class="w-12 h-12 rounded-full bg-blue-100 text-blue-500 flex items-center justify-center text-xl"><i class="fa-solid fa-mars"></i></div>
                 </div>
-                <div class="bg-white p-5 rounded-2xl shadow-sm border border-rose-100 flex justify-between items-center">
-                    <div><p class="text-sm font-semibold text-slate-500 mb-1">หญิง</p><div class="flex items-baseline gap-2"><p class="text-3xl font-bold text-slate-700" id="stat-female">0</p><p class="text-sm font-semibold text-pink-500" id="stat-female-percent">(0%)</p></div></div><div class="w-12 h-12 rounded-full bg-pink-100 text-pink-500 flex items-center justify-center text-xl"><i class="fa-solid fa-venus"></i></div>
+                <div class="bg-white p-5 rounded-2xl stat-card border-t-4 border-pink-500 flex justify-between items-center">
+                    <div><p class="text-sm font-semibold text-slate-500 mb-1">หญิง</p><div class="flex items-baseline gap-2"><p class="text-3xl font-black text-slate-700" id="stat-female">0</p><p class="text-sm font-bold text-pink-500" id="stat-female-percent">(0%)</p></div></div><div class="w-12 h-12 rounded-full bg-pink-100 text-pink-500 flex items-center justify-center text-xl"><i class="fa-solid fa-venus"></i></div>
                 </div>
-                <div class="bg-gradient-to-br from-rose-500 to-red-600 p-4 rounded-2xl shadow-sm border border-red-200 text-white flex flex-col relative overflow-hidden">
+                <div class="bg-gradient-to-br from-rose-500 to-red-600 p-4 rounded-2xl shadow-md border border-red-200 text-white flex flex-col relative overflow-hidden">
                     <i class="fa-solid fa-ranking-star absolute -right-4 -bottom-4 text-7xl opacity-20"></i>
-                    <p class="text-sm font-semibold opacity-90 mb-2 border-b border-white/30 pb-1">พื้นที่พบผู้ป่วย (เรียงจากมากไปน้อย)</p>
+                    <p class="text-sm font-bold opacity-90 mb-2 border-b border-white/30 pb-1">พื้นที่พบผู้ป่วย (เรียงจากมากไปน้อย)</p>
                     <div id="stat-top-areas-list" class="text-sm font-medium relative z-10 w-full h-full"></div>
-                </div>
-            </div>
-            
-            <div id="dash-latest-activity" class="bg-white rounded-2xl shadow-sm border border-indigo-200 p-5 hidden">
-                <h3 class="text-lg font-bold text-indigo-800 mb-4 flex items-center border-b pb-2"><i class="fa-solid fa-bullhorn text-indigo-500 mr-2"></i>อัปเดตกิจกรรมควบคุมโรคล่าสุด</h3>
-                <div class="flex flex-col md:flex-row gap-6 items-start">
-                    <div class="w-full md:w-1/3">
-                        <div class="bg-indigo-50 p-4 rounded-xl border border-indigo-100 h-full">
-                            <p class="text-xs font-bold text-indigo-400 mb-1">ดำเนินการที่บ้านผู้ป่วย</p>
-                            <h4 class="text-lg font-black text-slate-800 mb-2" id="dash-act-name">...</h4>
-                            <p class="text-sm text-slate-600 mb-4" id="dash-act-loc">...</p>
-                            <div class="text-sm text-slate-700 bg-white p-3 rounded-lg border border-slate-200" id="dash-act-note">...</div>
-                        </div>
-                    </div>
-                    <div class="w-full md:w-2/3">
-                        <p class="text-xs font-bold text-slate-500 mb-2">ภาพถ่ายกิจกรรม</p>
-                        <div class="grid grid-cols-2 md:grid-cols-5 gap-2" id="dash-act-images"></div>
-                    </div>
                 </div>
             </div>
 
@@ -179,6 +165,28 @@
                     <div class="chart-container"><canvas id="barChartDX"></canvas></div>
                 </div>
             </div>
+            
+            <div id="dash-latest-activity" class="bg-emerald-50 rounded-2xl shadow-sm border border-emerald-200 p-5 mt-8 hidden">
+                <div class="flex justify-between items-center border-b border-emerald-200 pb-3 mb-4">
+                    <h3 class="text-xl font-bold text-emerald-800 flex items-center"><i class="fa-solid fa-bullhorn text-emerald-500 mr-2 text-2xl"></i>อัปเดตกิจกรรมควบคุมโรคล่าสุด (HI/CI & พ่นเคมี)</h3>
+                    <button onclick="switchTab('larvae')" class="text-sm bg-emerald-600 text-white px-4 py-2 rounded-lg font-bold shadow hover:bg-emerald-700 transition-colors">ไปที่หน้าจัดการควบคุมโรค</button>
+                </div>
+                <div class="flex flex-col md:flex-row gap-6 items-start">
+                    <div class="w-full md:w-1/3">
+                        <div class="bg-white p-5 rounded-xl border border-emerald-100 h-full shadow-sm">
+                            <p class="text-sm font-bold text-emerald-500 mb-1"><i class="fa-solid fa-house-medical mr-1"></i> ดำเนินการที่บ้านผู้ป่วย</p>
+                            <h4 class="text-xl font-black text-slate-800 mb-2" id="dash-act-name">...</h4>
+                            <p class="text-sm text-slate-600 mb-4 font-medium" id="dash-act-loc">...</p>
+                            <div class="text-sm text-slate-700 bg-slate-50 p-4 rounded-lg border border-slate-200 min-h-[100px]" id="dash-act-note">...</div>
+                        </div>
+                    </div>
+                    <div class="w-full md:w-2/3">
+                        <p class="text-sm font-bold text-emerald-600 mb-3"><i class="fa-solid fa-images mr-1"></i> ภาพถ่ายกิจกรรม</p>
+                        <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-3" id="dash-act-images">
+                            </div>
+                    </div>
+                </div>
+            </div>
         </div>
 
         <div id="tab-village-stats" class="tab-content">
@@ -187,6 +195,7 @@
                     <div class="flex flex-col"><label class="text-xs font-bold text-slate-500 mb-1">สัปดาห์ (ISO)</label><input type="week" id="statFilterWeek" class="border border-slate-300 rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-rose-500"></div>
                     <div class="flex flex-col"><label class="text-xs font-bold text-slate-500 mb-1">เลือกวันที่</label><input type="date" id="statFilterDate" class="border border-slate-300 rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-rose-500"></div>
                     <div class="flex flex-col"><label class="text-xs font-bold text-slate-500 mb-1">ปี (พ.ศ.)</label><select id="statFilterYear" class="border border-slate-300 rounded-lg px-3 py-2 text-sm bg-white min-w-[100px]"><option value="all">ทุกปี</option></select></div>
+                    <div class="flex flex-col"><label class="text-xs font-bold text-slate-500 mb-1">อำเภอ</label><input type="text" value="แม่อาย" disabled class="border border-slate-300 rounded-lg px-3 py-2 text-sm bg-slate-100 text-slate-500 w-28"></div>
                     <div class="flex flex-col"><label class="text-xs font-bold text-slate-500 mb-1">ตำบล</label><select id="statFilterSubdistrict" class="border border-slate-300 rounded-lg px-3 py-2 text-sm bg-white"><option value="all">ทุกตำบล</option><option value="แม่อาย">แม่อาย</option><option value="มะลิกา">มะลิกา</option><option value="ท่าตอน">ท่าตอน</option><option value="แม่สาว">แม่สาว</option><option value="บ้านหลวง">บ้านหลวง</option><option value="แม่นาวาง">แม่นาวาง</option><option value="สันต้นหมื้อ">สันต้นหมื้อ</option></select></div>
                 </div>
                 <div class="flex gap-2 w-full md:w-auto justify-end mt-2 md:mt-0">
@@ -198,7 +207,7 @@
             <div class="bg-white rounded-2xl shadow-sm border border-slate-200 p-6 space-y-6">
                 <div class="flex flex-col md:flex-row justify-between items-start md:items-center pb-4 border-b border-slate-100 gap-4">
                     <h2 class="text-2xl font-bold text-slate-800 flex items-center"><i class="fa-solid fa-chart-line text-rose-500 mr-2"></i> สถิติสถานการณ์ไข้เลือดออก</h2>
-                    <div class="bg-emerald-600 text-white px-4 py-2 rounded-lg font-bold" id="matrix-total-badge">ผู้ป่วยสะสม: 0 ราย</div>
+                    <div class="bg-emerald-600 text-white px-5 py-2 rounded-lg font-bold shadow-md" id="matrix-total-badge">ผู้ป่วยสะสม: 0 ราย</div>
                 </div>
 
                 <div class="bg-slate-50 p-5 rounded-xl border border-slate-200">
@@ -207,34 +216,104 @@
                 </div>
 
                 <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mt-6">
-                    <div class="border border-red-200 rounded-xl overflow-hidden bg-white shadow-sm">
-                        <div class="bg-red-50 text-red-700 font-bold px-4 py-2 border-b border-red-100 flex items-center"><i class="fa-solid fa-triangle-exclamation mr-2"></i> พื้นที่ระบาด</div>
-                        <div class="p-4 text-sm min-h-[100px]" id="box-red"></div>
+                    <div class="border border-red-200 rounded-xl overflow-hidden bg-white stat-card">
+                        <div class="bg-red-50 text-red-700 font-bold px-4 py-3 border-b border-red-100 flex items-center"><i class="fa-solid fa-triangle-exclamation mr-2"></i> พื้นที่ระบาด (สีแดง)</div>
+                        <div class="p-4 text-sm min-h-[100px] leading-loose" id="box-red"></div>
                     </div>
-                    <div class="border border-orange-200 rounded-xl overflow-hidden bg-white shadow-sm">
-                        <div class="bg-orange-50 text-orange-700 font-bold px-4 py-2 border-b border-orange-100 flex items-center"><i class="fa-solid fa-bell mr-2"></i> พบใหม่ 1-2 สัปดาห์</div>
-                        <div class="p-4 text-sm min-h-[100px]" id="box-orange"></div>
+                    <div class="border border-orange-200 rounded-xl overflow-hidden bg-white stat-card">
+                        <div class="bg-orange-50 text-orange-700 font-bold px-4 py-3 border-b border-orange-100 flex items-center"><i class="fa-solid fa-bell mr-2"></i> พบใหม่ 1-2 สัปดาห์ (สีส้ม)</div>
+                        <div class="p-4 text-sm min-h-[100px] leading-loose" id="box-orange"></div>
                     </div>
-                    <div class="border border-yellow-200 rounded-xl overflow-hidden bg-white shadow-sm">
-                        <div class="bg-yellow-50 text-yellow-700 font-bold px-4 py-2 border-b border-yellow-100 flex items-center"><i class="fa-solid fa-eye mr-2"></i> เฝ้าระวัง (สัปดาห์ 3-4)</div>
-                        <div class="p-4 text-sm min-h-[100px]" id="box-yellow"></div>
+                    <div class="border border-yellow-200 rounded-xl overflow-hidden bg-white stat-card">
+                        <div class="bg-yellow-50 text-yellow-700 font-bold px-4 py-3 border-b border-yellow-100 flex items-center"><i class="fa-solid fa-eye mr-2"></i> เฝ้าระวัง 3-4 สัปดาห์ (สีเหลือง)</div>
+                        <div class="p-4 text-sm min-h-[100px] leading-loose" id="box-yellow"></div>
                     </div>
-                    <div class="border border-green-200 rounded-xl overflow-hidden bg-white shadow-sm">
-                        <div class="bg-green-50 text-green-700 font-bold px-4 py-2 border-b border-green-100 flex items-center"><i class="fa-solid fa-check-circle mr-2"></i> สงบ (เกิน 28 วัน)</div>
-                        <div class="p-4 text-sm min-h-[100px] max-h-[150px] overflow-y-auto" id="box-green"></div>
+                    <div class="border border-green-200 rounded-xl overflow-hidden bg-white stat-card">
+                        <div class="bg-green-50 text-green-700 font-bold px-4 py-3 border-b border-green-100 flex items-center"><i class="fa-solid fa-check-circle mr-2"></i> สงบ เกิน 28 วัน (สีเขียว)</div>
+                        <div class="p-4 text-sm min-h-[100px] max-h-[150px] overflow-y-auto leading-loose custom-scrollbar" id="box-green"></div>
                     </div>
                 </div>
 
-                <div class="mt-6">
-                    <div class="flex justify-between items-end md:items-center mb-2 flex-col md:flex-row gap-2">
-                        <p class="text-sm font-semibold text-slate-500"><i class="fa-solid fa-table border"></i> ตารางสรุปรายหมู่บ้าน</p>
-                        <button onclick="exportMatrixExcel()" class="bg-emerald-600 hover:bg-emerald-700 text-white px-3 py-1.5 rounded-lg text-sm font-bold"><i class="fa-solid fa-file-excel mr-1"></i> ดาวน์โหลดตาราง (Excel)</button>
+                <div class="mt-8 border-t border-slate-200 pt-6">
+                    <h3 class="text-xl font-bold text-emerald-800 mb-4 flex items-center"><i class="fa-solid fa-mosquito text-emerald-500 mr-2"></i> สรุปข้อมูลดัชนีลูกน้ำยุงลาย (HI/CI) ระดับหมู่บ้านและตำบล</h3>
+                    
+                    <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                        <div class="bg-white border border-emerald-100 rounded-xl shadow-sm overflow-hidden">
+                            <div class="bg-emerald-50 px-4 py-3 border-b border-emerald-100">
+                                <h4 class="font-bold text-emerald-700"><i class="fa-solid fa-map-location-dot mr-1"></i> ข้อมูลรายหมู่บ้าน</h4>
+                            </div>
+                            <div class="overflow-x-auto max-h-[400px] custom-scrollbar">
+                                <table class="w-full text-center text-sm">
+                                    <thead class="bg-slate-100 text-slate-700 font-bold sticky top-0 shadow-sm">
+                                        <tr>
+                                            <th class="py-2 px-2 border-b">ตำบล</th>
+                                            <th class="py-2 px-2 border-b">หมู่</th>
+                                            <th class="py-2 px-2 border-b">ผู้ป่วย (ราย)</th>
+                                            <th class="py-2 px-2 border-b">บ้านทั้งหมด</th>
+                                            <th class="py-2 px-2 border-b">บ้านที่พบ</th>
+                                            <th class="py-2 px-2 border-b bg-rose-50">HI%</th>
+                                            <th class="py-2 px-2 border-b">ภาชนะทั้งหมด</th>
+                                            <th class="py-2 px-2 border-b">ภาชนะที่พบ</th>
+                                            <th class="py-2 px-2 border-b bg-blue-50">CI%</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="hiVillageTableBody"></tbody>
+                                </table>
+                            </div>
+                        </div>
+
+                        <div class="space-y-6">
+                            <div class="bg-white border border-teal-100 rounded-xl shadow-sm overflow-hidden">
+                                <div class="bg-teal-50 px-4 py-3 border-b border-teal-100">
+                                    <h4 class="font-bold text-teal-700"><i class="fa-solid fa-map mr-1"></i> ข้อมูลรายตำบล</h4>
+                                </div>
+                                <div class="overflow-x-auto">
+                                    <table class="w-full text-center text-sm">
+                                        <thead class="bg-slate-100 text-slate-700 font-bold">
+                                            <tr>
+                                                <th class="py-2 px-2 border-b">ตำบล</th>
+                                                <th class="py-2 px-2 border-b">ผู้ป่วย (ราย)</th>
+                                                <th class="py-2 px-2 border-b bg-rose-50">HI%</th>
+                                                <th class="py-2 px-2 border-b bg-blue-50">CI%</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody id="hiSubdistrictTableBody"></tbody>
+                                    </table>
+                                </div>
+                            </div>
+                            
+                            <div class="bg-white border border-cyan-100 rounded-xl shadow-sm overflow-hidden">
+                                <div class="bg-cyan-50 px-4 py-3 border-b border-cyan-100">
+                                    <h4 class="font-bold text-cyan-700"><i class="fa-solid fa-city mr-1"></i> ข้อมูลภาพรวมระดับอำเภอ</h4>
+                                </div>
+                                <div class="overflow-x-auto">
+                                    <table class="w-full text-center text-sm">
+                                        <thead class="bg-slate-100 text-slate-700 font-bold">
+                                            <tr>
+                                                <th class="py-2 px-2 border-b">อำเภอ</th>
+                                                <th class="py-2 px-2 border-b">ผู้ป่วย (ราย)</th>
+                                                <th class="py-2 px-2 border-b bg-rose-50">HI% (เฉลี่ย)</th>
+                                                <th class="py-2 px-2 border-b bg-blue-50">CI% (เฉลี่ย)</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody id="hiDistrictTableBody"></tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
                     </div>
-                    <div class="overflow-x-auto border border-slate-200 rounded-xl">
+                </div>
+
+                <div class="mt-8">
+                    <div class="flex justify-between items-end md:items-center mb-2 flex-col md:flex-row gap-2">
+                        <p class="text-sm font-semibold text-slate-500"><i class="fa-solid fa-table border"></i> ตาราง Matrix สรุปรายหมู่บ้าน</p>
+                        <button onclick="exportMatrixExcel()" class="bg-emerald-600 hover:bg-emerald-700 text-white px-4 py-2 rounded-lg text-sm font-bold shadow"><i class="fa-solid fa-file-excel mr-1"></i> ดาวน์โหลดตาราง (Excel)</button>
+                    </div>
+                    <div class="overflow-x-auto border border-slate-200 rounded-xl shadow-sm">
                         <table class="w-full text-center text-sm">
                             <thead class="bg-slate-100 text-slate-700 border-b font-bold">
                                 <tr>
-                                    <th class="py-3 px-4 text-left border-r bg-slate-50 sticky left-0 z-10 w-32">ตำบล</th>
+                                    <th class="py-3 px-4 text-left border-r bg-slate-50 sticky left-0 z-10 w-32 shadow-[2px_0_5px_-2px_rgba(0,0,0,0.1)]">ตำบล</th>
                                     <script>for(let i=1; i<=18; i++) document.write(`<th class="py-3 px-1 min-w-[45px]">M${i}</th>`);</script>
                                 </tr>
                             </thead>
@@ -254,7 +333,7 @@
                             <div class="flex flex-col"><label class="text-xs font-bold text-slate-500">ปี</label><select id="mapFilterYear" class="border rounded px-2 py-1" onchange="renderSituationMap()"><option value="all">ทุกปี</option></select></div>
                             <div class="flex flex-col"><label class="text-xs font-bold text-slate-500">เดือน</label><select id="mapFilterMonth" class="border rounded px-2 py-1" onchange="renderSituationMap()"><option value="all">ทุกเดือน</option><option value="01">มกราคม</option><option value="02">กุมภาพันธ์</option><option value="03">มีนาคม</option><option value="04">เมษายน</option><option value="05">พฤษภาคม</option><option value="06">มิถุนายน</option><option value="07">กรกฎาคม</option><option value="08">สิงหาคม</option><option value="09">กันยายน</option><option value="10">ตุลาคม</option><option value="11">พฤศจิกายน</option><option value="12">ธันวาคม</option></select></div>
                             <div class="flex flex-col"><label class="text-xs font-bold text-slate-500">ตำบล</label><select id="mapFilterSubdistrict" class="border rounded px-2 py-1" onchange="renderSituationMap()"><option value="all">ทุกตำบล</option><option value="แม่อาย">แม่อาย</option><option value="มะลิกา">มะลิกา</option><option value="ท่าตอน">ท่าตอน</option><option value="แม่สาว">แม่สาว</option><option value="บ้านหลวง">บ้านหลวง</option><option value="แม่นาวาง">แม่นาวาง</option><option value="สันต้นหมื้อ">สันต้นหมื้อ</option></select></div>
-                            <div class="flex flex-col justify-end mt-4"><button onclick="resetMapFilters()" class="bg-slate-200 px-3 py-1 rounded font-bold">รีเซ็ต</button></div>
+                            <div class="flex flex-col justify-end mt-4"><button onclick="resetMapFilters()" class="bg-slate-200 hover:bg-slate-300 px-3 py-1 rounded font-bold transition-colors">รีเซ็ต</button></div>
                         </div>
                     </div>
                     <div class="relative w-full h-[500px] bg-slate-100 z-0 rounded-xl overflow-hidden border">
@@ -262,10 +341,10 @@
                         <div class="absolute bottom-6 left-6 bg-white/95 backdrop-blur p-4 rounded-xl shadow border text-sm pointer-events-auto z-[1000]">
                             <h4 class="font-bold text-slate-800 mb-2 border-b pb-1"><i class="fa-solid fa-circle-info text-slate-400 mr-1"></i> เกณฑ์ความเสี่ยง</h4>
                             <ul class="space-y-2">
-                                <li class="flex items-center gap-2"><div class="w-3 h-3 rounded-full bg-red-500"></div> <span><b>ระบาด:</b> ภายใน 14 วัน > 2 ราย</span></li>
-                                <li class="flex items-center gap-2"><div class="w-3 h-3 rounded-full bg-orange-500"></div> <span><b>พบใหม่:</b> 1-2 สัปดาห์ล่าสุด</span></li>
-                                <li class="flex items-center gap-2"><div class="w-3 h-3 rounded-full bg-yellow-500"></div> <span><b>เฝ้าระวัง:</b> 15 - 28 วันที่ผ่านมา</span></li>
-                                <li class="flex items-center gap-2"><div class="w-3 h-3 rounded-full bg-green-500"></div> <span><b>สงบ:</b> เกิน 28 วัน</span></li>
+                                <li class="flex items-center gap-2"><div class="w-3 h-3 rounded-full bg-red-500 shadow-sm"></div> <span><b>ระบาด:</b> ภายใน 14 วัน > 2 ราย</span></li>
+                                <li class="flex items-center gap-2"><div class="w-3 h-3 rounded-full bg-orange-500 shadow-sm"></div> <span><b>พบใหม่:</b> 1-2 สัปดาห์ล่าสุด</span></li>
+                                <li class="flex items-center gap-2"><div class="w-3 h-3 rounded-full bg-yellow-500 shadow-sm"></div> <span><b>เฝ้าระวัง:</b> 15 - 28 วันที่ผ่านมา</span></li>
+                                <li class="flex items-center gap-2"><div class="w-3 h-3 rounded-full bg-green-500 shadow-sm"></div> <span><b>สงบ:</b> เกิน 28 วัน</span></li>
                             </ul>
                         </div>
                     </div>
@@ -349,23 +428,53 @@
 
         <div id="tab-manage" class="tab-content">
             <div class="space-y-6">
-                <div class="bg-white p-4 rounded-2xl shadow-sm border flex flex-col xl:flex-row justify-between items-center gap-4">
-                    <div class="relative w-full xl:w-96">
-                        <i class="fa-solid fa-magnifying-glass absolute left-3 top-1/2 transform -translate-y-1/2 text-slate-400"></i>
-                        <input type="text" id="searchInput" onkeyup="renderTable()" placeholder="ค้นหา..." class="w-full pl-10 pr-4 py-2 border rounded-lg" />
+                <div class="bg-white p-4 rounded-2xl shadow-sm border">
+                    <h3 class="font-bold text-slate-700 mb-3"><i class="fa-solid fa-filter text-rose-500 mr-1"></i> ตัวกรองข้อมูลเพื่อส่งออก/ค้นหา</h3>
+                    <div class="grid grid-cols-1 md:grid-cols-5 gap-3">
+                        <div class="relative w-full">
+                            <i class="fa-solid fa-magnifying-glass absolute left-3 top-1/2 transform -translate-y-1/2 text-slate-400"></i>
+                            <input type="text" id="searchInput" onkeyup="renderTable()" placeholder="ชื่อผู้ป่วย, HN..." class="w-full pl-10 pr-4 py-2 border rounded-lg text-sm focus:ring-2 focus:ring-rose-500" />
+                        </div>
+                        <div>
+                            <select id="m-subdistrict" onchange="renderTable()" class="w-full border rounded-lg p-2 text-sm bg-white focus:ring-2 focus:ring-rose-500">
+                                <option value="">- ทุกตำบล -</option><option value="แม่อาย">แม่อาย</option><option value="มะลิกา">มะลิกา</option><option value="ท่าตอน">ท่าตอน</option><option value="แม่สาว">แม่สาว</option><option value="บ้านหลวง">บ้านหลวง</option><option value="แม่นาวาง">แม่นาวาง</option><option value="สันต้นหมื้อ">สันต้นหมื้อ</option>
+                            </select>
+                        </div>
+                        <div>
+                            <select id="m-moo" onchange="renderTable()" class="w-full border rounded-lg p-2 text-sm bg-white focus:ring-2 focus:ring-rose-500">
+                                <option value="">- ทุกหมู่ -</option><script>for(let i=1; i<=18; i++) document.write(`<option value="${i}">หมู่ ${i}</option>`);</script>
+                            </select>
+                        </div>
+                        <div>
+                            <div class="relative">
+                                <span class="absolute left-2 top-1/2 transform -translate-y-1/2 text-xs text-slate-400 font-bold">จาก:</span>
+                                <input type="date" id="m-dateFrom" onchange="renderTable()" class="w-full pl-9 pr-2 py-2 border rounded-lg text-sm focus:ring-2 focus:ring-rose-500" title="ตั้งแต่วันที่พบผู้ป่วย" />
+                            </div>
+                        </div>
+                        <div>
+                            <div class="relative">
+                                <span class="absolute left-2 top-1/2 transform -translate-y-1/2 text-xs text-slate-400 font-bold">ถึง:</span>
+                                <input type="date" id="m-dateTo" onchange="renderTable()" class="w-full pl-9 pr-2 py-2 border rounded-lg text-sm focus:ring-2 focus:ring-rose-500" title="ถึงวันที่พบผู้ป่วย" />
+                            </div>
+                        </div>
                     </div>
-                    <div class="flex flex-wrap gap-2">
-                        <button onclick="downloadTemplate()" class="px-4 py-2 bg-slate-100 border text-slate-700 rounded-lg text-sm font-bold"><i class="fa-solid fa-download mr-2 text-rose-600"></i> โหลดไฟล์ตัวอย่าง</button>
+                    
+                    <div class="flex flex-wrap gap-2 justify-end mt-4 pt-4 border-t">
+                        <button onclick="downloadTemplate()" class="px-4 py-2 bg-slate-100 hover:bg-slate-200 border text-slate-700 rounded-lg text-sm font-bold transition-colors"><i class="fa-solid fa-download mr-1 text-rose-600"></i> โหลดไฟล์ตัวอย่าง (Template)</button>
                         <input type="file" id="importFile" accept=".xlsx, .xls" class="hidden" onchange="importExcel(event)" onclick="this.value=null;" />
-                        <button onclick="document.getElementById('importFile').click()" class="px-4 py-2 bg-emerald-50 border border-emerald-200 text-emerald-700 rounded-lg text-sm font-bold"><i class="fa-solid fa-file-import mr-2"></i> นำเข้า Excel</button>
-                        <button onclick="exportExcel()" class="px-4 py-2 bg-rose-600 text-white rounded-lg text-sm font-bold"><i class="fa-solid fa-file-export mr-2"></i> ส่งออก Excel</button>
+                        <button onclick="document.getElementById('importFile').click()" class="px-4 py-2 bg-emerald-50 hover:bg-emerald-100 border border-emerald-200 text-emerald-700 rounded-lg text-sm font-bold transition-colors"><i class="fa-solid fa-file-import mr-1"></i> นำเข้าข้อมูล (Excel)</button>
+                        <button onclick="exportExcel()" class="px-5 py-2 bg-rose-600 hover:bg-rose-700 text-white rounded-lg text-sm font-bold shadow-md transition-colors"><i class="fa-solid fa-file-export mr-1"></i> ส่งออกข้อมูลที่กรอง (Excel)</button>
                     </div>
                 </div>
 
                 <div class="bg-white rounded-2xl shadow-sm border overflow-hidden">
+                    <div class="bg-rose-50 px-4 py-2 border-b text-sm font-bold text-rose-800 flex justify-between items-center">
+                        <span><i class="fa-solid fa-list text-rose-500 mr-2"></i>รายการข้อมูลผู้ป่วย</span>
+                        <span id="m-record-count" class="bg-rose-600 text-white px-2 py-1 rounded text-xs">0 รายการ</span>
+                    </div>
                     <div class="overflow-x-auto">
                         <table class="w-full text-left text-sm text-slate-600">
-                            <thead class="bg-rose-50 text-rose-800 font-bold border-b">
+                            <thead class="bg-slate-50 text-slate-700 font-bold border-b">
                                 <tr>
                                     <th class="p-3">ลำดับ</th>
                                     <th class="p-3">ชื่อ-สกุล</th>
@@ -388,12 +497,12 @@
         <div id="tab-larvae" class="tab-content">
             <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
                 <div class="lg:col-span-1 space-y-4">
-                    <div class="bg-white rounded-2xl shadow-sm border overflow-hidden flex flex-col h-[850px]">
+                    <div class="bg-white rounded-2xl shadow-sm border overflow-hidden flex flex-col h-[900px]">
                         <div class="bg-slate-800 px-4 py-3 border-b flex justify-between items-center">
                             <h2 class="font-bold text-white flex items-center"><i class="fa-solid fa-list-ul mr-2"></i> เลือกเคสควบคุมโรค</h2>
                         </div>
                         <div class="p-3 border-b bg-slate-50">
-                            <input type="text" id="l-caseSearch" onkeyup="renderLarvaeCaseList()" placeholder="ค้นหา ชื่อ, หมู่..." class="w-full border rounded-lg p-2 text-sm" />
+                            <input type="text" id="l-caseSearch" onkeyup="renderLarvaeCaseList()" placeholder="ค้นหา ชื่อ, หมู่..." class="w-full border rounded-lg p-2 text-sm focus:ring-2 focus:ring-emerald-500" />
                         </div>
                         <div class="overflow-y-auto flex-grow custom-scrollbar p-2 space-y-2" id="larvaeCaseListArea"></div>
                     </div>
@@ -402,7 +511,7 @@
                 <div class="lg:col-span-2 space-y-6 hidden" id="larvaeDetailSection">
                     
                     <div class="bg-white rounded-2xl shadow-sm border p-5 relative">
-                        <div class="absolute top-0 right-0 bg-amber-500 text-white px-3 py-1 rounded-bl-lg font-bold text-sm shadow">กำลังเลือกเคสนี้</div>
+                        <div class="absolute top-0 right-0 bg-emerald-500 text-white px-3 py-1 rounded-bl-lg font-bold text-sm shadow">กำลังจัดการเคสนี้</div>
                         <h2 class="text-2xl font-bold text-slate-800 mb-1" id="ld-name">-</h2>
                         <div class="mb-3" id="ld-map-btn"></div> 
                         <p class="text-sm text-slate-600 mb-3" id="ld-address">-</p>
@@ -433,7 +542,7 @@
                                 <div class="p-3 bg-white border-t flex justify-between items-center no-export">
                                     <div class="flex items-center space-x-2">
                                         <span class="text-sm font-bold text-slate-600">มุมมองแผนที่:</span>
-                                        <select id="exportMapTypeSelect" onchange="changeExportMapLayer()" class="border rounded p-1 text-sm bg-slate-50">
+                                        <select id="exportMapTypeSelect" onchange="changeExportMapLayer()" class="border rounded p-1 text-sm bg-slate-50 focus:ring-2 focus:ring-sky-500">
                                             <option value="street">แผนที่ถนน (Street)</option>
                                             <option value="satellite">ดาวเทียม (Satellite)</option>
                                         </select>
@@ -453,8 +562,9 @@
                             <table class="w-full text-center text-sm border-collapse">
                                 <thead class="bg-slate-100 text-slate-700">
                                     <tr>
-                                        <th class="py-2 px-2 border">รอบ</th><th class="py-2 px-2 border">วันที่</th><th class="py-2 px-2 border">HI (%)</th>
-                                        <th class="py-2 px-2 border">เกณฑ์</th><th class="py-2 px-2 border">CI (%)</th><th class="py-2 px-2 border">จัดการ</th>
+                                        <th class="py-2 px-2 border">รอบ</th><th class="py-2 px-2 border">วันที่</th>
+                                        <th class="py-2 px-2 border">บ้าน (สำรวจ/พบ)</th><th class="py-2 px-2 border">ภาชนะ (สำรวจ/พบ)</th>
+                                        <th class="py-2 px-2 border">HI (%)</th><th class="py-2 px-2 border">เกณฑ์</th><th class="py-2 px-2 border">CI (%)</th><th class="py-2 px-2 border">จัดการ</th>
                                     </tr>
                                 </thead>
                                 <tbody id="larvaeHistoryTableBody"></tbody>
@@ -579,7 +689,7 @@
                         </div>
                         
                         <div class="p-4 bg-slate-50 border-t flex justify-end">
-                            <button onclick="exportSprayImage()" class="bg-sky-500 hover:bg-sky-600 text-white font-bold py-2 px-6 rounded-lg shadow flex items-center transition-colors">
+                            <button onclick="exportSprayImage()" class="bg-emerald-600 hover:bg-emerald-700 text-white font-bold py-2 px-6 rounded-lg shadow flex items-center transition-colors">
                                 <i class="fa-solid fa-download mr-2"></i> ดาวน์โหลดตารางพ่นยา (ส่งไลน์ อปท.)
                             </button>
                         </div>
@@ -596,37 +706,23 @@
                             </div>
                             
                             <div class="mb-4">
-                                <label class="block text-sm font-bold text-slate-700 mb-2">อัปโหลดภาพกิจกรรม (ไม่เกิน 5 ภาพ)</label>
-                                <div class="grid grid-cols-2 md:grid-cols-5 gap-4">
-                                    <div class="relative border-2 border-dashed border-slate-300 rounded-lg p-2 text-center h-28 flex flex-col items-center justify-center hover:bg-slate-50 cursor-pointer overflow-hidden" onclick="document.getElementById('a-file1').click()">
-                                        <input type="file" id="a-file1" accept="image/*" class="hidden" onchange="handleImagePreview(this, 'a-preview1')">
-                                        <img id="a-preview1" class="hidden absolute inset-0 w-full h-full object-cover">
-                                        <i class="fa-solid fa-image text-slate-400 text-2xl mb-1"></i><span class="text-xs text-slate-500 font-semibold">ภาพที่ 1</span>
-                                    </div>
-                                    <div class="relative border-2 border-dashed border-slate-300 rounded-lg p-2 text-center h-28 flex flex-col items-center justify-center hover:bg-slate-50 cursor-pointer overflow-hidden" onclick="document.getElementById('a-file2').click()">
-                                        <input type="file" id="a-file2" accept="image/*" class="hidden" onchange="handleImagePreview(this, 'a-preview2')">
-                                        <img id="a-preview2" class="hidden absolute inset-0 w-full h-full object-cover">
-                                        <i class="fa-solid fa-image text-slate-400 text-2xl mb-1"></i><span class="text-xs text-slate-500 font-semibold">ภาพที่ 2</span>
-                                    </div>
-                                    <div class="relative border-2 border-dashed border-slate-300 rounded-lg p-2 text-center h-28 flex flex-col items-center justify-center hover:bg-slate-50 cursor-pointer overflow-hidden" onclick="document.getElementById('a-file3').click()">
-                                        <input type="file" id="a-file3" accept="image/*" class="hidden" onchange="handleImagePreview(this, 'a-preview3')">
-                                        <img id="a-preview3" class="hidden absolute inset-0 w-full h-full object-cover">
-                                        <i class="fa-solid fa-image text-slate-400 text-2xl mb-1"></i><span class="text-xs text-slate-500 font-semibold">ภาพที่ 3</span>
-                                    </div>
-                                    <div class="relative border-2 border-dashed border-slate-300 rounded-lg p-2 text-center h-28 flex flex-col items-center justify-center hover:bg-slate-50 cursor-pointer overflow-hidden" onclick="document.getElementById('a-file4').click()">
-                                        <input type="file" id="a-file4" accept="image/*" class="hidden" onchange="handleImagePreview(this, 'a-preview4')">
-                                        <img id="a-preview4" class="hidden absolute inset-0 w-full h-full object-cover">
-                                        <i class="fa-solid fa-image text-slate-400 text-2xl mb-1"></i><span class="text-xs text-slate-500 font-semibold">ภาพที่ 4</span>
-                                    </div>
-                                    <div class="relative border-2 border-dashed border-slate-300 rounded-lg p-2 text-center h-28 flex flex-col items-center justify-center hover:bg-slate-50 cursor-pointer overflow-hidden" onclick="document.getElementById('a-file5').click()">
-                                        <input type="file" id="a-file5" accept="image/*" class="hidden" onchange="handleImagePreview(this, 'a-preview5')">
-                                        <img id="a-preview5" class="hidden absolute inset-0 w-full h-full object-cover">
-                                        <i class="fa-solid fa-image text-slate-400 text-2xl mb-1"></i><span class="text-xs text-slate-500 font-semibold">ภาพที่ 5</span>
-                                    </div>
+                                <label class="block text-sm font-bold text-slate-700 mb-2">อัปโหลดภาพกิจกรรม (เลือกหลายไฟล์พร้อมกัน สูงสุด 5 ภาพ)</label>
+                                <input type="file" id="a-multi-file" accept="image/*" multiple class="hidden" onchange="handleMultipleImageUpload(this)">
+                                <button type="button" onclick="document.getElementById('a-multi-file').click()" class="bg-slate-100 hover:bg-slate-200 border border-slate-300 text-slate-700 px-4 py-2 rounded-lg font-bold text-sm shadow-sm transition-colors mb-3">
+                                    <i class="fa-solid fa-images mr-2"></i> กดเลือกรูปภาพ
+                                </button>
+                                
+                                <div class="grid grid-cols-2 md:grid-cols-5 gap-3" id="a-preview-container">
+                                    <div class="aspect-square border-2 border-dashed border-slate-300 rounded-lg flex items-center justify-center bg-slate-50 relative overflow-hidden"><img id="a-preview1" class="hidden absolute inset-0 w-full h-full object-cover"><span class="text-xs text-slate-400">ภาพที่ 1</span></div>
+                                    <div class="aspect-square border-2 border-dashed border-slate-300 rounded-lg flex items-center justify-center bg-slate-50 relative overflow-hidden"><img id="a-preview2" class="hidden absolute inset-0 w-full h-full object-cover"><span class="text-xs text-slate-400">ภาพที่ 2</span></div>
+                                    <div class="aspect-square border-2 border-dashed border-slate-300 rounded-lg flex items-center justify-center bg-slate-50 relative overflow-hidden"><img id="a-preview3" class="hidden absolute inset-0 w-full h-full object-cover"><span class="text-xs text-slate-400">ภาพที่ 3</span></div>
+                                    <div class="aspect-square border-2 border-dashed border-slate-300 rounded-lg flex items-center justify-center bg-slate-50 relative overflow-hidden"><img id="a-preview4" class="hidden absolute inset-0 w-full h-full object-cover"><span class="text-xs text-slate-400">ภาพที่ 4</span></div>
+                                    <div class="aspect-square border-2 border-dashed border-slate-300 rounded-lg flex items-center justify-center bg-slate-50 relative overflow-hidden"><img id="a-preview5" class="hidden absolute inset-0 w-full h-full object-cover"><span class="text-xs text-slate-400">ภาพที่ 5</span></div>
                                 </div>
+                                <input type="hidden" id="a-file1" data-base64=""><input type="hidden" id="a-file2" data-base64=""><input type="hidden" id="a-file3" data-base64=""><input type="hidden" id="a-file4" data-base64=""><input type="hidden" id="a-file5" data-base64="">
                             </div>
                             
-                            <div class="flex justify-end mt-4">
+                            <div class="flex justify-end mt-4 pt-4 border-t border-indigo-100">
                                 <button onclick="saveCaseActivity()" class="bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-2 px-6 rounded-lg shadow" id="btn-save-activity">
                                     <i class="fa-solid fa-save mr-2"></i> บันทึกกิจกรรมและภาพถ่าย
                                 </button>
@@ -636,10 +732,10 @@
 
                 </div>
                 
-                <div class="lg:col-span-2 flex flex-col items-center justify-center bg-slate-50 rounded-2xl border border-slate-200 border-dashed h-[750px]" id="larvaeEmptyState">
-                    <i class="fa-solid fa-hand-pointer text-5xl text-slate-300 mb-4 animate-bounce"></i>
+                <div class="lg:col-span-2 flex flex-col items-center justify-center bg-white rounded-2xl border border-slate-200 border-dashed h-[750px] shadow-sm" id="larvaeEmptyState">
+                    <i class="fa-solid fa-hand-pointer text-5xl text-emerald-300 mb-4 animate-bounce"></i>
                     <h3 class="text-xl font-bold text-slate-500">กรุณาเลือกเคสผู้ป่วยจากรายการด้านซ้าย</h3>
-                    <p class="text-sm text-slate-400">เพื่อดูประวัติ บันทึกข้อมูลลูกน้ำ กิจกรรม และตารางพ่นสารเคมี</p>
+                    <p class="text-sm text-slate-400 mt-2">เพื่อดูประวัติ บันทึกข้อมูลลูกน้ำ กิจกรรม และตารางพ่นสารเคมี</p>
                 </div>
 
             </div>
@@ -656,8 +752,8 @@
                 <h3 class="text-xl font-bold text-slate-800 mb-2">คุณแน่ใจหรือไม่?</h3>
                 <p class="text-slate-600 mb-6 font-medium">คุณต้องการลบข้อมูลนี้ออกจากระบบใช่หรือไม่? ลบแล้วไม่สามารถเรียกคืนได้</p>
                 <div class="flex w-full space-x-3 mt-2">
-                    <button onclick="closeDeleteModal()" class="flex-1 py-3 bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold rounded-lg border">ยกเลิก</button>
-                    <button onclick="executeDelete()" class="flex-1 py-3 bg-red-600 hover:bg-red-700 text-white font-bold rounded-lg shadow-md"><i class="fa-solid fa-trash mr-1"></i> ยืนยันการลบ</button>
+                    <button onclick="closeDeleteModal()" class="flex-1 py-3 bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold rounded-lg border transition-colors">ยกเลิก</button>
+                    <button onclick="executeDelete()" class="flex-1 py-3 bg-red-600 hover:bg-red-700 text-white font-bold rounded-lg shadow-md transition-colors"><i class="fa-solid fa-trash mr-1"></i> ยืนยันการลบ</button>
                 </div>
             </div>
         </div>
@@ -681,13 +777,13 @@
         // === ตัวแปรหลักของระบบ ===
         const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbxy0TsodTv5jvD-lOZTjN1JvGC0AeJUiaUYrJMm7xIt0g0BSIykPbPHTbqPP2bGbBmOCA/exec';
         
-        const storageKey = 'dengue_patients_data_maeai_v177'; 
+        const storageKey = 'dengue_patients_data_maeai_v178'; 
         let patients = JSON.parse(localStorage.getItem(storageKey)) || [];
-        const larvaeStorageKey = 'dengue_larvae_data_maeai_v177';
+        const larvaeStorageKey = 'dengue_larvae_data_maeai_v178';
         let larvaeSurveys = JSON.parse(localStorage.getItem(larvaeStorageKey)) || [];
-        const sprayStorageKey = 'dengue_spray_data_maeai_v177';
+        const sprayStorageKey = 'dengue_spray_data_maeai_v178';
         let sprayRecords = JSON.parse(localStorage.getItem(sprayStorageKey)) || [];
-        const caseActivitiesStorageKey = 'dengue_case_activities_v177';
+        const caseActivitiesStorageKey = 'dengue_case_activities_v178';
         let caseActivities = JSON.parse(localStorage.getItem(caseActivitiesStorageKey)) || [];
 
         const SUBDISTRICTS = ['แม่อาย', 'มะลิกา', 'ท่าตอน', 'แม่สาว', 'บ้านหลวง', 'แม่นาวาง', 'สันต้นหมื้อ'];
@@ -700,6 +796,7 @@
         let bigMapMarkersLayer, densityMarkersLayer, densityHeatLayer;
         let activeSearchMarker, activeSearchCircle;
         let activePatientId = null;
+        let currentFilteredPatientsForExport = [];
 
         Chart.register(ChartDataLabels);
 
@@ -775,13 +872,13 @@
             
             document.querySelectorAll('.tab-btn').forEach(el => {
                 if(el.id !== 'btn-larvae') { el.classList.remove('bg-rose-700', 'border-b-4', 'border-white', 'text-white'); el.classList.add('hover:bg-rose-600', 'text-rose-50'); } 
-                else { el.classList.remove('bg-amber-600', 'border-b-4', 'border-white', 'opacity-100'); el.classList.add('bg-amber-500', 'opacity-90'); }
+                else { el.classList.remove('bg-emerald-600', 'border-b-4', 'border-white', 'opacity-100'); el.classList.add('bg-emerald-500', 'opacity-90'); }
             });
             
             const activeBtn = document.getElementById(`btn-${tabId}`);
             if(activeBtn) {
                 if(tabId !== 'larvae') { activeBtn.classList.remove('hover:bg-rose-600', 'text-rose-50'); activeBtn.classList.add('bg-rose-700', 'border-b-4', 'border-white', 'text-white'); } 
-                else { activeBtn.classList.remove('bg-amber-500', 'opacity-90'); activeBtn.classList.add('bg-amber-600', 'border-b-4', 'border-white', 'opacity-100'); }
+                else { activeBtn.classList.remove('bg-emerald-500', 'opacity-90'); activeBtn.classList.add('bg-emerald-600', 'border-b-4', 'border-white', 'opacity-100'); }
             }
 
             if(tabId === 'dashboard') renderDashboard();
@@ -838,7 +935,7 @@
                     imgBox.innerHTML += `<div class="aspect-square border rounded-lg overflow-hidden bg-slate-100"><img src="${imgs[i]}" class="w-full h-full object-cover"></div>`;
                 }
             }
-            if(!hasImage) imgBox.innerHTML = `<div class="col-span-5 text-sm text-slate-400 italic py-4">ไม่มีภาพถ่ายกิจกรรม</div>`;
+            if(!hasImage) imgBox.innerHTML = `<div class="col-span-5 text-sm text-slate-400 italic py-4 text-center">ไม่มีภาพถ่ายกิจกรรมแนบมาด้วย</div>`;
         }
 
         function renderAgeChart(dataToRender) {
@@ -893,6 +990,7 @@
             });
         }
 
+        // --- STATS ---
         window.resetStatsFilters = function() { document.getElementById('statFilterWeek').value = ''; document.getElementById('statFilterDate').value = ''; document.getElementById('statFilterSubdistrict').value = 'all'; document.getElementById('statFilterYear').value = 'all'; updateYearDropdowns(); renderVillageStats(); };
         
         function getStatusFromDate(onsetDate) {
@@ -915,6 +1013,7 @@
             });
 
             renderTrendChartStats(filteredPatients);
+            renderHICISummaryTables(filteredPatients); // เพิ่มการเรนเดอร์ตาราง HI/CI
 
             const villageMap = {}; let totalValidCases = 0;
             filteredPatients.forEach(p => {
@@ -964,6 +1063,72 @@
                 rowHtml += `</tr>`; tbody.innerHTML += rowHtml;
             });
         };
+        
+        // ฟังก์ชันใหม่: แสดงตาราง HI/CI ในหน้าสถิติ
+        function renderHICISummaryTables(filteredPatients) {
+            let mooStats = {};
+            let sdStats = {};
+            let distStats = { pts: 0, tH: 0, pH: 0, tC: 0, pC: 0 };
+
+            // 1. นับยอดผู้ป่วย
+            filteredPatients.forEach(p => {
+                let mKey = p.subdistrict + '|' + p.moo;
+                if(!mooStats[mKey]) mooStats[mKey] = { sd: p.subdistrict, moo: p.moo, pts: 0, tH: 0, pH: 0, tC: 0, pC: 0 };
+                mooStats[mKey].pts++;
+                
+                let sKey = p.subdistrict;
+                if(!sdStats[sKey]) sdStats[sKey] = { sd: p.subdistrict, pts: 0, tH: 0, pH: 0, tC: 0, pC: 0 };
+                sdStats[sKey].pts++;
+                
+                distStats.pts++;
+            });
+
+            // 2. เอายอดลูกน้ำมาบวก (กรองเอาเฉพาะการสำรวจของเคสที่อยู่ใน filteredPatients)
+            const validPatientIds = filteredPatients.map(p => p.id);
+            const relevantSurveys = larvaeSurveys.filter(s => validPatientIds.includes(s.patientId));
+            
+            // เพื่อไม่ให้บวกซ้ำซ้อน เอาเฉพาะ "การสำรวจล่าสุด" ของแต่ละเคสมาคิดภาพรวม
+            const latestSurveysMap = {};
+            relevantSurveys.forEach(s => {
+                if(!latestSurveysMap[s.patientId] || new Date(s.surveyDate) > new Date(latestSurveysMap[s.patientId].surveyDate)) {
+                    latestSurveysMap[s.patientId] = s;
+                }
+            });
+
+            Object.values(latestSurveysMap).forEach(s => {
+                let mKey = s.subdistrict + '|' + s.moo;
+                if(mooStats[mKey]) { mooStats[mKey].tH += s.totH; mooStats[mKey].pH += s.posH; mooStats[mKey].tC += s.totC; mooStats[mKey].pC += s.posC; }
+                
+                let sKey = s.subdistrict;
+                if(sdStats[sKey]) { sdStats[sKey].tH += s.totH; sdStats[sKey].pH += s.posH; sdStats[sKey].tC += s.totC; sdStats[sKey].pC += s.posC; }
+                
+                distStats.tH += s.totH; distStats.pH += s.posH; distStats.tC += s.totC; distStats.pC += s.posC;
+            });
+
+            // --- Render Village Table ---
+            const vTbody = document.getElementById('hiVillageTableBody'); vTbody.innerHTML = '';
+            Object.values(mooStats).sort((a,b)=>a.sd.localeCompare(b.sd) || a.moo-b.moo).forEach(row => {
+                const hi = row.tH > 0 ? ((row.pH / row.tH) * 100).toFixed(2) : '0.00';
+                const ci = row.tC > 0 ? ((row.pC / row.tC) * 100).toFixed(2) : '0.00';
+                vTbody.innerHTML += `<tr class="border-b border-slate-100 hover:bg-slate-50"><td class="py-2 px-2 text-left">${row.sd}</td><td class="py-2 px-2">${row.moo}</td><td class="py-2 px-2 font-bold text-rose-600">${row.pts}</td><td class="py-2 px-2">${row.tH}</td><td class="py-2 px-2 text-red-500">${row.pH}</td><td class="py-2 px-2 font-bold ${hi>10?'bg-red-100 text-red-600':'bg-rose-50'}">${hi}%</td><td class="py-2 px-2">${row.tC}</td><td class="py-2 px-2 text-blue-500">${row.pC}</td><td class="py-2 px-2 font-bold bg-blue-50 text-blue-600">${ci}%</td></tr>`;
+            });
+            if(Object.keys(mooStats).length===0) vTbody.innerHTML = '<tr><td colspan="9" class="py-4 text-slate-400">ไม่มีข้อมูลการสำรวจ</td></tr>';
+
+            // --- Render Subdistrict Table ---
+            const sTbody = document.getElementById('hiSubdistrictTableBody'); sTbody.innerHTML = '';
+            Object.values(sdStats).sort((a,b)=>a.sd.localeCompare(b.sd)).forEach(row => {
+                const hi = row.tH > 0 ? ((row.pH / row.tH) * 100).toFixed(2) : '0.00';
+                const ci = row.tC > 0 ? ((row.pC / row.tC) * 100).toFixed(2) : '0.00';
+                sTbody.innerHTML += `<tr class="border-b border-slate-100 hover:bg-slate-50"><td class="py-2 px-2 text-left font-bold text-teal-700">${row.sd}</td><td class="py-2 px-2 font-bold text-rose-600">${row.pts}</td><td class="py-2 px-2 font-bold ${hi>10?'bg-red-100 text-red-600':'bg-rose-50'}">${hi}%</td><td class="py-2 px-2 font-bold bg-blue-50 text-blue-600">${ci}%</td></tr>`;
+            });
+            if(Object.keys(sdStats).length===0) sTbody.innerHTML = '<tr><td colspan="4" class="py-4 text-slate-400">ไม่มีข้อมูล</td></tr>';
+
+            // --- Render District Table ---
+            const dTbody = document.getElementById('hiDistrictTableBody');
+            const dhi = distStats.tH > 0 ? ((distStats.pH / distStats.tH) * 100).toFixed(2) : '0.00';
+            const dci = distStats.tC > 0 ? ((distStats.pC / distStats.tC) * 100).toFixed(2) : '0.00';
+            dTbody.innerHTML = `<tr><td class="py-2 px-2 font-bold text-cyan-700">ไชยปราการ / แม่อาย</td><td class="py-2 px-2 font-bold text-rose-600">${distStats.pts}</td><td class="py-2 px-2 font-bold ${dhi>10?'bg-red-100 text-red-600':'bg-rose-50 text-rose-700'}">${dhi}%</td><td class="py-2 px-2 font-bold bg-blue-50 text-blue-700">${dci}%</td></tr>`;
+        }
 
         window.exportMatrixExcel = function() {
             const fYear = document.getElementById('statFilterYear').value; const fDate = document.getElementById('statFilterDate').value;
@@ -1008,6 +1173,7 @@
             });
         }
 
+        // --- MAPS (SITUATION) ---
         window.resetMapFilters = function() { document.getElementById('mapFilterYear').value='all'; document.getElementById('mapFilterMonth').value='all'; document.getElementById('mapFilterSubdistrict').value='all'; renderSituationMap(); };
         window.renderSituationMap = function() {
             if (!bigMapInst) {
@@ -1108,6 +1274,7 @@
             }, 500);
         };
 
+        // --- PATIENT DATA ENTRY ---
         window.saveData = function(e) {
             e.preventDefault();
             const editId = document.getElementById('editing-id').value;
@@ -1173,11 +1340,31 @@
             }
         };
 
+        // --- PATIENT TABLE & EXCEL (เพิ่มตัวกรอง) ---
         window.renderTable = function() {
-            const term = document.getElementById('searchInput').value.toLowerCase(); const tbody = document.getElementById('tableBody'); tbody.innerHTML = '';
-            const filtered = patients.filter(p => (p.fullName && String(p.fullName).toLowerCase().includes(term)) || (p.hn && String(p.hn).toLowerCase().includes(term)) || (p.subdistrict && String(p.subdistrict).toLowerCase().includes(term)) || (p.villageName && String(p.villageName).toLowerCase().includes(term)) ).sort((a, b) => { const dateA = new Date(a.foundDate || '1970-01-01'); const dateB = new Date(b.foundDate || '1970-01-01'); if (dateB > dateA) return 1; if (dateB < dateA) return -1; return b.id - a.id; });
-            if(filtered.length === 0) { tbody.innerHTML = `<tr><td colSpan="9" class="p-8 text-center text-slate-400"><i class="fa-solid fa-circle-exclamation text-3xl mb-2 opacity-50 block"></i>ไม่พบข้อมูลผู้ป่วย</td></tr>`; return; }
-            filtered.forEach((p, index) => {
+            const term = document.getElementById('searchInput').value.toLowerCase(); 
+            const sd = document.getElementById('m-subdistrict').value;
+            const moo = document.getElementById('m-moo').value;
+            const dFrom = document.getElementById('m-dateFrom').value;
+            const dTo = document.getElementById('m-dateTo').value;
+            
+            const tbody = document.getElementById('tableBody'); tbody.innerHTML = '';
+            
+            currentFilteredPatientsForExport = patients.filter(p => {
+                let match = true;
+                if(term && !( (p.fullName && p.fullName.toLowerCase().includes(term)) || (p.hn && p.hn.toLowerCase().includes(term)) || (p.villageName && p.villageName.toLowerCase().includes(term)) )) match = false;
+                if(sd && p.subdistrict !== sd) match = false;
+                if(moo && String(p.moo) !== String(moo)) match = false;
+                if(dFrom && (!p.foundDate || p.foundDate < dFrom)) match = false;
+                if(dTo && (!p.foundDate || p.foundDate > dTo)) match = false;
+                return match;
+            }).sort((a, b) => { const dateA = new Date(a.foundDate || '1970-01-01'); const dateB = new Date(b.foundDate || '1970-01-01'); if (dateB > dateA) return 1; if (dateB < dateA) return -1; return b.id - a.id; });
+            
+            document.getElementById('m-record-count').innerText = `${currentFilteredPatientsForExport.length} รายการ`;
+
+            if(currentFilteredPatientsForExport.length === 0) { tbody.innerHTML = `<tr><td colSpan="9" class="p-8 text-center text-slate-400"><i class="fa-solid fa-circle-exclamation text-3xl mb-2 opacity-50 block"></i>ไม่พบข้อมูลผู้ป่วย</td></tr>`; return; }
+
+            currentFilteredPatientsForExport.forEach((p, index) => {
                 const tr = document.createElement('tr'); tr.className = "border-b border-slate-50 hover:bg-slate-50 transition-colors"; const vNameDisplay = p.villageName ? ` (${p.villageName})` : '';
                 tr.innerHTML = `<td class="p-3 font-medium text-slate-900">${index + 1}</td><td class="p-3 whitespace-nowrap">${p.fullName || ''}</td><td class="p-3">${p.hn || '-'}</td><td class="p-3 whitespace-nowrap">${p.age || '-'} ปี / ${p.gender || '-'}</td><td class="p-3 whitespace-nowrap">${p.foundDate || '-'}</td><td class="p-3 whitespace-nowrap">ม.${p.moo || '-'}${vNameDisplay} ต.${p.subdistrict || ''}</td><td class="p-3 whitespace-nowrap">${p.serviceUnit || '-'}</td><td class="p-3"><span class="px-2 py-1 rounded text-xs font-bold ${String(p.dx || '').includes('DHF') ? 'bg-red-100 text-red-700' : 'bg-amber-100 text-amber-700'}">${p.dx || ''}</span></td><td class="p-3 text-center whitespace-nowrap"><button onclick="viewOnMap('${p.latlng || ''}', '${p.fullName || ''}', '${p.addressNo || ''}', '${p.moo || ''}', '${p.subdistrict || ''}', '${p.villageName || ''}')" class="p-2 text-rose-500 hover:text-rose-700 hover:bg-rose-50 rounded transition-colors mr-1" title="ดูในแผนที่"><i class="fa-solid fa-location-dot text-lg"></i></button><button onclick="openInGoogleMaps('${p.latlng || ''}')" class="p-2 text-emerald-500 hover:text-emerald-700 hover:bg-emerald-50 rounded transition-colors mr-1" title="ดูใน Google Maps"><i class="fa-brands fa-google text-lg"></i></button><button onclick="editRecord(${p.id})" class="p-2 text-orange-500 hover:text-orange-700 hover:bg-orange-50 rounded transition-colors mr-1" title="แก้ไขข้อมูล"><i class="fa-solid fa-pen-to-square text-lg"></i></button><button onclick="confirmDelete(${p.id})" class="p-2 text-red-500 hover:text-red-700 hover:bg-red-50 rounded transition-colors" title="ลบข้อมูล"><i class="fa-solid fa-trash-can text-lg"></i></button></td>`;
                 tbody.appendChild(tr);
@@ -1198,10 +1385,10 @@
         };
 
         window.exportExcel = function() {
-            if(patients.length === 0) return alert("ไม่มีข้อมูลให้ Export");
-            const exportData = patients.map(p => ({ "ลำดับ": p.id, "ชื่อ-สกุล": p.fullName, "HN": p.hn, "อายุ": p.age, "เพศ": p.gender, "บ้านเลขที่": p.addressNo, "หมู่": p.moo, "ชื่อหมู่บ้าน": p.villageName, "ตำบล": p.subdistrict, "หน่วยบริการ": p.serviceUnit, "Lat, Long": p.latlng !== undefined ? p.latlng : "", "วันที่เริ่มป่วย": p.onsetDate, "วันที่เข้ารับการรักษา": p.foundDate, "DX": p.dx, "สถานที่เรียน/ทำงาน": p.workplace, "หมู่ที่เรียน/ที่ทำงาน": p.workplaceMoo, "อัปเดตล่าสุด": p.updatedAt || "" }));
+            if(currentFilteredPatientsForExport.length === 0) return alert("ไม่มีข้อมูลที่ผ่านการกรองให้ Export");
+            const exportData = currentFilteredPatientsForExport.map(p => ({ "ลำดับ": p.id, "ชื่อ-สกุล": p.fullName, "HN": p.hn, "อายุ": p.age, "เพศ": p.gender, "บ้านเลขที่": p.addressNo, "หมู่": p.moo, "ชื่อหมู่บ้าน": p.villageName, "ตำบล": p.subdistrict, "หน่วยบริการ": p.serviceUnit, "Lat, Long": p.latlng !== undefined ? p.latlng : "", "วันที่เริ่มป่วย": p.onsetDate, "วันที่เข้ารับการรักษา": p.foundDate, "DX": p.dx, "สถานที่เรียน/ทำงาน": p.workplace, "หมู่ที่เรียน/ที่ทำงาน": p.workplaceMoo, "อัปเดตล่าสุด": p.updatedAt || "" }));
             const worksheet = XLSX.utils.json_to_sheet(exportData); const workbook = XLSX.utils.book_new(); XLSX.utils.book_append_sheet(workbook, worksheet, "Dengue Patients");
-            const d = new Date(); const dateStr = `${d.getFullYear()}${String(d.getMonth()+1).padStart(2,'0')}${String(d.getDate()).padStart(2,'0')}`; XLSX.writeFile(workbook, `dengue_data_maeai_${dateStr}.xlsx`);
+            const d = new Date(); const dateStr = `${d.getFullYear()}${String(d.getMonth()+1).padStart(2,'0')}${String(d.getDate()).padStart(2,'0')}`; XLSX.writeFile(workbook, `dengue_data_maeai_filtered_${dateStr}.xlsx`);
         };
 
         window.importExcel = function(event) {
@@ -1225,7 +1412,10 @@
             }; reader.readAsArrayBuffer(file);
         };
 
-        // --- LARVAE HI/CI ---
+        // ==========================================
+        // ---- LARVAE (HI/CI) & SPRAY CONTROL ----
+        // ==========================================
+
         window.renderLarvaeCaseList = function() {
             const term = document.getElementById('l-caseSearch').value.trim().toLowerCase();
             const listArea = document.getElementById('larvaeCaseListArea'); listArea.innerHTML = '';
@@ -1239,7 +1429,7 @@
                 if (surveys.length > 0) { const lt = surveys[surveys.length - 1]; const z = getHIZoneDetails(lt.hi); badge = `<span class="text-xs px-2 py-0.5 rounded border ${z.class}">${lt.round}: HI=${lt.hi}%</span>`; }
                 
                 const div = document.createElement('div');
-                div.className = `p-3 rounded-xl border cursor-pointer transition-all ${activePatientId === p.id ? 'border-amber-500 bg-amber-50 ring-2 ring-amber-200' : 'border-slate-200 hover:border-amber-300 hover:bg-slate-50'}`;
+                div.className = `p-3 rounded-xl border cursor-pointer transition-all ${activePatientId === p.id ? 'border-emerald-500 bg-emerald-50 ring-2 ring-emerald-200' : 'border-slate-200 hover:border-emerald-300 hover:bg-slate-50'}`;
                 div.onclick = () => selectLarvaeCase(p.id);
                 div.innerHTML = `<div class="flex justify-between items-start mb-1"><span class="font-bold text-sm">${p.fullName||'ไม่มีชื่อ'}</span>${badge}</div><div class="text-xs text-slate-500">ม.${p.moo} ต.${p.subdistrict} ${p.villageName ? '('+p.villageName+')':''}</div><div class="text-xs text-slate-400 mt-1"><i class="fa-solid fa-clipboard-check mr-1"></i>สำรวจแล้ว: ${surveys.length} ครั้ง</div>`;
                 listArea.appendChild(div);
@@ -1259,8 +1449,11 @@
             document.getElementById('ld-dx').innerText = `DX: ${pt.dx||'-'}`;
             document.getElementById('ld-date').innerText = `พบผู้ป่วย: ${pt.foundDate||'-'}`;
             
-            if (pt.latlng) document.getElementById('ld-map-btn').innerHTML = `<a href="https://www.google.com/maps/search/?api=1&query=${String(pt.latlng).replace(/\s/g,'')}" target="_blank" class="text-xs bg-emerald-100 text-emerald-700 hover:bg-emerald-200 px-3 py-1.5 rounded-lg inline-block border border-emerald-300 font-bold"><i class="fa-brands fa-google mr-1"></i> นำทางด้วย Google Maps</a>`;
-            else document.getElementById('ld-map-btn').innerHTML = `<span class="text-xs text-slate-400"><i class="fa-solid fa-location-dot mr-1"></i>ไม่มีพิกัดนำทาง</span>`;
+            if (pt.latlng) {
+                document.getElementById('ld-map-btn').innerHTML = `<a href="https://www.google.com/maps/search/?api=1&query=${String(pt.latlng).replace(/\s/g,'')}" target="_blank" class="text-xs bg-emerald-100 text-emerald-700 hover:bg-emerald-200 px-3 py-1.5 rounded-lg inline-block border border-emerald-300 font-bold"><i class="fa-brands fa-google mr-1"></i> นำทางด้วย Google Maps</a>`;
+            } else {
+                document.getElementById('ld-map-btn').innerHTML = `<span class="text-xs text-slate-400"><i class="fa-solid fa-location-dot mr-1"></i>ไม่มีพิกัดนำทาง</span>`;
+            }
 
             document.getElementById('l-patientId').value = pt.id;
             renderLarvaeCaseDetail(); renderSprayTable(); loadCaseActivity();
@@ -1270,14 +1463,15 @@
             if(!activePatientId) return;
             const pSurveys = larvaeSurveys.filter(s => s.patientId === activePatientId).sort((a,b) => new Date(a.surveyDate) - new Date(b.surveyDate));
             const tbody = document.getElementById('larvaeHistoryTableBody'); tbody.innerHTML = '';
-            if (pSurveys.length === 0) { tbody.innerHTML = `<tr><td colSpan="6" class="p-4 text-center text-slate-400 text-sm">ยังไม่มีประวัติการลงพื้นที่</td></tr>`; if(chartLarvaeInstance) chartLarvaeInstance.destroy(); return; }
+            if (pSurveys.length === 0) { tbody.innerHTML = `<tr><td colSpan="8" class="p-4 text-center text-slate-400 text-sm">ยังไม่มีประวัติการลงพื้นที่</td></tr>`; if(chartLarvaeInstance) chartLarvaeInstance.destroy(); return; }
 
             const chartLabels = []; const hiData = []; const ciData = [];
             pSurveys.forEach(s => {
                 chartLabels.push(s.round); hiData.push(s.hi); ciData.push(s.ci);
                 const zone = getHIZoneDetails(s.hi);
                 const tr = document.createElement('tr'); tr.className = "border-b border-slate-100 hover:bg-slate-50";
-                tr.innerHTML = `<td class="py-2 px-2 font-bold">${s.round}</td><td class="py-2 px-2 text-slate-500">${s.surveyDate}</td><td class="py-2 px-2 font-bold">${s.hi}%</td><td class="py-2 px-2"><span class="px-2 py-0.5 rounded text-xs shadow-sm ${zone.class}">${zone.icon} ${zone.text.split(' ')[0]}</span></td><td class="py-2 px-2 text-blue-600">${s.ci}%</td><td class="py-2 px-2"><button onclick="editLarvae(${s.id})" class="text-amber-500 hover:text-amber-700 bg-amber-50 p-1.5 rounded mr-1"><i class="fa-solid fa-pen"></i></button><button onclick="confirmDelete(${s.id}, 'larvae')" class="text-red-500 hover:text-red-700 bg-red-50 p-1.5 rounded"><i class="fa-solid fa-trash"></i></button></td>`;
+                // เพิ่มการแสดง บ้านสำรวจ/พบ และ ภาชนะสำรวจ/พบ
+                tr.innerHTML = `<td class="py-2 px-2 font-bold">${s.round}</td><td class="py-2 px-2 text-slate-500">${s.surveyDate}</td><td class="py-2 px-2 text-slate-600">${s.totH} / <span class="text-red-500 font-bold">${s.posH}</span></td><td class="py-2 px-2 text-slate-600">${s.totC} / <span class="text-blue-500 font-bold">${s.posC}</span></td><td class="py-2 px-2 font-bold">${s.hi}%</td><td class="py-2 px-2"><span class="px-2 py-0.5 rounded text-xs shadow-sm ${zone.class}">${zone.icon} ${zone.text.split(' ')[0]}</span></td><td class="py-2 px-2 text-blue-600">${s.ci}%</td><td class="py-2 px-2"><button onclick="editLarvae(${s.id})" class="text-amber-500 hover:text-amber-700 bg-amber-50 p-1.5 rounded mr-1"><i class="fa-solid fa-pen"></i></button><button onclick="confirmDelete(${s.id}, 'larvae')" class="text-red-500 hover:text-red-700 bg-red-50 p-1.5 rounded"><i class="fa-solid fa-trash"></i></button></td>`;
                 tbody.appendChild(tr);
             });
 
@@ -1355,7 +1549,7 @@
             document.getElementById('btn-save-larvae').innerHTML = '<i class="fa-solid fa-save mr-2"></i> บันทึกผลสำรวจ HI/CI'; document.getElementById('btn-cancel-larvae-edit').classList.add('hidden');
         };
 
-        // --- MAP EXPORT ---
+        // --- EXPORT MAP IMAGE ---
         window.toggleExportMap = function() {
             const w = document.getElementById('export-map-wrapper'); w.classList.toggle('hidden'); if(!w.classList.contains('hidden')) renderExportMap();
         };
@@ -1379,6 +1573,7 @@
             document.getElementById('ex-dates').innerText = `ป่วย: ${pt.onsetDate||'-'} | รักษา: ${pt.foundDate||'-'}`;
 
             if(exportMapInst) { exportMapInst.remove(); exportMapInst = null; }
+            
             exportMapInst = L.map('exportMapInst', { zoomControl: false, renderer: L.canvas() }).setView([lat, lng], 17);
             exportTileStreet = L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', { maxZoom: 19, crossOrigin: true });
             exportTileSat = L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}', { maxZoom: 19, crossOrigin: true });
@@ -1411,7 +1606,6 @@
                 const record = pRecords.find(r => r.round === round) || { date: '', latlng: patient.latlng || '' };
                 const tr = document.createElement('tr'); tr.className = "border-b border-emerald-100 bg-white hover:bg-emerald-50";
                 const displayLatLng = record.latlng ? record.latlng : (patient.latlng || '');
-
                 tr.innerHTML = `<td class="py-2 px-2 font-bold text-emerald-800 border-r border-emerald-100">${round}</td><td class="py-2 px-2 border-r border-emerald-100"><input type="date" id="s-date-${index}" value="${record.date}" class="border-0 bg-transparent text-center focus:ring-2 focus:ring-emerald-500 rounded p-1 w-32 font-medium"></td><td class="py-2 px-2 text-xs text-slate-700 border-r border-emerald-100">${locationStr}</td><td class="py-2 px-2 border-r border-emerald-100"><input type="text" id="s-ll-${index}" value="${displayLatLng}" placeholder="Lat,Long" class="border-0 bg-transparent text-center focus:ring-2 focus:ring-emerald-500 rounded p-1 w-full text-xs text-slate-500"></td><td class="py-2 px-2 no-export"><button onclick="saveSprayRecord('${round}', 's-date-${index}', 's-ll-${index}')" class="bg-emerald-500 hover:bg-emerald-600 text-white p-1.5 rounded shadow text-xs"><i class="fa-solid fa-save"></i></button></td>`;
                 tbody.appendChild(tr);
             });
@@ -1422,7 +1616,6 @@
             if(!dateVal) return alert('กรุณาระบุวันที่ดำเนินการ');
             const exIdx = sprayRecords.findIndex(s => s.patientId === activePatientId && s.round === round);
             const data = { patientId: activePatientId, round: round, date: dateVal, latlng: llVal };
-            
             fetch(SCRIPT_URL, { method: 'POST', body: JSON.stringify({...data, action: 'save_spray'}) }).then(()=>{}).catch(e=>{console.log("Sheet save error", e)});
             if (exIdx > -1) sprayRecords[exIdx] = data; else sprayRecords.push(data);
             localStorage.setItem(sprayStorageKey, JSON.stringify(sprayRecords)); alert(`บันทึกข้อมูลพ่นสารเคมีรอบ ${round} สำเร็จ!`);
@@ -1454,34 +1647,40 @@
             inp.placeholder = spanEl.dataset.ph; inp.value = spanEl.innerText.includes('.') ? '' : spanEl.innerText; spanEl.parentNode.replaceChild(inp, spanEl);
         }
 
-        // --- ACTIVITY & IMAGES ---
-        window.handleImagePreview = function(input, previewId) {
-            const preview = document.getElementById(previewId);
-            if (input.files && input.files[0]) {
+        // --- ACTIVITY & IMAGES (MULTIPLE UPLOAD) ---
+        window.handleMultipleImageUpload = function(input) {
+            const files = input.files;
+            if (!files || files.length === 0) return;
+            resetActivityImagesOnly();
+            const maxFiles = Math.min(files.length, 5);
+            for(let i=0; i<maxFiles; i++) {
                 const reader = new FileReader();
                 reader.onload = function(e) {
                     const img = new Image();
                     img.onload = function() {
                         const canvas = document.createElement('canvas'); const MAX_WIDTH = 400; const scale = MAX_WIDTH / img.width;
                         canvas.width = MAX_WIDTH; canvas.height = img.height * scale; canvas.getContext('2d').drawImage(img, 0, 0, canvas.width, canvas.height);
-                        const dataUrl = canvas.toDataURL('image/jpeg', 0.6); preview.src = dataUrl; preview.classList.remove('hidden'); input.dataset.base64 = dataUrl; 
+                        const dataUrl = canvas.toDataURL('image/jpeg', 0.6); 
+                        const prev = document.getElementById('a-preview'+(i+1)); prev.src = dataUrl; prev.classList.remove('hidden'); 
+                        document.getElementById('a-file'+(i+1)).dataset.base64 = dataUrl;
                     }
                     img.src = e.target.result;
                 }
-                reader.readAsDataURL(input.files[0]);
+                reader.readAsDataURL(files[i]);
             }
         };
-        
-        function resetActivityImages() {
+
+        function resetActivityImagesOnly() {
             for(let i=1; i<=5; i++) {
-                const fileInp = document.getElementById('a-file'+i); if(fileInp) { fileInp.value = ''; fileInp.dataset.base64 = ''; }
+                const fileInp = document.getElementById('a-file'+i); if(fileInp) fileInp.dataset.base64 = '';
                 const prev = document.getElementById('a-preview'+i); if(prev) { prev.src = ''; prev.classList.add('hidden'); }
             }
-            document.getElementById('a-note').value = '';
         }
         
+        function resetActivityForm() { resetActivityImagesOnly(); document.getElementById('a-note').value = ''; }
+        
         window.loadCaseActivity = function() {
-            resetActivityImages(); if(!activePatientId) return;
+            resetActivityForm(); if(!activePatientId) return;
             const activity = caseActivities.find(a => a.patientId === activePatientId);
             if(activity) {
                 document.getElementById('a-note').value = activity.note || '';
