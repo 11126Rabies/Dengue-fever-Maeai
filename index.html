@@ -3,15 +3,13 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ระบบบันทึกข้อมูลผู้ป่วยไข้เลือดออก อ.แม่อาย V1.7.6</title>
+    <title>ระบบบันทึกข้อมูลผู้ป่วยไข้เลือดออก อ.แม่อาย V1.7.7</title>
     
-    <!-- ฟอนต์และไอคอน -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Sarabun:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     
-    <!-- CSS (Tailwind) -->
     <script src="https://cdn.tailwindcss.com"></script>
     <script>
         tailwind.config = {
@@ -19,13 +17,11 @@
         }
     </script>
 
-    <!-- Libraries สำหรับกราฟ, Excel และ HTML2Canvas -->
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels@2.0.0"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
     
-    <!-- Leaflet CSS & JS -->
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
     <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
     <script src="https://unpkg.com/leaflet.heat@0.2.0/dist/leaflet-heat.js"></script>
@@ -58,21 +54,18 @@
         .hi-gray { background-color: #e2e8f0; border: 2px solid #cbd5e1; color: #475569; }  
         .hi-black { background-color: #0f172a; border: 2px solid #000000; color: #ffffff; } 
 
-        /* Input fields for signature to ensure they are visible when exporting */
         .sig-input { border: none; border-bottom: 1px dotted #64748b; background: transparent; text-align: center; color: #0f172a; outline: none; padding: 2px; }
         .sig-input:focus { border-bottom: 2px solid #059669; }
     </style>
 </head>
 <body class="text-slate-800 pb-24 min-h-screen flex flex-col">
 
-    <!-- Loading Screen -->
     <div id="loading-overlay" class="fixed inset-0 bg-rose-900/80 z-[200] flex flex-col items-center justify-center transition-opacity hidden backdrop-blur-sm">
         <i class="fa-solid fa-cloud-arrow-down text-5xl text-white mb-4 animate-bounce"></i>
         <h2 class="text-2xl font-bold text-white mb-2">กำลังเชื่อมต่อฐานข้อมูล...</h2>
         <p class="text-rose-200">กำลังซิงค์ข้อมูลกับ Google Sheets</p>
     </div>
 
-    <!-- Login Screen -->
     <div id="login-screen" class="fixed inset-0 bg-rose-900 z-[100] flex items-center justify-center transition-opacity">
         <div class="bg-white p-8 rounded-2xl shadow-2xl max-w-md w-full mx-4 text-center border-t-8 border-rose-500">
             <div class="w-32 h-32 mx-auto mb-4 flex items-center justify-center">
@@ -87,25 +80,28 @@
         </div>
     </div>
 
-    <!-- Header -->
     <header class="bg-white shadow-sm border-b-4 border-rose-500 py-4 px-8 relative z-10">
-        <div class="max-w-7xl mx-auto flex flex-col md:flex-row items-center justify-center gap-6 text-center md:text-left">
-            <div class="w-24 h-24 flex-shrink-0 bg-white rounded-full p-1 shadow-md border border-rose-100 flex items-center justify-center overflow-hidden">
-                <img src="logo รพ.แม่อาย.jpg" alt="Logo" class="max-w-full max-h-full object-contain" onerror="this.src='https://placehold.co/100x100/ffe4e6/e11d48?text=LOGO'">
-            </div>
-            <div class="flex flex-col items-center md:items-start">
-                <h1 class="text-3xl md:text-4xl font-bold text-rose-700 mb-2">ระบบบันทึกข้อมูลผู้ป่วยไข้เลือดออก อ.แม่อาย</h1>
-                <div class="flex flex-wrap justify-center md:justify-start gap-2 text-sm font-semibold text-slate-600">
-                    <span class="px-3 py-1 bg-rose-50 text-rose-700 rounded-full">งานควบคุมโรค</span>
-                    <span class="px-3 py-1 bg-rose-50 text-rose-700 rounded-full">โรงพยาบาลแม่อาย</span>
-                    <span class="px-3 py-1 bg-emerald-100 text-emerald-700 rounded-full shadow-sm"><i class="fa-solid fa-code-commit mr-1"></i>V1.7.6</span>
-                    <span class="px-3 py-1 bg-emerald-100 text-emerald-700 rounded-full shadow-sm"><i class="fa-solid fa-check-circle mr-1"></i>ระบบควบคุมโรค 0-1-3-7...</span>
+        <div class="max-w-7xl mx-auto flex flex-col md:flex-row items-center justify-between gap-6 text-center md:text-left">
+            <div class="flex flex-col md:flex-row items-center gap-6">
+                <div class="w-24 h-24 flex-shrink-0 bg-white rounded-full p-1 shadow-md border border-rose-100 flex items-center justify-center overflow-hidden">
+                    <img src="logo รพ.แม่อาย.jpg" alt="Logo" class="max-w-full max-h-full object-contain" onerror="this.src='https://placehold.co/100x100/ffe4e6/e11d48?text=LOGO'">
+                </div>
+                <div class="flex flex-col items-center md:items-start">
+                    <h1 class="text-3xl md:text-4xl font-bold text-rose-700 mb-2">ระบบบันทึกข้อมูลผู้ป่วยไข้เลือดออก อ.แม่อาย</h1>
+                    <div class="flex flex-wrap justify-center md:justify-start gap-2 text-sm font-semibold text-slate-600">
+                        <span class="px-3 py-1 bg-rose-50 text-rose-700 rounded-full">งานควบคุมโรค</span>
+                        <span class="px-3 py-1 bg-rose-50 text-rose-700 rounded-full">โรงพยาบาลแม่อาย</span>
+                        <span class="px-3 py-1 bg-emerald-100 text-emerald-700 rounded-full shadow-sm"><i class="fa-solid fa-code-commit mr-1"></i>V1.7.7</span>
+                    </div>
                 </div>
             </div>
+            
+            <button onclick="logout()" class="bg-rose-100 hover:bg-rose-200 text-rose-700 border border-rose-300 font-bold py-2 px-4 rounded-lg shadow-sm flex items-center transition-colors">
+                <i class="fa-solid fa-arrow-right-from-bracket mr-2"></i> ออกจากระบบ
+            </button>
         </div>
     </header>
 
-    <!-- Navigation Tabs -->
     <nav class="bg-rose-500 text-white shadow-md sticky top-0 z-40">
         <div class="max-w-7xl mx-auto flex justify-start md:justify-center overflow-x-auto no-scrollbar">
             <button onclick="switchTab('dashboard')" id="btn-dashboard" class="tab-btn flex items-center space-x-2 px-5 py-4 font-semibold transition-colors bg-rose-700 border-b-4 border-white whitespace-nowrap"><i class="fa-solid fa-chart-pie"></i><span>Dashboard</span></button>
@@ -119,7 +115,6 @@
 
     <main class="flex-grow max-w-7xl w-full mx-auto p-4 sm:p-6">
         
-        <!-- Tab 1: Dashboard -->
         <div id="tab-dashboard" class="tab-content active space-y-6">
             <div class="bg-white p-4 border border-slate-200 rounded-2xl flex flex-wrap gap-4 items-center justify-between shadow-sm">
                 <div class="flex flex-wrap gap-4 items-center w-full md:w-auto">
@@ -148,6 +143,24 @@
                     <div id="stat-top-areas-list" class="text-sm font-medium relative z-10 w-full h-full"></div>
                 </div>
             </div>
+            
+            <div id="dash-latest-activity" class="bg-white rounded-2xl shadow-sm border border-indigo-200 p-5 hidden">
+                <h3 class="text-lg font-bold text-indigo-800 mb-4 flex items-center border-b pb-2"><i class="fa-solid fa-bullhorn text-indigo-500 mr-2"></i>อัปเดตกิจกรรมควบคุมโรคล่าสุด</h3>
+                <div class="flex flex-col md:flex-row gap-6 items-start">
+                    <div class="w-full md:w-1/3">
+                        <div class="bg-indigo-50 p-4 rounded-xl border border-indigo-100 h-full">
+                            <p class="text-xs font-bold text-indigo-400 mb-1">ดำเนินการที่บ้านผู้ป่วย</p>
+                            <h4 class="text-lg font-black text-slate-800 mb-2" id="dash-act-name">...</h4>
+                            <p class="text-sm text-slate-600 mb-4" id="dash-act-loc">...</p>
+                            <div class="text-sm text-slate-700 bg-white p-3 rounded-lg border border-slate-200" id="dash-act-note">...</div>
+                        </div>
+                    </div>
+                    <div class="w-full md:w-2/3">
+                        <p class="text-xs font-bold text-slate-500 mb-2">ภาพถ่ายกิจกรรม</p>
+                        <div class="grid grid-cols-2 md:grid-cols-5 gap-2" id="dash-act-images"></div>
+                    </div>
+                </div>
+            </div>
 
             <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
                 <div class="bg-white p-5 rounded-2xl shadow-sm border border-slate-200">
@@ -168,7 +181,6 @@
             </div>
         </div>
 
-        <!-- Tab 2: สถิติ -->
         <div id="tab-village-stats" class="tab-content">
             <div class="bg-white p-4 border border-slate-200 rounded-2xl flex flex-wrap gap-4 items-end justify-between shadow-sm mb-6">
                 <div class="flex flex-wrap gap-4 items-end w-full md:w-auto">
@@ -233,7 +245,6 @@
             </div>
         </div>
 
-        <!-- Tab 3: แผนที่สถานการณ์ -->
         <div id="tab-situation-map" class="tab-content h-full">
             <div class="space-y-6">
                 <div class="bg-white rounded-2xl shadow-sm border border-slate-200 flex flex-col p-4">
@@ -269,7 +280,6 @@
             </div>
         </div>
 
-        <!-- Tab 4: Data Entry -->
         <div id="tab-entry" class="tab-content">
             <div class="bg-white rounded-2xl shadow-sm border border-slate-200 overflow-hidden max-w-5xl mx-auto">
                 <div class="bg-rose-50 px-6 py-4 border-b border-rose-200 flex justify-between items-center">
@@ -337,7 +347,6 @@
             </div>
         </div>
 
-        <!-- Tab 5: Manage Data -->
         <div id="tab-manage" class="tab-content">
             <div class="space-y-6">
                 <div class="bg-white p-4 rounded-2xl shadow-sm border flex flex-col xl:flex-row justify-between items-center gap-4">
@@ -376,10 +385,8 @@
             </div>
         </div>
 
-        <!-- NEW TAB: Larvae Survey (HI/CI) 1.7.6 -->
         <div id="tab-larvae" class="tab-content">
             <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
-                <!-- Left: Patient List -->
                 <div class="lg:col-span-1 space-y-4">
                     <div class="bg-white rounded-2xl shadow-sm border overflow-hidden flex flex-col h-[850px]">
                         <div class="bg-slate-800 px-4 py-3 border-b flex justify-between items-center">
@@ -392,7 +399,6 @@
                     </div>
                 </div>
 
-                <!-- Right: Details -->
                 <div class="lg:col-span-2 space-y-6 hidden" id="larvaeDetailSection">
                     
                     <div class="bg-white rounded-2xl shadow-sm border p-5 relative">
@@ -405,26 +411,35 @@
                             <span class="text-blue-500 bg-blue-50 px-2 py-1 rounded" id="ld-date">พบผู้ป่วย: -</span>
                         </div>
                         
-                        <!-- Map Export Box -->
                         <div class="mt-4 border-t pt-4">
                             <button onclick="toggleExportMap()" class="bg-sky-50 text-sky-600 hover:bg-sky-100 border border-sky-200 px-4 py-2 rounded-lg font-bold text-sm shadow-sm transition-colors flex items-center">
-                                <i class="fa-solid fa-map mr-2"></i> เปิดดูแผนที่ขอบเขตเพื่อดาวน์โหลดรูปภาพ
+                                <i class="fa-solid fa-map mr-2"></i> เปิดดูแผนที่ขอบเขต 100 เมตร เพื่อดาวน์โหลดรูปภาพ
                             </button>
                             
-                            <div id="export-map-wrapper" class="hidden mt-3 border-2 border-slate-300 rounded-xl overflow-hidden relative bg-slate-100" style="height: 400px; width: 100%;">
-                                <div id="exportMapInst" class="absolute inset-0 z-0"></div>
-                                <!-- Floating Info Card for Image -->
-                                <div class="absolute top-4 left-4 z-10 bg-white/95 backdrop-blur px-4 py-3 rounded-xl shadow-lg border-l-4 border-rose-500 min-w-[280px]">
-                                    <h3 class="font-black text-rose-700 text-lg border-b pb-1 mb-2" id="ex-name">-</h3>
-                                    <div class="text-sm text-slate-700 leading-tight space-y-1">
-                                        <p><span class="font-bold text-red-600" id="ex-dx">DX: -</span></p>
-                                        <p><i class="fa-solid fa-house mr-1 text-slate-400"></i><span id="ex-address">-</span></p>
-                                        <p><i class="fa-solid fa-calendar mr-1 text-slate-400"></i><span id="ex-dates">-</span></p>
+                            <div id="export-map-wrapper" class="hidden mt-3 border-2 border-slate-300 rounded-xl overflow-hidden relative bg-white pb-2 shadow-sm">
+                                <div class="px-5 py-4 border-b bg-slate-50 flex justify-between items-start">
+                                    <div>
+                                        <h3 class="font-black text-rose-700 text-xl mb-1" id="ex-name">-</h3>
+                                        <div class="text-sm text-slate-700 leading-tight space-y-1">
+                                            <p><span class="font-bold text-red-600" id="ex-dx">DX: -</span></p>
+                                            <p><i class="fa-solid fa-house mr-1 text-slate-400"></i><span id="ex-address">-</span></p>
+                                            <p><i class="fa-solid fa-calendar mr-1 text-slate-400"></i><span id="ex-dates">-</span></p>
+                                        </div>
                                     </div>
                                 </div>
-                                <div class="absolute bottom-4 right-4 z-[1000]">
+                                <div class="relative w-full" style="height: 350px;">
+                                    <div id="exportMapInst" class="absolute inset-0 z-0"></div>
+                                </div>
+                                <div class="p-3 bg-white border-t flex justify-between items-center no-export">
+                                    <div class="flex items-center space-x-2">
+                                        <span class="text-sm font-bold text-slate-600">มุมมองแผนที่:</span>
+                                        <select id="exportMapTypeSelect" onchange="changeExportMapLayer()" class="border rounded p-1 text-sm bg-slate-50">
+                                            <option value="street">แผนที่ถนน (Street)</option>
+                                            <option value="satellite">ดาวเทียม (Satellite)</option>
+                                        </select>
+                                    </div>
                                     <button onclick="downloadExportMap()" class="bg-sky-600 hover:bg-sky-700 text-white px-4 py-2 rounded-lg font-bold shadow-md flex items-center text-sm border-2 border-white">
-                                        <i class="fa-solid fa-download mr-2"></i> บันทึกภาพแผนที่นี้
+                                        <i class="fa-solid fa-download mr-2"></i> บันทึกภาพแผนที่
                                     </button>
                                 </div>
                             </div>
@@ -462,6 +477,7 @@
                                         <option value="">- เลือก -</option><option value="Day 0">Day 0</option><option value="Day 1">Day 1</option>
                                         <option value="Day 3">Day 3</option><option value="Day 7">Day 7</option><option value="Day 14">Day 14</option>
                                         <option value="Day 21">Day 21</option><option value="Day 28">Day 28</option>
+                                        <option value="อื่นๆ">อื่นๆ</option>
                                     </select>
                                 </div>
                                 <div><label class="block text-sm font-bold text-slate-600 mb-1">วันที่ลงพื้นที่ *</label><input type="date" id="l-surveyDate" class="w-full border rounded-lg p-2" required/></div>
@@ -522,7 +538,6 @@
                         </form>
                     </div>
 
-                    <!-- Spray Table -->
                     <div class="bg-white rounded-2xl shadow-sm border border-emerald-200 overflow-hidden relative">
                         <div class="bg-emerald-50 px-5 py-3 border-b border-emerald-200">
                             <h3 class="font-bold text-emerald-800 flex items-center"><i class="fa-solid fa-spray-can-sparkles mr-2"></i> แผนปฏิบัติการพ่นสารเคมี (แจ้ง อปท.)</h3>
@@ -530,15 +545,15 @@
                         
                         <div id="spray-export-area" class="p-5 bg-white">
                             <div class="text-center mb-4 hidden" id="spray-export-title">
-                                <h2 class="text-xl font-bold text-emerald-800">แผนปฏิบัติการพ่นสารเคมีควบคุมโรคไข้เลือดออก</h2>
-                                <p class="text-slate-600" id="spray-export-patient-info">-</p>
+                                <h2 class="text-xl font-bold text-emerald-800">แผนปฏิบัติการพ่นสารเคมีควบคุมโรคไข้เลือดออก อ.แม่อาย</h2>
+                                <p class="text-slate-600 mt-1" id="spray-export-patient-info">-</p>
                             </div>
                             
                             <div class="overflow-x-auto">
                                 <table class="w-full text-center text-sm border-collapse border border-slate-300">
                                     <thead class="bg-emerald-600 text-white">
                                         <tr>
-                                            <th class="py-2 px-2 border border-emerald-700">รอบ</th>
+                                            <th class="py-2 px-2 border border-emerald-700">รอบพ่นเคมี</th>
                                             <th class="py-2 px-2 border border-emerald-700">วันที่ดำเนินงาน</th>
                                             <th class="py-2 px-2 border border-emerald-700">สถานที่พ่น (บ้านผู้ป่วย)</th>
                                             <th class="py-2 px-2 border border-emerald-700">พิกัด (Lat, Long)</th>
@@ -549,14 +564,17 @@
                                 </table>
                             </div>
                             
-                            <!-- Signature Section Fixed -->
-                            <div class="mt-12 flex justify-end text-sm text-slate-800 relative z-10 pointer-events-auto">
+                            <div class="mt-8 flex justify-end text-sm text-slate-800 relative z-10 pointer-events-auto">
                                 <div class="text-center">
                                     <p class="mb-4">ลงชื่อ......................................................ผู้แจ้ง</p>
                                     <p class="mb-3">( <input type="text" id="spray-reporter-name" class="sig-input w-48 font-bold" placeholder="พิมพ์ชื่อ-สกุล ที่นี่"> )</p>
                                     <p class="mb-3">ตำแหน่ง <input type="text" id="spray-reporter-pos" class="sig-input w-48 font-bold" placeholder="พิมพ์ตำแหน่ง ที่นี่"></p>
-                                    <p>วันที่ <input type="date" id="spray-reporter-date" class="sig-input w-40 font-bold" style="cursor: pointer;"></p>
+                                    <p>วันที่ <input type="date" id="spray-reporter-date" class="sig-input w-40 font-bold cursor-pointer"></p>
                                 </div>
+                            </div>
+                            
+                            <div class="mt-4 border-t pt-2 text-center hidden" id="spray-export-footer">
+                                <p class="text-xs font-bold text-slate-700 text-left">หมายเหตุ: ดำเนินการครอบคลุมพื้นที่ในรัศมี 100 เมตร จากบ้านผู้ป่วย</p>
                             </div>
                         </div>
                         
@@ -567,7 +585,6 @@
                         </div>
                     </div>
 
-                    <!-- Activity Notes and Images Section -->
                     <div class="bg-white rounded-2xl shadow-sm border border-indigo-200 overflow-hidden mt-6">
                         <div class="bg-indigo-50 px-5 py-3 border-b border-indigo-200">
                             <h3 class="font-bold text-indigo-800 flex items-center"><i class="fa-solid fa-camera-retro mr-2"></i> สรุปการทำกิจกรรม / ภาพถ่าย (ประจำเคสนี้)</h3>
@@ -579,27 +596,37 @@
                             </div>
                             
                             <div class="mb-4">
-                                <label class="block text-sm font-bold text-slate-700 mb-2">อัปโหลดภาพกิจกรรม (ไม่เกิน 3 ภาพ)</label>
-                                <div class="grid grid-cols-3 gap-4">
-                                    <div class="relative border-2 border-dashed border-slate-300 rounded-lg p-2 text-center h-32 flex flex-col items-center justify-center hover:bg-slate-50 cursor-pointer overflow-hidden" onclick="document.getElementById('a-file1').click()">
+                                <label class="block text-sm font-bold text-slate-700 mb-2">อัปโหลดภาพกิจกรรม (ไม่เกิน 5 ภาพ)</label>
+                                <div class="grid grid-cols-2 md:grid-cols-5 gap-4">
+                                    <div class="relative border-2 border-dashed border-slate-300 rounded-lg p-2 text-center h-28 flex flex-col items-center justify-center hover:bg-slate-50 cursor-pointer overflow-hidden" onclick="document.getElementById('a-file1').click()">
                                         <input type="file" id="a-file1" accept="image/*" class="hidden" onchange="handleImagePreview(this, 'a-preview1')">
                                         <img id="a-preview1" class="hidden absolute inset-0 w-full h-full object-cover">
-                                        <i class="fa-solid fa-image text-slate-400 text-3xl mb-2"></i>
+                                        <i class="fa-solid fa-image text-slate-400 text-2xl mb-1"></i><span class="text-xs text-slate-500 font-semibold">ภาพที่ 1</span>
                                     </div>
-                                    <div class="relative border-2 border-dashed border-slate-300 rounded-lg p-2 text-center h-32 flex flex-col items-center justify-center hover:bg-slate-50 cursor-pointer overflow-hidden" onclick="document.getElementById('a-file2').click()">
+                                    <div class="relative border-2 border-dashed border-slate-300 rounded-lg p-2 text-center h-28 flex flex-col items-center justify-center hover:bg-slate-50 cursor-pointer overflow-hidden" onclick="document.getElementById('a-file2').click()">
                                         <input type="file" id="a-file2" accept="image/*" class="hidden" onchange="handleImagePreview(this, 'a-preview2')">
                                         <img id="a-preview2" class="hidden absolute inset-0 w-full h-full object-cover">
-                                        <i class="fa-solid fa-image text-slate-400 text-3xl mb-2"></i>
+                                        <i class="fa-solid fa-image text-slate-400 text-2xl mb-1"></i><span class="text-xs text-slate-500 font-semibold">ภาพที่ 2</span>
                                     </div>
-                                    <div class="relative border-2 border-dashed border-slate-300 rounded-lg p-2 text-center h-32 flex flex-col items-center justify-center hover:bg-slate-50 cursor-pointer overflow-hidden" onclick="document.getElementById('a-file3').click()">
+                                    <div class="relative border-2 border-dashed border-slate-300 rounded-lg p-2 text-center h-28 flex flex-col items-center justify-center hover:bg-slate-50 cursor-pointer overflow-hidden" onclick="document.getElementById('a-file3').click()">
                                         <input type="file" id="a-file3" accept="image/*" class="hidden" onchange="handleImagePreview(this, 'a-preview3')">
                                         <img id="a-preview3" class="hidden absolute inset-0 w-full h-full object-cover">
-                                        <i class="fa-solid fa-image text-slate-400 text-3xl mb-2"></i>
+                                        <i class="fa-solid fa-image text-slate-400 text-2xl mb-1"></i><span class="text-xs text-slate-500 font-semibold">ภาพที่ 3</span>
+                                    </div>
+                                    <div class="relative border-2 border-dashed border-slate-300 rounded-lg p-2 text-center h-28 flex flex-col items-center justify-center hover:bg-slate-50 cursor-pointer overflow-hidden" onclick="document.getElementById('a-file4').click()">
+                                        <input type="file" id="a-file4" accept="image/*" class="hidden" onchange="handleImagePreview(this, 'a-preview4')">
+                                        <img id="a-preview4" class="hidden absolute inset-0 w-full h-full object-cover">
+                                        <i class="fa-solid fa-image text-slate-400 text-2xl mb-1"></i><span class="text-xs text-slate-500 font-semibold">ภาพที่ 4</span>
+                                    </div>
+                                    <div class="relative border-2 border-dashed border-slate-300 rounded-lg p-2 text-center h-28 flex flex-col items-center justify-center hover:bg-slate-50 cursor-pointer overflow-hidden" onclick="document.getElementById('a-file5').click()">
+                                        <input type="file" id="a-file5" accept="image/*" class="hidden" onchange="handleImagePreview(this, 'a-preview5')">
+                                        <img id="a-preview5" class="hidden absolute inset-0 w-full h-full object-cover">
+                                        <i class="fa-solid fa-image text-slate-400 text-2xl mb-1"></i><span class="text-xs text-slate-500 font-semibold">ภาพที่ 5</span>
                                     </div>
                                 </div>
                             </div>
                             
-                            <div class="flex justify-end">
+                            <div class="flex justify-end mt-4">
                                 <button onclick="saveCaseActivity()" class="bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-2 px-6 rounded-lg shadow" id="btn-save-activity">
                                     <i class="fa-solid fa-save mr-2"></i> บันทึกกิจกรรมและภาพถ่าย
                                 </button>
@@ -609,7 +636,6 @@
 
                 </div>
                 
-                <!-- Initial empty state -->
                 <div class="lg:col-span-2 flex flex-col items-center justify-center bg-slate-50 rounded-2xl border border-slate-200 border-dashed h-[750px]" id="larvaeEmptyState">
                     <i class="fa-solid fa-hand-pointer text-5xl text-slate-300 mb-4 animate-bounce"></i>
                     <h3 class="text-xl font-bold text-slate-500">กรุณาเลือกเคสผู้ป่วยจากรายการด้านซ้าย</h3>
@@ -621,22 +647,6 @@
 
     </main>
 
-    <!-- Modal แจ้งเตือนภัย HI สูง -->
-    <div id="alertModal" class="hidden fixed inset-0 z-[300] flex items-center justify-center modal-overlay transition-opacity">
-        <div class="bg-slate-900 rounded-2xl shadow-2xl max-w-sm w-full mx-4 p-6 transform transition-all border-4 border-red-600 alert-pulse">
-            <div class="flex flex-col items-center text-center">
-                <div class="w-20 h-20 bg-slate-800 rounded-full flex items-center justify-center mb-4 border border-red-500">
-                    <i class="fa-solid fa-skull-crossbones text-4xl text-red-500 animate-pulse"></i>
-                </div>
-                <h3 class="text-2xl font-black text-red-500 mb-2">พื้นที่สีดำ (เสี่ยงสูง!)</h3>
-                <p id="alertMessage" class="text-white mb-6 font-bold text-lg"></p>
-                <p class="text-sm text-slate-300 mb-6 border-t border-slate-700 pt-4">ค่า HI ของพื้นที่นี้สูงกว่า 20% <br>อยู่ในเกณฑ์พร้อมเกิดการระบาดซ้ำ<br>โปรดแจ้งทีมควบคุมโรคโดยด่วน</p>
-                <button onclick="closeAlertModal()" class="w-full py-3 bg-red-600 hover:bg-red-700 text-white font-bold rounded-lg shadow-md">รับทราบ</button>
-            </div>
-        </div>
-    </div>
-
-    <!-- Modal ยืนยันการลบ -->
     <div id="deleteModal" class="hidden fixed inset-0 z-[9999] flex items-center justify-center modal-overlay transition-opacity">
         <div class="bg-white rounded-2xl shadow-2xl max-w-sm w-full mx-4 p-6 transform transition-all border-t-8 border-red-500">
             <div class="flex flex-col items-center text-center">
@@ -653,38 +663,46 @@
         </div>
     </div>
 
+    <div id="alertModal" class="hidden fixed inset-0 z-[300] flex items-center justify-center modal-overlay transition-opacity">
+        <div class="bg-slate-900 rounded-2xl shadow-2xl max-w-sm w-full mx-4 p-6 transform transition-all border-4 border-red-600 alert-pulse">
+            <div class="flex flex-col items-center text-center">
+                <div class="w-20 h-20 bg-slate-800 rounded-full flex items-center justify-center mb-4 border border-red-500">
+                    <i class="fa-solid fa-skull-crossbones text-4xl text-red-500 animate-pulse"></i>
+                </div>
+                <h3 class="text-2xl font-black text-red-500 mb-2">พื้นที่สีดำ (เสี่ยงสูง!)</h3>
+                <p id="alertMessage" class="text-white mb-6 font-bold text-lg"></p>
+                <p class="text-sm text-slate-300 mb-6 border-t border-slate-700 pt-4">ค่า HI ของพื้นที่นี้สูงกว่า 20% <br>อยู่ในเกณฑ์พร้อมเกิดการระบาดซ้ำ<br>โปรดแจ้งทีมควบคุมโรคโดยด่วน</p>
+                <button onclick="closeAlertModal()" class="w-full py-3 bg-red-600 hover:bg-red-700 text-white font-bold rounded-lg shadow-md">รับทราบ</button>
+            </div>
+        </div>
+    </div>
+
     <script>
         // === ตัวแปรหลักของระบบ ===
-        // นำลิงก์จาก Apps Script อันใหม่มาใส่ตรงนี้
         const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbxy0TsodTv5jvD-lOZTjN1JvGC0AeJUiaUYrJMm7xIt0g0BSIykPbPHTbqPP2bGbBmOCA/exec';
         
-        const storageKey = 'dengue_patients_data_maeai_v176'; 
+        const storageKey = 'dengue_patients_data_maeai_v177'; 
         let patients = JSON.parse(localStorage.getItem(storageKey)) || [];
-        
-        const larvaeStorageKey = 'dengue_larvae_data_maeai_v176';
+        const larvaeStorageKey = 'dengue_larvae_data_maeai_v177';
         let larvaeSurveys = JSON.parse(localStorage.getItem(larvaeStorageKey)) || [];
-        
-        const sprayStorageKey = 'dengue_spray_data_maeai_v176';
+        const sprayStorageKey = 'dengue_spray_data_maeai_v177';
         let sprayRecords = JSON.parse(localStorage.getItem(sprayStorageKey)) || [];
-
-        const caseActivitiesStorageKey = 'dengue_case_activities_v176';
+        const caseActivitiesStorageKey = 'dengue_case_activities_v177';
         let caseActivities = JSON.parse(localStorage.getItem(caseActivitiesStorageKey)) || [];
 
         const SUBDISTRICTS = ['แม่อาย', 'มะลิกา', 'ท่าตอน', 'แม่สาว', 'บ้านหลวง', 'แม่นาวาง', 'สันต้นหมื้อ'];
-        const SPRAY_ROUNDS = ['Day 0', 'Day 1', 'Day 3', 'Day 7', 'Day 14', 'Day 21', 'Day 28'];
+        const SPRAY_ROUNDS = ['Day 0', 'Day 1', 'Day 3', 'Day 7', 'Day 14', 'Day 21', 'Day 28', 'อื่นๆ'];
         
-        let deleteIdPending = null;
-        let deleteTypePending = 'patient'; 
-        
+        let deleteIdPending = null; let deleteTypePending = 'patient'; 
         let barChartAge, barChartDX, barChartServiceUnit, lineChartTrendStats, chartLarvaeInstance;
         let bigMapInst, densityMapInst, exportMapInst;
+        let exportTileStreet, exportTileSat;
         let bigMapMarkersLayer, densityMarkersLayer, densityHeatLayer;
         let activeSearchMarker, activeSearchCircle;
         let activePatientId = null;
 
         Chart.register(ChartDataLabels);
 
-        // --- Helper Functions ---
         const getCleanGender = (raw) => { if (!raw) return 'ชาย'; let g = raw.toString().trim(); return (g === 'ญ' || g === 'หญิง' || g.includes('หญิง')) ? 'หญิง' : 'ชาย'; };
         const getCleanDX = (raw) => { let d = (raw || '').toString().toUpperCase().trim(); if(d.includes('R/O DF') || d === 'R/O' || d === 'DSS') return 'DSS'; if(d.includes('DHF')) return 'DHF'; if(d.includes('DF')) return 'DF'; return 'อื่นๆ'; };
         const getHIZoneDetails = (hiValue) => {
@@ -693,14 +711,12 @@
             return { class: 'hi-white', text: 'สีขาว (ปลอดภัย)', icon: '<i class="fa-solid fa-check-circle mr-1 text-emerald-500"></i>' };
         };
 
-        // เริ่มต้นการทำงานเมื่อโหลดหน้าเว็บ
         document.addEventListener('DOMContentLoaded', () => {
             if(sessionStorage.getItem('isLoggedIn') !== 'true') document.body.classList.add('overflow-hidden');
             else { document.getElementById('login-screen').classList.add('hidden'); loadDataFromSheets(); }
             updateYearDropdowns(); renderDashboard(); renderVillageStats(); renderTable();
         });
 
-        // เปิดให้ checkLogin เรียกใช้ได้แบบ Global
         window.checkLogin = function(e) {
             e.preventDefault();
             if(document.getElementById('login-password').value === '11126') {
@@ -711,7 +727,13 @@
             } else { alert('รหัสผ่านไม่ถูกต้อง'); document.getElementById('login-password').value = ''; }
         };
 
-        // --- Data Fetching ---
+        window.logout = function() {
+            if(confirm('ยืนยันการออกจากระบบ?')) {
+                sessionStorage.removeItem('isLoggedIn');
+                location.reload();
+            }
+        };
+
         async function loadDataFromSheets() {
             document.getElementById('loading-overlay').classList.remove('hidden');
             try {
@@ -740,11 +762,8 @@
             selects.forEach(id => {
                 const el = document.getElementById(id);
                 if(el) {
-                    const currentVal = el.value;
-                    el.innerHTML = '<option value="all">ทุกปี</option>';
-                    Array.from(years).sort().reverse().forEach(y => {
-                        const option = document.createElement('option'); option.value = parseInt(y); option.text = `${parseInt(y)+543}`; el.appendChild(option);
-                    });
+                    const currentVal = el.value; el.innerHTML = '<option value="all">ทุกปี</option>';
+                    Array.from(years).sort().reverse().forEach(y => { const option = document.createElement('option'); option.value = parseInt(y); option.text = `${parseInt(y)+543}`; el.appendChild(option); });
                     if(currentVal && currentVal !== 'all' && years.has(currentVal)) el.value = currentVal;
                 }
             });
@@ -773,7 +792,6 @@
             if(tabId === 'entry' && !document.getElementById('editing-id').value) document.getElementById('f-id').value = patients.length > 0 ? Math.max(...patients.map(p => p.id)) + 1 : 1;
         };
 
-        // --- DASHBOARD ---
         window.resetDashFilters = function() { document.getElementById('dashFilterYear').value = 'all'; document.getElementById('dashFilterMonth').value = 'all'; renderDashboard(); };
         window.renderDashboard = function() {
             const fYear = document.getElementById('dashFilterYear').value; const fMonth = document.getElementById('dashFilterMonth').value;
@@ -794,8 +812,35 @@
             document.getElementById('stat-top-areas-list').innerHTML = sortedAreas.length > 0 ? areaHtml + '</div>' : '- ไม่มีข้อมูล -';
 
             renderAgeChart(filteredPatients); renderDXChart(filteredPatients); renderServiceUnitBarChart(filteredPatients);
+            renderDashboardLatestActivity(); 
         };
-        
+
+        function renderDashboardLatestActivity() {
+            const wrap = document.getElementById('dash-latest-activity');
+            if(caseActivities.length === 0) { wrap.classList.add('hidden'); return; }
+            
+            const latestAct = [...caseActivities].sort((a,b) => b.updatedAt - a.updatedAt)[0];
+            const pt = patients.find(p => p.id === latestAct.patientId);
+            if(!pt) { wrap.classList.add('hidden'); return; }
+
+            wrap.classList.remove('hidden');
+            document.getElementById('dash-act-name').innerText = `เคส: ${pt.fullName}`;
+            document.getElementById('dash-act-loc').innerText = `ม.${pt.moo} ${pt.villageName? '('+pt.villageName+')':''} ต.${pt.subdistrict}`;
+            document.getElementById('dash-act-note').innerText = latestAct.note || '- ไม่มีการระบุรายละเอียดเพิ่มเติม -';
+
+            const imgBox = document.getElementById('dash-act-images');
+            imgBox.innerHTML = '';
+            const imgs = [latestAct.img1, latestAct.img2, latestAct.img3, latestAct.img4, latestAct.img5];
+            let hasImage = false;
+            for(let i=0; i<5; i++) {
+                if(imgs[i]) {
+                    hasImage = true;
+                    imgBox.innerHTML += `<div class="aspect-square border rounded-lg overflow-hidden bg-slate-100"><img src="${imgs[i]}" class="w-full h-full object-cover"></div>`;
+                }
+            }
+            if(!hasImage) imgBox.innerHTML = `<div class="col-span-5 text-sm text-slate-400 italic py-4">ไม่มีภาพถ่ายกิจกรรม</div>`;
+        }
+
         function renderAgeChart(dataToRender) {
             const ageGroups = ['0-5', '6-9', '10-14', '15-24', '25-59', '60+'];
             const getAgeGroup = (age) => {
@@ -807,16 +852,11 @@
 
             if(barChartAge) barChartAge.destroy();
             barChartAge = new Chart(document.getElementById('barChartAge'), {
-                type: 'bar',
-                data: { labels: ageGroups.map(g => `${g} ปี`), datasets: [{ label: 'จำนวน (ราย)', data: counts, backgroundColor: '#f43f5e', borderRadius: 4 }] },
+                type: 'bar', data: { labels: ageGroups.map(g => `${g} ปี`), datasets: [{ label: 'จำนวน (ราย)', data: counts, backgroundColor: '#f43f5e', borderRadius: 4 }] },
                 options: { responsive: true, maintainAspectRatio: false, scales: { y: { beginAtZero: true, ticks: { stepSize: 1, precision: 0 } } },
                     plugins: { datalabels: { display: true, anchor: 'end', align: 'top', font: { weight: 'bold' }, color: '#9f1239', formatter: (value) => {
-                                if(value === 0) return '';
-                                let total = dataToRender.length; let pct = total > 0 ? (value * 100 / total).toFixed(1) + '%' : '';
-                                return [`${value}`, `(${pct})`];
-                            }
-                        } 
-                    } 
+                                if(value === 0) return ''; let total = dataToRender.length; let pct = total > 0 ? (value * 100 / total).toFixed(1) + '%' : ''; return [`${value}`, `(${pct})`];
+                            } } } 
                 }
             });
         }
@@ -828,15 +868,11 @@
 
             if(barChartDX) barChartDX.destroy();
             barChartDX = new Chart(document.getElementById('barChartDX'), {
-                type: 'bar',
-                data: { labels: dxTypes, datasets: [ { label: 'ชาย', data: maleData, backgroundColor: '#3b82f6' }, { label: 'หญิง', data: femaleData, backgroundColor: '#ec4899' } ] },
+                type: 'bar', data: { labels: dxTypes, datasets: [ { label: 'ชาย', data: maleData, backgroundColor: '#3b82f6' }, { label: 'หญิง', data: femaleData, backgroundColor: '#ec4899' } ] },
                 options: { responsive: true, maintainAspectRatio: false, scales: { x: { stacked: true }, y: { stacked: true, ticks: { stepSize: 1, precision: 0 } } }, 
                     plugins: { datalabels: { display: true, color: '#fff', font: { weight: 'bold', size: 10 }, formatter: (value) => {
-                                if(value === 0) return ''; let total = dataToRender.length; let pct = total > 0 ? (value * 100 / total).toFixed(1) + '%' : '';
-                                return `${value} (${pct})`;
-                            }
-                        } 
-                    } 
+                                if(value === 0) return ''; let total = dataToRender.length; let pct = total > 0 ? (value * 100 / total).toFixed(1) + '%' : ''; return `${value} (${pct})`;
+                            } } } 
                 }
             });
         }
@@ -845,36 +881,18 @@
             const serviceUnits = [...new Set(dataToRender.map(p => p.serviceUnit).filter(Boolean))];
             const unitData = serviceUnits.map(unit => dataToRender.filter(p => p.serviceUnit === unit).length);
             const totalValid = unitData.reduce((a, b) => a + b, 0);
-            
             const sortedData = serviceUnits.map((u, i) => ({unit: u, count: unitData[i]})).sort((a,b) => b.count - a.count);
 
             if(barChartServiceUnit) barChartServiceUnit.destroy();
             barChartServiceUnit = new Chart(document.getElementById('barChartServiceUnit'), {
-                type: 'bar',
-                data: { 
-                    labels: sortedData.map(d => d.unit), 
-                    datasets: [{ label: 'จำนวนผู้ป่วย (ราย)', data: sortedData.map(d => d.count), backgroundColor: '#fb7185', borderRadius: 4 }] 
-                },
-                options: { 
-                    responsive: true, maintainAspectRatio: false, indexAxis: 'y',
-                    layout: { padding: { right: 50 } }, // ป้องกันเปอร์เซ็นต์โดนตัด
-                    scales: { x: { beginAtZero: true, ticks: { stepSize: 1 }, grace: '10%' } },
-                    plugins: { 
-                        datalabels: { 
-                            display: true, anchor: 'end', align: 'right', font: { weight: 'bold' }, color: '#881337', clip: false,
-                            formatter: (value) => {
-                                if (value === 0) return '';
-                                let pct = totalValid > 0 ? Math.round((value / totalValid) * 100) : 0;
-                                return `${value} (${pct}%)`;
-                            } 
-                        },
-                        legend: { display: false }
-                    } 
+                type: 'bar', data: { labels: sortedData.map(d => d.unit), datasets: [{ label: 'จำนวนผู้ป่วย (ราย)', data: sortedData.map(d => d.count), backgroundColor: '#fb7185', borderRadius: 4 }] },
+                options: { responsive: true, maintainAspectRatio: false, indexAxis: 'y', layout: { padding: { right: 50 } }, scales: { x: { beginAtZero: true, ticks: { stepSize: 1 }, grace: '10%' } },
+                    plugins: { datalabels: { display: true, anchor: 'end', align: 'right', font: { weight: 'bold' }, color: '#881337', clip: false,
+                            formatter: (value) => { if (value === 0) return ''; let pct = totalValid > 0 ? Math.round((value / totalValid) * 100) : 0; return `${value} (${pct}%)`; } }, legend: { display: false } } 
                 }
             });
         }
 
-        // --- STATS ---
         window.resetStatsFilters = function() { document.getElementById('statFilterWeek').value = ''; document.getElementById('statFilterDate').value = ''; document.getElementById('statFilterSubdistrict').value = 'all'; document.getElementById('statFilterYear').value = 'all'; updateYearDropdowns(); renderVillageStats(); };
         
         function getStatusFromDate(onsetDate) {
@@ -990,17 +1008,20 @@
             });
         }
 
-        // --- MAPS (SITUATION) ---
         window.resetMapFilters = function() { document.getElementById('mapFilterYear').value='all'; document.getElementById('mapFilterMonth').value='all'; document.getElementById('mapFilterSubdistrict').value='all'; renderSituationMap(); };
         window.renderSituationMap = function() {
             if (!bigMapInst) {
                 bigMapInst = L.map('bigSituationMap').setView([20.030, 99.285], 11);
-                L.control.layers({"แผนที่ถนน": L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', { maxZoom: 18 }).addTo(bigMapInst), "ดาวเทียม": L.tileLayer('http://mt0.google.com/vt/lyrs=y&hl=th&x={x}&y={y}&z={z}', { maxZoom: 18 })}).addTo(bigMapInst);
+                var osm1 = L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', { maxZoom: 18 }).addTo(bigMapInst);
+                var sat1 = L.tileLayer('http://mt0.google.com/vt/lyrs=y&hl=th&x={x}&y={y}&z={z}', { maxZoom: 18 });
+                L.control.layers({"แผนที่ถนน": osm1, "ดาวเทียม": sat1}).addTo(bigMapInst);
                 bigMapMarkersLayer = L.layerGroup().addTo(bigMapInst);
             }
             if (!densityMapInst) {
                 densityMapInst = L.map('densityMap').setView([20.030, 99.285], 11);
-                L.control.layers({"แผนที่ถนน": L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', { maxZoom: 18 }).addTo(densityMapInst), "ดาวเทียม": L.tileLayer('http://mt0.google.com/vt/lyrs=y&hl=th&x={x}&y={y}&z={z}', { maxZoom: 18 })}).addTo(densityMapInst);
+                var osm2 = L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', { maxZoom: 18 }).addTo(densityMapInst);
+                var sat2 = L.tileLayer('http://mt0.google.com/vt/lyrs=y&hl=th&x={x}&y={y}&z={z}', { maxZoom: 18 });
+                L.control.layers({"แผนที่ถนน": osm2, "ดาวเทียม": sat2}).addTo(densityMapInst);
                 densityMarkersLayer = L.layerGroup().addTo(densityMapInst);
             }
             setTimeout(() => { bigMapInst.invalidateSize(); densityMapInst.invalidateSize(); }, 300);
@@ -1021,7 +1042,6 @@
                 if(isNaN(lat) || isNaN(lng)) return;
 
                 heatData.push([lat, lng, 1]);
-                
                 const heatDot = L.circleMarker([lat, lng], { radius: 6, color: '#fff', weight: 1.5, fillColor: '#e11d48', fillOpacity: 0.9 });
                 const vNameDisplay = p.villageName ? ` (${p.villageName})` : '';
                 const dotPopupHtml = `<div class="font-sans text-left min-w-[180px]"><h4 class="font-bold text-rose-700 border-b pb-1 mb-2">${p.fullName || 'ไม่ระบุชื่อ'}</h4><div class="text-xs text-slate-600 leading-relaxed"><span class="text-red-500 font-bold">DX: ${p.dx || '-'}</span><br>บ้านเลขที่: ${p.addressNo || '-'} หมู่: ${p.moo || '-'}${vNameDisplay}<br>ตำบล: ${p.subdistrict || '-'}<br>วันที่เริ่มป่วย: ${p.onsetDate || '-'}<br>วันที่เข้ารักษา: ${p.foundDate || '-'}</div><div class="mt-2 pt-2 border-t text-center"><a href="https://www.google.com/maps/search/?api=1&query=${lat},${lng}" target="_blank" class="text-xs bg-emerald-50 text-emerald-600 hover:bg-emerald-100 px-2 py-1.5 rounded-lg inline-block border border-emerald-200 font-bold shadow-sm w-full"><i class="fa-brands fa-google mr-1"></i> เปิดดูใน Google Maps</a></div></div>`;
@@ -1088,22 +1108,22 @@
             }, 500);
         };
 
-        // --- PATIENT DATA ENTRY ---
         window.saveData = function(e) {
             e.preventDefault();
             const editId = document.getElementById('editing-id').value;
+            const now = new Date(); const localTs = now.getFullYear() + '-' + String(now.getMonth()+1).padStart(2,'0') + '-' + String(now.getDate()).padStart(2,'0') + ' ' + String(now.getHours()).padStart(2,'0') + ':' + String(now.getMinutes()).padStart(2,'0') + ':' + String(now.getSeconds()).padStart(2,'0');
+
             const patientData = {
                 fullName: document.getElementById('f-fullName').value, hn: document.getElementById('f-hn').value, age: Number(document.getElementById('f-age').value), gender: document.getElementById('f-gender').value,
                 addressNo: document.getElementById('f-addressNo').value, moo: document.getElementById('f-moo').value, villageName: document.getElementById('f-villageName').value, subdistrict: document.getElementById('f-subdistrict').value, serviceUnit: document.getElementById('f-serviceUnit').value,
                 latlng: document.getElementById('f-latlng').value.trim(), onsetDate: document.getElementById('f-onsetDate').value, foundDate: document.getElementById('f-foundDate').value,
-                dx: document.getElementById('f-dx').value, workplace: document.getElementById('f-workplace').value, workplaceMoo: document.getElementById('f-workplaceMoo').value
+                dx: document.getElementById('f-dx').value, workplace: document.getElementById('f-workplace').value, workplaceMoo: document.getElementById('f-workplaceMoo').value, updatedAt: localTs
             };
             
             const btnSave = document.getElementById('btn-save'); const originalBtnHtml = btnSave.innerHTML;
             btnSave.innerHTML = '<i class="fa-solid fa-spinner fa-spin mr-2"></i> กำลังบันทึก...'; btnSave.disabled = true;
 
-            if(!editId) patientData.id = patients.length > 0 ? Math.max(...patients.map(p => p.id)) + 1 : 1;
-            else patientData.id = parseInt(editId);
+            if(!editId) patientData.id = patients.length > 0 ? Math.max(...patients.map(p => p.id)) + 1 : 1; else patientData.id = parseInt(editId);
 
             fetch(SCRIPT_URL, { method: 'POST', body: JSON.stringify({...patientData, action: 'save_patient'}) })
             .then(res => res.json()).then(data => {
@@ -1134,21 +1154,14 @@
             document.getElementById('btn-cancel-edit').classList.add('hidden');
         };
 
-        // --- DELETE MODAL ---
-        window.confirmDelete = function(id, type = 'patient') { 
-            deleteIdPending = id; deleteTypePending = type;
-            document.getElementById('deleteModal').classList.remove('hidden'); 
-        };
-        window.closeDeleteModal = function() { 
-            deleteIdPending = null; document.getElementById('deleteModal').classList.add('hidden'); 
-        };
+        window.confirmDelete = function(id, type = 'patient') { deleteIdPending = id; deleteTypePending = type; document.getElementById('deleteModal').classList.remove('hidden'); };
+        window.closeDeleteModal = function() { deleteIdPending = null; document.getElementById('deleteModal').classList.add('hidden'); };
         window.executeDelete = function() {
             if (deleteIdPending !== null) {
                 closeDeleteModal();
                 if(deleteTypePending === 'patient') {
                     document.getElementById('loading-overlay').classList.remove('hidden');
-                    fetch(SCRIPT_URL, { method: 'POST', body: JSON.stringify({ action: 'delete', id: deleteIdPending }) })
-                    .then(res => res.json()).then(() => {
+                    fetch(SCRIPT_URL, { method: 'POST', body: JSON.stringify({ action: 'delete', id: deleteIdPending }) }).then(res => res.json()).then(() => {
                         patients = patients.filter(p => p.id !== deleteIdPending); localStorage.setItem(storageKey, JSON.stringify(patients));
                         if(activePatientId === deleteIdPending) { document.getElementById('larvaeDetailSection').classList.add('hidden'); document.getElementById('larvaeEmptyState').classList.remove('hidden'); activePatientId = null; }
                         updateYearDropdowns(); renderTable(); renderDashboard(); renderVillageStats(); renderLarvaeCaseList();
@@ -1160,16 +1173,12 @@
             }
         };
 
-        // --- PATIENT TABLE & EXCEL ---
         window.renderTable = function() {
-            const term = document.getElementById('searchInput').value.toLowerCase();
-            const tbody = document.getElementById('tableBody'); tbody.innerHTML = '';
+            const term = document.getElementById('searchInput').value.toLowerCase(); const tbody = document.getElementById('tableBody'); tbody.innerHTML = '';
             const filtered = patients.filter(p => (p.fullName && String(p.fullName).toLowerCase().includes(term)) || (p.hn && String(p.hn).toLowerCase().includes(term)) || (p.subdistrict && String(p.subdistrict).toLowerCase().includes(term)) || (p.villageName && String(p.villageName).toLowerCase().includes(term)) ).sort((a, b) => { const dateA = new Date(a.foundDate || '1970-01-01'); const dateB = new Date(b.foundDate || '1970-01-01'); if (dateB > dateA) return 1; if (dateB < dateA) return -1; return b.id - a.id; });
             if(filtered.length === 0) { tbody.innerHTML = `<tr><td colSpan="9" class="p-8 text-center text-slate-400"><i class="fa-solid fa-circle-exclamation text-3xl mb-2 opacity-50 block"></i>ไม่พบข้อมูลผู้ป่วย</td></tr>`; return; }
-
             filtered.forEach((p, index) => {
-                const tr = document.createElement('tr'); tr.className = "border-b border-slate-50 hover:bg-slate-50 transition-colors";
-                const vNameDisplay = p.villageName ? ` (${p.villageName})` : '';
+                const tr = document.createElement('tr'); tr.className = "border-b border-slate-50 hover:bg-slate-50 transition-colors"; const vNameDisplay = p.villageName ? ` (${p.villageName})` : '';
                 tr.innerHTML = `<td class="p-3 font-medium text-slate-900">${index + 1}</td><td class="p-3 whitespace-nowrap">${p.fullName || ''}</td><td class="p-3">${p.hn || '-'}</td><td class="p-3 whitespace-nowrap">${p.age || '-'} ปี / ${p.gender || '-'}</td><td class="p-3 whitespace-nowrap">${p.foundDate || '-'}</td><td class="p-3 whitespace-nowrap">ม.${p.moo || '-'}${vNameDisplay} ต.${p.subdistrict || ''}</td><td class="p-3 whitespace-nowrap">${p.serviceUnit || '-'}</td><td class="p-3"><span class="px-2 py-1 rounded text-xs font-bold ${String(p.dx || '').includes('DHF') ? 'bg-red-100 text-red-700' : 'bg-amber-100 text-amber-700'}">${p.dx || ''}</span></td><td class="p-3 text-center whitespace-nowrap"><button onclick="viewOnMap('${p.latlng || ''}', '${p.fullName || ''}', '${p.addressNo || ''}', '${p.moo || ''}', '${p.subdistrict || ''}', '${p.villageName || ''}')" class="p-2 text-rose-500 hover:text-rose-700 hover:bg-rose-50 rounded transition-colors mr-1" title="ดูในแผนที่"><i class="fa-solid fa-location-dot text-lg"></i></button><button onclick="openInGoogleMaps('${p.latlng || ''}')" class="p-2 text-emerald-500 hover:text-emerald-700 hover:bg-emerald-50 rounded transition-colors mr-1" title="ดูใน Google Maps"><i class="fa-brands fa-google text-lg"></i></button><button onclick="editRecord(${p.id})" class="p-2 text-orange-500 hover:text-orange-700 hover:bg-orange-50 rounded transition-colors mr-1" title="แก้ไขข้อมูล"><i class="fa-solid fa-pen-to-square text-lg"></i></button><button onclick="confirmDelete(${p.id})" class="p-2 text-red-500 hover:text-red-700 hover:bg-red-50 rounded transition-colors" title="ลบข้อมูล"><i class="fa-solid fa-trash-can text-lg"></i></button></td>`;
                 tbody.appendChild(tr);
             });
@@ -1216,10 +1225,7 @@
             }; reader.readAsArrayBuffer(file);
         };
 
-        // ==========================================
-        // ---- LARVAE (HI/CI) & SPRAY CONTROL ----
-        // ==========================================
-
+        // --- LARVAE HI/CI ---
         window.renderLarvaeCaseList = function() {
             const term = document.getElementById('l-caseSearch').value.trim().toLowerCase();
             const listArea = document.getElementById('larvaeCaseListArea'); listArea.innerHTML = '';
@@ -1243,7 +1249,6 @@
         window.selectLarvaeCase = function(pId) {
             activePatientId = pId;
             const pt = patients.find(p => p.id === pId); if(!pt) return;
-
             renderLarvaeCaseList(); cancelLarvaeEdit();
             document.getElementById('larvaeEmptyState').classList.add('hidden'); document.getElementById('larvaeDetailSection').classList.remove('hidden');
             document.getElementById('export-map-wrapper').classList.add('hidden'); 
@@ -1254,14 +1259,10 @@
             document.getElementById('ld-dx').innerText = `DX: ${pt.dx||'-'}`;
             document.getElementById('ld-date').innerText = `พบผู้ป่วย: ${pt.foundDate||'-'}`;
             
-            if (pt.latlng) {
-                document.getElementById('ld-map-btn').innerHTML = `<a href="https://www.google.com/maps/search/?api=1&query=${String(pt.latlng).replace(/\s/g,'')}" target="_blank" class="text-xs bg-emerald-100 text-emerald-700 hover:bg-emerald-200 px-3 py-1.5 rounded-lg inline-block border border-emerald-300 font-bold"><i class="fa-brands fa-google mr-1"></i> นำทางด้วย Google Maps</a>`;
-            } else {
-                document.getElementById('ld-map-btn').innerHTML = `<span class="text-xs text-slate-400"><i class="fa-solid fa-location-dot mr-1"></i>ไม่มีพิกัดนำทาง</span>`;
-            }
+            if (pt.latlng) document.getElementById('ld-map-btn').innerHTML = `<a href="https://www.google.com/maps/search/?api=1&query=${String(pt.latlng).replace(/\s/g,'')}" target="_blank" class="text-xs bg-emerald-100 text-emerald-700 hover:bg-emerald-200 px-3 py-1.5 rounded-lg inline-block border border-emerald-300 font-bold"><i class="fa-brands fa-google mr-1"></i> นำทางด้วย Google Maps</a>`;
+            else document.getElementById('ld-map-btn').innerHTML = `<span class="text-xs text-slate-400"><i class="fa-solid fa-location-dot mr-1"></i>ไม่มีพิกัดนำทาง</span>`;
 
             document.getElementById('l-patientId').value = pt.id;
-
             renderLarvaeCaseDetail(); renderSprayTable(); loadCaseActivity();
         };
 
@@ -1311,7 +1312,6 @@
             if(!activePatientId) return alert("โปรดเลือกเคสก่อน");
             const pt = patients.find(p => p.id === activePatientId);
             const editingId = document.getElementById('l-editingId').value;
-            
             const btn = document.getElementById('btn-save-larvae'); const originBtn = btn.innerHTML;
             btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin mr-2"></i> บันทึก...'; btn.disabled = true;
 
@@ -1355,9 +1355,18 @@
             document.getElementById('btn-save-larvae').innerHTML = '<i class="fa-solid fa-save mr-2"></i> บันทึกผลสำรวจ HI/CI'; document.getElementById('btn-cancel-larvae-edit').classList.add('hidden');
         };
 
-        // --- EXPORT MAP IMAGE ---
+        // --- MAP EXPORT ---
         window.toggleExportMap = function() {
             const w = document.getElementById('export-map-wrapper'); w.classList.toggle('hidden'); if(!w.classList.contains('hidden')) renderExportMap();
+        };
+
+        window.changeExportMapLayer = function() {
+            const type = document.getElementById('exportMapTypeSelect').value;
+            if(exportMapInst) {
+                if(exportTileStreet) exportMapInst.removeLayer(exportTileStreet);
+                if(exportTileSat) exportMapInst.removeLayer(exportTileSat);
+                if(type === 'street') exportTileStreet.addTo(exportMapInst); else exportTileSat.addTo(exportMapInst);
+            }
         };
 
         window.renderExportMap = function() {
@@ -1370,22 +1379,26 @@
             document.getElementById('ex-dates').innerText = `ป่วย: ${pt.onsetDate||'-'} | รักษา: ${pt.foundDate||'-'}`;
 
             if(exportMapInst) { exportMapInst.remove(); exportMapInst = null; }
-            exportMapInst = L.map('exportMapInst', { zoomControl: false }).setView([lat, lng], 17);
-            L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', { maxZoom: 19, crossOrigin: true }).addTo(exportMapInst);
+            exportMapInst = L.map('exportMapInst', { zoomControl: false, renderer: L.canvas() }).setView([lat, lng], 17);
+            exportTileStreet = L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', { maxZoom: 19, crossOrigin: true });
+            exportTileSat = L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}', { maxZoom: 19, crossOrigin: true });
+            changeExportMapLayer();
+            
             L.circle([lat, lng], { radius: 100, color: '#ff0000', weight: 4, dashArray: '8, 8', fillColor: '#ff0000', fillOpacity: 0.3 }).addTo(exportMapInst);
             const icon = L.divIcon({ className: 'custom-div-icon', html: `<div class="pin-marker pin-red" style="font-size: 16px;"><i class="fa-solid fa-house-chimney text-white"></i></div>`, iconSize: [40, 50], iconAnchor: [20, 50] });
             L.marker([lat, lng], {icon: icon}).addTo(exportMapInst);
         };
 
         window.downloadExportMap = function() {
-            const mapEl = document.getElementById('export-map-wrapper'); const btn = mapEl.querySelector('button'); btn.classList.add('hidden');
+            const mapEl = document.getElementById('export-map-wrapper'); const noExport = mapEl.querySelector('.no-export');
+            if(noExport) noExport.classList.add('hidden'); 
             html2canvas(mapEl, { useCORS: true, allowTaint: true, scale: 2 }).then(canvas => {
                 const link = document.createElement('a'); link.download = `แผนที่ควบคุมโรค_${document.getElementById('ex-name').innerText}.png`;
-                link.href = canvas.toDataURL('image/png'); link.click(); btn.classList.remove('hidden');
-            }).catch(err => { alert("เกิดข้อผิดพลาดในการสร้างภาพ: " + err); btn.classList.remove('hidden'); });
+                link.href = canvas.toDataURL('image/png'); link.click(); if(noExport) noExport.classList.remove('hidden');
+            }).catch(err => { alert("เกิดข้อผิดพลาดในการสร้างภาพ: " + err); if(noExport) noExport.classList.remove('hidden'); });
         };
 
-        // --- SPRAY RECORD ---
+        // --- SPRAY TABLE ---
         window.renderSprayTable = function() {
             if(!activePatientId) return; const patient = patients.find(p => p.id === activePatientId);
             const tbody = document.getElementById('sprayTableBody'); tbody.innerHTML = '';
@@ -1397,7 +1410,9 @@
             SPRAY_ROUNDS.forEach((round, index) => {
                 const record = pRecords.find(r => r.round === round) || { date: '', latlng: patient.latlng || '' };
                 const tr = document.createElement('tr'); tr.className = "border-b border-emerald-100 bg-white hover:bg-emerald-50";
-                tr.innerHTML = `<td class="py-2 px-2 font-bold text-emerald-800 border-r border-emerald-100">${round}</td><td class="py-2 px-2 border-r border-emerald-100"><input type="date" id="s-date-${index}" value="${record.date}" class="border-0 bg-transparent text-center focus:ring-2 focus:ring-emerald-500 rounded p-1 w-32 font-medium"></td><td class="py-2 px-2 text-xs text-slate-700 border-r border-emerald-100">${locationStr}</td><td class="py-2 px-2 border-r border-emerald-100"><input type="text" id="s-ll-${index}" value="${record.latlng}" placeholder="Lat,Long" class="border-0 bg-transparent text-center focus:ring-2 focus:ring-emerald-500 rounded p-1 w-full text-xs text-slate-500"></td><td class="py-2 px-2 no-export"><button onclick="saveSprayRecord('${round}', 's-date-${index}', 's-ll-${index}')" class="bg-emerald-500 hover:bg-emerald-600 text-white p-1.5 rounded shadow text-xs"><i class="fa-solid fa-save"></i></button></td>`;
+                const displayLatLng = record.latlng ? record.latlng : (patient.latlng || '');
+
+                tr.innerHTML = `<td class="py-2 px-2 font-bold text-emerald-800 border-r border-emerald-100">${round}</td><td class="py-2 px-2 border-r border-emerald-100"><input type="date" id="s-date-${index}" value="${record.date}" class="border-0 bg-transparent text-center focus:ring-2 focus:ring-emerald-500 rounded p-1 w-32 font-medium"></td><td class="py-2 px-2 text-xs text-slate-700 border-r border-emerald-100">${locationStr}</td><td class="py-2 px-2 border-r border-emerald-100"><input type="text" id="s-ll-${index}" value="${displayLatLng}" placeholder="Lat,Long" class="border-0 bg-transparent text-center focus:ring-2 focus:ring-emerald-500 rounded p-1 w-full text-xs text-slate-500"></td><td class="py-2 px-2 no-export"><button onclick="saveSprayRecord('${round}', 's-date-${index}', 's-ll-${index}')" class="bg-emerald-500 hover:bg-emerald-600 text-white p-1.5 rounded shadow text-xs"><i class="fa-solid fa-save"></i></button></td>`;
                 tbody.appendChild(tr);
             });
         };
@@ -1415,25 +1430,27 @@
 
         window.exportSprayImage = function() {
             const element = document.getElementById('spray-export-area'); const patient = patients.find(p => p.id === activePatientId);
-            document.getElementById('spray-export-title').classList.remove('hidden');
+            document.getElementById('spray-export-title').classList.remove('hidden'); document.getElementById('spray-export-footer').classList.remove('hidden');
             const noExportElems = document.querySelectorAll('.no-export'); noExportElems.forEach(el => el.classList.add('hidden'));
             
             const sigInputs = document.querySelectorAll('.sig-input'); sigInputs.forEach(inp => { inputToText(inp); });
+            const tableInputs = element.querySelectorAll('tbody input'); tableInputs.forEach(inp => { inputToText(inp); });
 
             html2canvas(element, { scale: 2 }).then(canvas => {
                 const link = document.createElement('a'); link.download = `แผนพ่นเคมี_${patient ? patient.fullName : 'ไม่ระบุ'}.png`; link.href = canvas.toDataURL('image/png'); link.click();
-                document.getElementById('spray-export-title').classList.add('hidden'); noExportElems.forEach(el => el.classList.remove('hidden'));
+                document.getElementById('spray-export-title').classList.add('hidden'); document.getElementById('spray-export-footer').classList.add('hidden');
+                noExportElems.forEach(el => el.classList.remove('hidden'));
                 const sigTexts = document.querySelectorAll('.sig-text'); sigTexts.forEach(txt => textToInput(txt));
             });
         };
         
         function inputToText(inputEl) {
             const val = inputEl.value || ''; const span = document.createElement('span'); span.className = 'sig-text font-bold text-slate-800 ' + inputEl.className.replace('sig-input', ''); span.style.borderBottom = inputEl.style.borderBottom;
-            span.innerText = val === '' && inputEl.type === 'date' ? '..../..../.......' : (val === '' ? '............................' : val);
+            span.innerText = val === '' && inputEl.type === 'date' ? '......../......../................' : (val === '' ? '............................' : val);
             span.dataset.type = inputEl.type; span.dataset.id = inputEl.id; span.dataset.ph = inputEl.placeholder; inputEl.parentNode.replaceChild(span, inputEl);
         }
         function textToInput(spanEl) {
-            const inp = document.createElement('input'); inp.type = spanEl.dataset.type; inp.id = spanEl.dataset.id; inp.className = 'sig-input w-48 font-bold'; if(inp.type === 'date') inp.className = 'sig-input w-40 font-bold';
+            const inp = document.createElement('input'); inp.type = spanEl.dataset.type; inp.id = spanEl.dataset.id; inp.className = spanEl.className.replace('sig-text text-slate-800', '').replace('font-bold', 'sig-input font-bold'); if(inp.type === 'date' && inp.className.includes('sig-input')) inp.className = 'sig-input w-40 font-bold';
             inp.placeholder = spanEl.dataset.ph; inp.value = spanEl.innerText.includes('.') ? '' : spanEl.innerText; spanEl.parentNode.replaceChild(inp, spanEl);
         }
 
@@ -1456,9 +1473,9 @@
         };
         
         function resetActivityImages() {
-            for(let i=1; i<=3; i++) {
-                document.getElementById('a-file'+i).value = ''; document.getElementById('a-file'+i).dataset.base64 = '';
-                const prev = document.getElementById('a-preview'+i); prev.src = ''; prev.classList.add('hidden');
+            for(let i=1; i<=5; i++) {
+                const fileInp = document.getElementById('a-file'+i); if(fileInp) { fileInp.value = ''; fileInp.dataset.base64 = ''; }
+                const prev = document.getElementById('a-preview'+i); if(prev) { prev.src = ''; prev.classList.add('hidden'); }
             }
             document.getElementById('a-note').value = '';
         }
@@ -1468,8 +1485,8 @@
             const activity = caseActivities.find(a => a.patientId === activePatientId);
             if(activity) {
                 document.getElementById('a-note').value = activity.note || '';
-                const imgs = [activity.img1, activity.img2, activity.img3];
-                for(let i=1; i<=3; i++) { if(imgs[i-1]) { const prev = document.getElementById('a-preview'+i); prev.src = imgs[i-1]; prev.classList.remove('hidden'); document.getElementById('a-file'+i).dataset.base64 = imgs[i-1]; } }
+                const imgs = [activity.img1, activity.img2, activity.img3, activity.img4, activity.img5];
+                for(let i=1; i<=5; i++) { if(imgs[i-1]) { const prev = document.getElementById('a-preview'+i); if(prev){ prev.src = imgs[i-1]; prev.classList.remove('hidden'); document.getElementById('a-file'+i).dataset.base64 = imgs[i-1]; } } }
             }
         };
         
@@ -1477,20 +1494,20 @@
             if(!activePatientId) return alert('กรุณาเลือกเคสก่อน');
             const note = document.getElementById('a-note').value;
             const img1 = document.getElementById('a-file1').dataset.base64 || ''; const img2 = document.getElementById('a-file2').dataset.base64 || ''; const img3 = document.getElementById('a-file3').dataset.base64 || '';
+            const img4 = document.getElementById('a-file4').dataset.base64 || ''; const img5 = document.getElementById('a-file5').dataset.base64 || '';
             
             const btn = document.getElementById('btn-save-activity'); const ob = btn.innerHTML; btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> บันทึก...';
             
-            const data = { patientId: activePatientId, note, img1, img2, img3 };
+            const data = { patientId: activePatientId, note, img1, img2, img3, img4, img5, updatedAt: Date.now() };
             fetch(SCRIPT_URL, { method: 'POST', body: JSON.stringify({...data, action: 'save_activity'}) }).then(()=>{}).catch(e=>{console.log("Sheet save error", e)});
             
             const exIdx = caseActivities.findIndex(a => a.patientId === activePatientId);
             if(exIdx > -1) caseActivities[exIdx] = data; else caseActivities.push(data);
             localStorage.setItem(caseActivitiesStorageKey, JSON.stringify(caseActivities));
             
-            setTimeout(()=>{ btn.innerHTML = ob; alert('บันทึกภาพและข้อความกิจกรรมสำเร็จ!'); }, 500);
+            setTimeout(()=>{ btn.innerHTML = ob; alert('บันทึกภาพและข้อความกิจกรรมสำเร็จ!'); renderDashboard(); }, 500);
         };
 
-        // --- ALERTS ---
         window.showWarningAlert = function(message) { document.getElementById('alertMessage').innerHTML = message; document.getElementById('alertModal').classList.remove('hidden'); };
         window.closeAlertModal = function() { document.getElementById('alertModal').classList.add('hidden'); };
 
