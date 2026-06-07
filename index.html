@@ -1127,7 +1127,7 @@
             const dTbody = document.getElementById('hiDistrictTableBody');
             const dhi = distStats.tH > 0 ? ((distStats.pH / distStats.tH) * 100).toFixed(2) : '0.00';
             const dci = distStats.tC > 0 ? ((distStats.pC / distStats.tC) * 100).toFixed(2) : '0.00';
-            dTbody.innerHTML = `<tr><td class="py-2 px-2 font-bold text-cyan-700">ไชยปราการ / แม่อาย</td><td class="py-2 px-2 font-bold text-rose-600">${distStats.pts}</td><td class="py-2 px-2 font-bold ${dhi>10?'bg-red-100 text-red-600':'bg-rose-50 text-rose-700'}">${dhi}%</td><td class="py-2 px-2 font-bold bg-blue-50 text-blue-700">${dci}%</td></tr>`;
+            dTbody.innerHTML = `<tr><td class="py-2 px-2 font-bold text-cyan-700">แม่อาย</td><td class="py-2 px-2 font-bold text-rose-600">${distStats.pts}</td><td class="py-2 px-2 font-bold ${dhi>10?'bg-red-100 text-red-600':'bg-rose-50 text-rose-700'}">${dhi}%</td><td class="py-2 px-2 font-bold bg-blue-50 text-blue-700">${dci}%</td></tr>`;
         }
 
         window.exportMatrixExcel = function() {
