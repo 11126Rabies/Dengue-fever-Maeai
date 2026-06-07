@@ -5,11 +5,13 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>ระบบบันทึกข้อมูลผู้ป่วยไข้เลือดออก อ.แม่อาย V1.7.8</title>
     
+    <!-- ฟอนต์และไอคอน -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Sarabun:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     
+    <!-- CSS (Tailwind) -->
     <script src="https://cdn.tailwindcss.com"></script>
     <script>
         tailwind.config = {
@@ -17,17 +19,19 @@
         }
     </script>
 
+    <!-- Libraries สำหรับกราฟ, Excel และ HTML2Canvas -->
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels@2.0.0"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
     
+    <!-- Leaflet CSS & JS -->
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
     <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
     <script src="https://unpkg.com/leaflet.heat@0.2.0/dist/leaflet-heat.js"></script>
 
     <style>
-        body { background-color: #f1f5f9; } /* พื้นหลังสว่างขึ้นนิดนึงให้กล่องลอยขึ้น */
+        body { background-color: #f1f5f9; } 
         .tab-content { display: none; animation: fadeIn 0.3s ease-in-out; }
         .tab-content.active { display: block; }
         @keyframes fadeIn { from { opacity: 0; transform: translateY(5px); } to { opacity: 1; transform: translateY(0); } }
@@ -50,26 +54,27 @@
         .custom-scrollbar::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 4px; }
         
         .counter-btn { width: 40px; height: 40px; display: flex; align-items: center; justify-content: center; font-size: 1.25rem; font-weight: bold; cursor: pointer; user-select: none;}
-        .hi-white { background-color: #ffffff; border: 2px solid #e2e8f0; color: #10b981; } 
-        .hi-gray { background-color: #f1f5f9; border: 2px solid #94a3b8; color: #334155; }  
-        .hi-black { background-color: #0f172a; border: 2px solid #000000; color: #ffffff; } 
+        .hi-white { background-color: #ffffff; border: 1px solid #e2e8f0; color: #10b981; } 
+        .hi-gray { background-color: #f1f5f9; border: 1px solid #cbd5e1; color: #475569; }  
+        .hi-black { background-color: #0f172a; border: 1px solid #000000; color: #ffffff; } 
 
         .sig-input { border: none; border-bottom: 1px dotted #64748b; background: transparent; text-align: center; color: #0f172a; outline: none; padding: 2px; }
         .sig-input:focus { border-bottom: 2px solid #059669; }
         
-        /* เพิ่มเงาให้กล่องสถิติมีมิติ */
         .stat-card { transition: all 0.2s ease; box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06); }
         .stat-card:hover { transform: translateY(-2px); box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05); }
     </style>
 </head>
 <body class="text-slate-800 pb-24 min-h-screen flex flex-col">
 
+    <!-- Loading Screen -->
     <div id="loading-overlay" class="fixed inset-0 bg-rose-900/80 z-[200] flex flex-col items-center justify-center transition-opacity hidden backdrop-blur-sm">
         <i class="fa-solid fa-cloud-arrow-down text-5xl text-white mb-4 animate-bounce"></i>
         <h2 class="text-2xl font-bold text-white mb-2">กำลังเชื่อมต่อฐานข้อมูล...</h2>
         <p class="text-rose-200">กำลังซิงค์ข้อมูลกับ Google Sheets</p>
     </div>
 
+    <!-- Login Screen -->
     <div id="login-screen" class="fixed inset-0 bg-rose-900 z-[100] flex items-center justify-center transition-opacity">
         <div class="bg-white p-8 rounded-2xl shadow-2xl max-w-md w-full mx-4 text-center border-t-8 border-rose-500">
             <div class="w-32 h-32 mx-auto mb-4 flex items-center justify-center">
@@ -84,6 +89,7 @@
         </div>
     </div>
 
+    <!-- Header -->
     <header class="bg-white shadow-md border-b-4 border-rose-500 py-4 px-8 relative z-10">
         <div class="max-w-7xl mx-auto flex flex-col md:flex-row items-center justify-between gap-6 text-center md:text-left">
             <div class="flex flex-col md:flex-row items-center gap-6">
@@ -106,6 +112,7 @@
         </div>
     </header>
 
+    <!-- Navigation Tabs -->
     <nav class="bg-rose-600 text-white shadow-md sticky top-0 z-40">
         <div class="max-w-7xl mx-auto flex justify-start md:justify-center overflow-x-auto no-scrollbar">
             <button onclick="switchTab('dashboard')" id="btn-dashboard" class="tab-btn flex items-center space-x-2 px-5 py-4 font-semibold transition-colors bg-rose-800 border-b-4 border-white whitespace-nowrap"><i class="fa-solid fa-chart-pie"></i><span>Dashboard</span></button>
@@ -113,12 +120,13 @@
             <button onclick="switchTab('situation-map')" id="btn-situation-map" class="tab-btn flex items-center space-x-2 px-5 py-4 font-semibold transition-colors hover:bg-rose-700 text-rose-50 whitespace-nowrap"><i class="fa-solid fa-map-location-dot"></i><span>แผนที่สถานการณ์</span></button>
             <button onclick="switchTab('entry')" id="btn-entry" class="tab-btn flex items-center space-x-2 px-5 py-4 font-semibold transition-colors hover:bg-rose-700 text-rose-50 whitespace-nowrap"><i class="fa-solid fa-pen-to-square"></i><span>บันทึกผู้ป่วยใหม่</span></button>
             <button onclick="switchTab('manage')" id="btn-manage" class="tab-btn flex items-center space-x-2 px-5 py-4 font-semibold transition-colors hover:bg-rose-700 text-rose-50 whitespace-nowrap"><i class="fa-solid fa-database"></i><span>จัดการข้อมูล</span></button>
-            <button onclick="switchTab('larvae')" id="btn-larvae" class="tab-btn flex items-center space-x-2 px-5 py-4 font-semibold transition-colors hover:bg-emerald-600 text-rose-50 whitespace-nowrap bg-emerald-500"><i class="fa-solid fa-mosquito text-white"></i><span class="text-white">จัดการควบคุมโรค</span></button>
+            <button onclick="switchTab('larvae')" id="btn-larvae" class="tab-btn flex items-center space-x-2 px-5 py-4 font-semibold transition-colors hover:bg-emerald-600 text-rose-50 whitespace-nowrap bg-emerald-500"><i class="fa-solid fa-mosquito text-white"></i><span class="text-white">จัดการควบคุมโรค HI/CI</span></button>
         </div>
     </nav>
 
     <main class="flex-grow max-w-7xl w-full mx-auto p-4 sm:p-6">
         
+        <!-- Tab 1: Dashboard -->
         <div id="tab-dashboard" class="tab-content active space-y-6">
             <div class="bg-white p-4 border border-slate-200 rounded-2xl flex flex-wrap gap-4 items-center justify-between shadow-sm">
                 <div class="flex flex-wrap gap-4 items-center w-full md:w-auto">
@@ -166,7 +174,7 @@
                 </div>
             </div>
             
-            <div id="dash-latest-activity" class="bg-emerald-50 rounded-2xl shadow-sm border border-emerald-200 p-5 mt-8 hidden">
+            <div id="dash-latest-activity" class="bg-emerald-50/50 rounded-2xl shadow-sm border border-emerald-200 p-5 mt-8 hidden">
                 <div class="flex justify-between items-center border-b border-emerald-200 pb-3 mb-4">
                     <h3 class="text-xl font-bold text-emerald-800 flex items-center"><i class="fa-solid fa-bullhorn text-emerald-500 mr-2 text-2xl"></i>อัปเดตกิจกรรมควบคุมโรคล่าสุด (HI/CI & พ่นเคมี)</h3>
                     <button onclick="switchTab('larvae')" class="text-sm bg-emerald-600 text-white px-4 py-2 rounded-lg font-bold shadow hover:bg-emerald-700 transition-colors">ไปที่หน้าจัดการควบคุมโรค</button>
@@ -182,13 +190,13 @@
                     </div>
                     <div class="w-full md:w-2/3">
                         <p class="text-sm font-bold text-emerald-600 mb-3"><i class="fa-solid fa-images mr-1"></i> ภาพถ่ายกิจกรรม</p>
-                        <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-3" id="dash-act-images">
-                            </div>
+                        <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-3" id="dash-act-images"></div>
                     </div>
                 </div>
             </div>
         </div>
 
+        <!-- Tab 2: สถิติ -->
         <div id="tab-village-stats" class="tab-content">
             <div class="bg-white p-4 border border-slate-200 rounded-2xl flex flex-wrap gap-4 items-end justify-between shadow-sm mb-6">
                 <div class="flex flex-wrap gap-4 items-end w-full md:w-auto">
@@ -210,8 +218,8 @@
                     <div class="bg-emerald-600 text-white px-5 py-2 rounded-lg font-bold shadow-md" id="matrix-total-badge">ผู้ป่วยสะสม: 0 ราย</div>
                 </div>
 
-                <div class="bg-slate-50 p-5 rounded-xl border border-slate-200">
-                    <h3 class="text-lg font-bold text-slate-800 mb-4 flex items-center"><i class="fa-solid fa-arrow-trend-up text-rose-500 mr-2"></i>แนวโน้มจำนวนผู้ป่วยรายตำบล</h3>
+                <div class="bg-indigo-50/50 p-5 rounded-xl border border-indigo-100 shadow-[inset_0_2px_4px_rgba(0,0,0,0.02)]">
+                    <h3 class="text-lg font-bold text-indigo-800 mb-4 flex items-center"><i class="fa-solid fa-arrow-trend-up text-indigo-500 mr-2"></i>แนวโน้มจำนวนผู้ป่วยรายตำบล</h3>
                     <div class="chart-container"><canvas id="lineChartTrendStats"></canvas></div>
                 </div>
 
@@ -238,22 +246,19 @@
                     <h3 class="text-xl font-bold text-emerald-800 mb-4 flex items-center"><i class="fa-solid fa-mosquito text-emerald-500 mr-2"></i> สรุปข้อมูลดัชนีลูกน้ำยุงลาย (HI/CI) ระดับหมู่บ้านและตำบล</h3>
                     
                     <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
-                        <div class="bg-white border border-emerald-100 rounded-xl shadow-sm overflow-hidden">
+                        <div class="bg-white border border-emerald-100 rounded-xl shadow-sm overflow-hidden stat-card">
                             <div class="bg-emerald-50 px-4 py-3 border-b border-emerald-100">
                                 <h4 class="font-bold text-emerald-700"><i class="fa-solid fa-map-location-dot mr-1"></i> ข้อมูลรายหมู่บ้าน</h4>
                             </div>
                             <div class="overflow-x-auto max-h-[400px] custom-scrollbar">
                                 <table class="w-full text-center text-sm">
-                                    <thead class="bg-slate-100 text-slate-700 font-bold sticky top-0 shadow-sm">
+                                    <thead class="bg-slate-100 text-slate-700 font-bold sticky top-0 shadow-sm z-10">
                                         <tr>
-                                            <th class="py-2 px-2 border-b">ตำบล</th>
-                                            <th class="py-2 px-2 border-b">หมู่</th>
-                                            <th class="py-2 px-2 border-b">ผู้ป่วย (ราย)</th>
-                                            <th class="py-2 px-2 border-b">บ้านทั้งหมด</th>
-                                            <th class="py-2 px-2 border-b">บ้านที่พบ</th>
-                                            <th class="py-2 px-2 border-b bg-rose-50">HI%</th>
-                                            <th class="py-2 px-2 border-b">ภาชนะทั้งหมด</th>
-                                            <th class="py-2 px-2 border-b">ภาชนะที่พบ</th>
+                                            <th class="py-2 px-2 border-b border-r">ตำบล</th>
+                                            <th class="py-2 px-2 border-b border-r">หมู่</th>
+                                            <th class="py-2 px-2 border-b border-r">ผู้ป่วย (ราย)</th>
+                                            <th class="py-2 px-2 border-b border-r bg-rose-50">HI%</th>
+                                            <th class="py-2 px-2 border-b border-r bg-rose-50">เกณฑ์</th>
                                             <th class="py-2 px-2 border-b bg-blue-50">CI%</th>
                                         </tr>
                                     </thead>
@@ -263,7 +268,7 @@
                         </div>
 
                         <div class="space-y-6">
-                            <div class="bg-white border border-teal-100 rounded-xl shadow-sm overflow-hidden">
+                            <div class="bg-white border border-teal-100 rounded-xl shadow-sm overflow-hidden stat-card">
                                 <div class="bg-teal-50 px-4 py-3 border-b border-teal-100">
                                     <h4 class="font-bold text-teal-700"><i class="fa-solid fa-map mr-1"></i> ข้อมูลรายตำบล</h4>
                                 </div>
@@ -271,9 +276,10 @@
                                     <table class="w-full text-center text-sm">
                                         <thead class="bg-slate-100 text-slate-700 font-bold">
                                             <tr>
-                                                <th class="py-2 px-2 border-b">ตำบล</th>
-                                                <th class="py-2 px-2 border-b">ผู้ป่วย (ราย)</th>
-                                                <th class="py-2 px-2 border-b bg-rose-50">HI%</th>
+                                                <th class="py-2 px-2 border-b border-r">ตำบล</th>
+                                                <th class="py-2 px-2 border-b border-r">ผู้ป่วย (ราย)</th>
+                                                <th class="py-2 px-2 border-b border-r bg-rose-50">HI%</th>
+                                                <th class="py-2 px-2 border-b border-r bg-rose-50">เกณฑ์</th>
                                                 <th class="py-2 px-2 border-b bg-blue-50">CI%</th>
                                             </tr>
                                         </thead>
@@ -282,7 +288,7 @@
                                 </div>
                             </div>
                             
-                            <div class="bg-white border border-cyan-100 rounded-xl shadow-sm overflow-hidden">
+                            <div class="bg-white border border-cyan-100 rounded-xl shadow-sm overflow-hidden stat-card">
                                 <div class="bg-cyan-50 px-4 py-3 border-b border-cyan-100">
                                     <h4 class="font-bold text-cyan-700"><i class="fa-solid fa-city mr-1"></i> ข้อมูลภาพรวมระดับอำเภอ</h4>
                                 </div>
@@ -290,9 +296,10 @@
                                     <table class="w-full text-center text-sm">
                                         <thead class="bg-slate-100 text-slate-700 font-bold">
                                             <tr>
-                                                <th class="py-2 px-2 border-b">อำเภอ</th>
-                                                <th class="py-2 px-2 border-b">ผู้ป่วย (ราย)</th>
-                                                <th class="py-2 px-2 border-b bg-rose-50">HI% (เฉลี่ย)</th>
+                                                <th class="py-2 px-2 border-b border-r">อำเภอ</th>
+                                                <th class="py-2 px-2 border-b border-r">ผู้ป่วย (ราย)</th>
+                                                <th class="py-2 px-2 border-b border-r bg-rose-50">HI% (เฉลี่ย)</th>
+                                                <th class="py-2 px-2 border-b border-r bg-rose-50">เกณฑ์</th>
                                                 <th class="py-2 px-2 border-b bg-blue-50">CI% (เฉลี่ย)</th>
                                             </tr>
                                         </thead>
@@ -304,17 +311,17 @@
                     </div>
                 </div>
 
-                <div class="mt-8">
-                    <div class="flex justify-between items-end md:items-center mb-2 flex-col md:flex-row gap-2">
-                        <p class="text-sm font-semibold text-slate-500"><i class="fa-solid fa-table border"></i> ตาราง Matrix สรุปรายหมู่บ้าน</p>
+                <div class="mt-8 bg-sky-50/30 p-5 rounded-2xl border border-sky-100 shadow-[inset_0_2px_4px_rgba(0,0,0,0.02)]">
+                    <div class="flex justify-between items-end md:items-center mb-4 flex-col md:flex-row gap-2 border-b border-sky-200 pb-2">
+                        <p class="text-base font-bold text-sky-800"><i class="fa-solid fa-table border border-sky-300 p-1 rounded bg-white"></i> ตาราง Matrix สรุปรายหมู่บ้าน</p>
                         <button onclick="exportMatrixExcel()" class="bg-emerald-600 hover:bg-emerald-700 text-white px-4 py-2 rounded-lg text-sm font-bold shadow"><i class="fa-solid fa-file-excel mr-1"></i> ดาวน์โหลดตาราง (Excel)</button>
                     </div>
-                    <div class="overflow-x-auto border border-slate-200 rounded-xl shadow-sm">
-                        <table class="w-full text-center text-sm">
-                            <thead class="bg-slate-100 text-slate-700 border-b font-bold">
+                    <div class="overflow-x-auto border-2 border-slate-200 rounded-xl shadow-md bg-white">
+                        <table class="w-full text-center text-sm border-collapse">
+                            <thead class="bg-slate-100 text-slate-700 border-b-2 border-slate-300 font-bold">
                                 <tr>
-                                    <th class="py-3 px-4 text-left border-r bg-slate-50 sticky left-0 z-10 w-32 shadow-[2px_0_5px_-2px_rgba(0,0,0,0.1)]">ตำบล</th>
-                                    <script>for(let i=1; i<=18; i++) document.write(`<th class="py-3 px-1 min-w-[45px]">M${i}</th>`);</script>
+                                    <th class="py-3 px-4 text-left border-r border-slate-300 bg-slate-100 sticky left-0 z-10 w-32 shadow-[2px_0_5px_-2px_rgba(0,0,0,0.1)]">ตำบล</th>
+                                    <script>for(let i=1; i<=18; i++) document.write(`<th class="py-3 px-1 min-w-[45px] border-r border-slate-200">M${i}</th>`);</script>
                                 </tr>
                             </thead>
                             <tbody id="matrixTableBody" class="bg-white"></tbody>
@@ -324,6 +331,7 @@
             </div>
         </div>
 
+        <!-- Tab 3: แผนที่สถานการณ์ -->
         <div id="tab-situation-map" class="tab-content h-full">
             <div class="space-y-6">
                 <div class="bg-white rounded-2xl shadow-sm border border-slate-200 flex flex-col p-4">
@@ -336,7 +344,7 @@
                             <div class="flex flex-col justify-end mt-4"><button onclick="resetMapFilters()" class="bg-slate-200 hover:bg-slate-300 px-3 py-1 rounded font-bold transition-colors">รีเซ็ต</button></div>
                         </div>
                     </div>
-                    <div class="relative w-full h-[500px] bg-slate-100 z-0 rounded-xl overflow-hidden border">
+                    <div class="relative w-full h-[500px] bg-slate-100 z-0 rounded-xl overflow-hidden border border-slate-300 shadow-inner">
                         <div id="bigSituationMap" class="absolute inset-0 w-full h-full"></div>
                         <div class="absolute bottom-6 left-6 bg-white/95 backdrop-blur p-4 rounded-xl shadow border text-sm pointer-events-auto z-[1000]">
                             <h4 class="font-bold text-slate-800 mb-2 border-b pb-1"><i class="fa-solid fa-circle-info text-slate-400 mr-1"></i> เกณฑ์ความเสี่ยง</h4>
@@ -350,15 +358,16 @@
                     </div>
                 </div>
                 
-                <div class="bg-white rounded-2xl shadow-sm border p-4 mt-6">
+                <div class="bg-white rounded-2xl shadow-sm border border-slate-200 p-4 mt-6">
                     <h3 class="text-lg font-bold text-slate-800 mb-4"><i class="fa-solid fa-fire text-red-500 mr-2"></i>แผนที่แสดงความหนาแน่นผู้ป่วย (Heatmap)</h3>
-                    <div class="relative w-full h-[500px] bg-slate-100 z-0 rounded-xl overflow-hidden border">
+                    <div class="relative w-full h-[500px] bg-slate-100 z-0 rounded-xl overflow-hidden border border-slate-300 shadow-inner">
                         <div id="densityMap" class="absolute inset-0 w-full h-full"></div>
                     </div>
                 </div>
             </div>
         </div>
 
+        <!-- Tab 4: Data Entry -->
         <div id="tab-entry" class="tab-content">
             <div class="bg-white rounded-2xl shadow-sm border border-slate-200 overflow-hidden max-w-5xl mx-auto">
                 <div class="bg-rose-50 px-6 py-4 border-b border-rose-200 flex justify-between items-center">
@@ -426,55 +435,57 @@
             </div>
         </div>
 
+        <!-- Tab 5: Manage Data -->
         <div id="tab-manage" class="tab-content">
             <div class="space-y-6">
-                <div class="bg-white p-4 rounded-2xl shadow-sm border">
+                <!-- Filters for Export / Manage -->
+                <div class="bg-white p-4 rounded-2xl shadow-sm border border-slate-200">
                     <h3 class="font-bold text-slate-700 mb-3"><i class="fa-solid fa-filter text-rose-500 mr-1"></i> ตัวกรองข้อมูลเพื่อส่งออก/ค้นหา</h3>
                     <div class="grid grid-cols-1 md:grid-cols-5 gap-3">
                         <div class="relative w-full">
                             <i class="fa-solid fa-magnifying-glass absolute left-3 top-1/2 transform -translate-y-1/2 text-slate-400"></i>
-                            <input type="text" id="searchInput" onkeyup="renderTable()" placeholder="ชื่อผู้ป่วย, HN..." class="w-full pl-10 pr-4 py-2 border rounded-lg text-sm focus:ring-2 focus:ring-rose-500" />
+                            <input type="text" id="searchInput" onkeyup="renderTable()" placeholder="ชื่อผู้ป่วย, HN..." class="w-full pl-10 pr-4 py-2 border border-slate-300 rounded-lg text-sm focus:ring-2 focus:ring-rose-500" />
                         </div>
                         <div>
-                            <select id="m-subdistrict" onchange="renderTable()" class="w-full border rounded-lg p-2 text-sm bg-white focus:ring-2 focus:ring-rose-500">
+                            <select id="m-subdistrict" onchange="renderTable()" class="w-full border border-slate-300 rounded-lg p-2 text-sm bg-white focus:ring-2 focus:ring-rose-500">
                                 <option value="">- ทุกตำบล -</option><option value="แม่อาย">แม่อาย</option><option value="มะลิกา">มะลิกา</option><option value="ท่าตอน">ท่าตอน</option><option value="แม่สาว">แม่สาว</option><option value="บ้านหลวง">บ้านหลวง</option><option value="แม่นาวาง">แม่นาวาง</option><option value="สันต้นหมื้อ">สันต้นหมื้อ</option>
                             </select>
                         </div>
                         <div>
-                            <select id="m-moo" onchange="renderTable()" class="w-full border rounded-lg p-2 text-sm bg-white focus:ring-2 focus:ring-rose-500">
+                            <select id="m-moo" onchange="renderTable()" class="w-full border border-slate-300 rounded-lg p-2 text-sm bg-white focus:ring-2 focus:ring-rose-500">
                                 <option value="">- ทุกหมู่ -</option><script>for(let i=1; i<=18; i++) document.write(`<option value="${i}">หมู่ ${i}</option>`);</script>
                             </select>
                         </div>
                         <div>
                             <div class="relative">
                                 <span class="absolute left-2 top-1/2 transform -translate-y-1/2 text-xs text-slate-400 font-bold">จาก:</span>
-                                <input type="date" id="m-dateFrom" onchange="renderTable()" class="w-full pl-9 pr-2 py-2 border rounded-lg text-sm focus:ring-2 focus:ring-rose-500" title="ตั้งแต่วันที่พบผู้ป่วย" />
+                                <input type="date" id="m-dateFrom" onchange="renderTable()" class="w-full pl-9 pr-2 py-2 border border-slate-300 rounded-lg text-sm focus:ring-2 focus:ring-rose-500" title="ตั้งแต่วันที่พบผู้ป่วย" />
                             </div>
                         </div>
                         <div>
                             <div class="relative">
                                 <span class="absolute left-2 top-1/2 transform -translate-y-1/2 text-xs text-slate-400 font-bold">ถึง:</span>
-                                <input type="date" id="m-dateTo" onchange="renderTable()" class="w-full pl-9 pr-2 py-2 border rounded-lg text-sm focus:ring-2 focus:ring-rose-500" title="ถึงวันที่พบผู้ป่วย" />
+                                <input type="date" id="m-dateTo" onchange="renderTable()" class="w-full pl-9 pr-2 py-2 border border-slate-300 rounded-lg text-sm focus:ring-2 focus:ring-rose-500" title="ถึงวันที่พบผู้ป่วย" />
                             </div>
                         </div>
                     </div>
                     
-                    <div class="flex flex-wrap gap-2 justify-end mt-4 pt-4 border-t">
-                        <button onclick="downloadTemplate()" class="px-4 py-2 bg-slate-100 hover:bg-slate-200 border text-slate-700 rounded-lg text-sm font-bold transition-colors"><i class="fa-solid fa-download mr-1 text-rose-600"></i> โหลดไฟล์ตัวอย่าง (Template)</button>
+                    <div class="flex flex-wrap gap-2 justify-end mt-4 pt-4 border-t border-slate-100">
+                        <button onclick="downloadTemplate()" class="px-4 py-2 bg-slate-100 hover:bg-slate-200 border border-slate-200 text-slate-700 rounded-lg text-sm font-bold transition-colors"><i class="fa-solid fa-download mr-1 text-rose-600"></i> โหลดไฟล์ตัวอย่าง (Template)</button>
                         <input type="file" id="importFile" accept=".xlsx, .xls" class="hidden" onchange="importExcel(event)" onclick="this.value=null;" />
                         <button onclick="document.getElementById('importFile').click()" class="px-4 py-2 bg-emerald-50 hover:bg-emerald-100 border border-emerald-200 text-emerald-700 rounded-lg text-sm font-bold transition-colors"><i class="fa-solid fa-file-import mr-1"></i> นำเข้าข้อมูล (Excel)</button>
                         <button onclick="exportExcel()" class="px-5 py-2 bg-rose-600 hover:bg-rose-700 text-white rounded-lg text-sm font-bold shadow-md transition-colors"><i class="fa-solid fa-file-export mr-1"></i> ส่งออกข้อมูลที่กรอง (Excel)</button>
                     </div>
                 </div>
 
-                <div class="bg-white rounded-2xl shadow-sm border overflow-hidden">
-                    <div class="bg-rose-50 px-4 py-2 border-b text-sm font-bold text-rose-800 flex justify-between items-center">
+                <div class="bg-white rounded-2xl shadow-sm border border-slate-200 overflow-hidden">
+                    <div class="bg-rose-50 px-4 py-2 border-b border-rose-100 text-sm font-bold text-rose-800 flex justify-between items-center">
                         <span><i class="fa-solid fa-list text-rose-500 mr-2"></i>รายการข้อมูลผู้ป่วย</span>
-                        <span id="m-record-count" class="bg-rose-600 text-white px-2 py-1 rounded text-xs">0 รายการ</span>
+                        <span id="m-record-count" class="bg-rose-600 text-white px-2 py-1 rounded text-xs shadow-sm">0 รายการ</span>
                     </div>
                     <div class="overflow-x-auto">
                         <table class="w-full text-left text-sm text-slate-600">
-                            <thead class="bg-slate-50 text-slate-700 font-bold border-b">
+                            <thead class="bg-slate-50 text-slate-700 font-bold border-b border-slate-200">
                                 <tr>
                                     <th class="p-3">ลำดับ</th>
                                     <th class="p-3">ชื่อ-สกุล</th>
@@ -494,8 +505,10 @@
             </div>
         </div>
 
+        <!-- NEW TAB: Larvae Survey (HI/CI) 1.7.8 -->
         <div id="tab-larvae" class="tab-content">
             <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                <!-- Left: Patient List -->
                 <div class="lg:col-span-1 space-y-4">
                     <div class="bg-white rounded-2xl shadow-sm border overflow-hidden flex flex-col h-[900px]">
                         <div class="bg-slate-800 px-4 py-3 border-b flex justify-between items-center">
@@ -508,6 +521,7 @@
                     </div>
                 </div>
 
+                <!-- Right: Details -->
                 <div class="lg:col-span-2 space-y-6 hidden" id="larvaeDetailSection">
                     
                     <div class="bg-white rounded-2xl shadow-sm border p-5 relative">
@@ -516,10 +530,11 @@
                         <div class="mb-3" id="ld-map-btn"></div> 
                         <p class="text-sm text-slate-600 mb-3" id="ld-address">-</p>
                         <div class="flex gap-4 text-sm font-semibold">
-                            <span class="text-red-500 bg-red-50 px-2 py-1 rounded" id="ld-dx">DX: -</span>
-                            <span class="text-blue-500 bg-blue-50 px-2 py-1 rounded" id="ld-date">พบผู้ป่วย: -</span>
+                            <span class="text-red-500 bg-red-50 px-2 py-1 rounded border border-red-100" id="ld-dx">DX: -</span>
+                            <span class="text-blue-500 bg-blue-50 px-2 py-1 rounded border border-blue-100" id="ld-date">พบผู้ป่วย: -</span>
                         </div>
                         
+                        <!-- Map Export Box -->
                         <div class="mt-4 border-t pt-4">
                             <button onclick="toggleExportMap()" class="bg-sky-50 text-sky-600 hover:bg-sky-100 border border-sky-200 px-4 py-2 rounded-lg font-bold text-sm shadow-sm transition-colors flex items-center">
                                 <i class="fa-solid fa-map mr-2"></i> เปิดดูแผนที่ขอบเขต 100 เมตร เพื่อดาวน์โหลดรูปภาพ
@@ -559,7 +574,7 @@
                         <h3 class="font-bold text-slate-800 mb-4 border-b pb-2"><i class="fa-solid fa-chart-line text-amber-500 mr-2"></i>ประวัติการสำรวจควบคุมโรค (HI/CI)</h3>
                         <div class="chart-container-sm mb-6"><canvas id="chartLarvaeCase"></canvas></div>
                         <div class="overflow-x-auto mb-2">
-                            <table class="w-full text-center text-sm border-collapse">
+                            <table class="w-full text-center text-sm border-collapse border border-slate-200">
                                 <thead class="bg-slate-100 text-slate-700">
                                     <tr>
                                         <th class="py-2 px-2 border">รอบ</th><th class="py-2 px-2 border">วันที่</th>
@@ -648,6 +663,7 @@
                         </form>
                     </div>
 
+                    <!-- Spray Table -->
                     <div class="bg-white rounded-2xl shadow-sm border border-emerald-200 overflow-hidden relative">
                         <div class="bg-emerald-50 px-5 py-3 border-b border-emerald-200">
                             <h3 class="font-bold text-emerald-800 flex items-center"><i class="fa-solid fa-spray-can-sparkles mr-2"></i> แผนปฏิบัติการพ่นสารเคมี (แจ้ง อปท.)</h3>
@@ -695,6 +711,7 @@
                         </div>
                     </div>
 
+                    <!-- Activity Notes and Images Section (Multi-Upload) -->
                     <div class="bg-white rounded-2xl shadow-sm border border-indigo-200 overflow-hidden mt-6">
                         <div class="bg-indigo-50 px-5 py-3 border-b border-indigo-200">
                             <h3 class="font-bold text-indigo-800 flex items-center"><i class="fa-solid fa-camera-retro mr-2"></i> สรุปการทำกิจกรรม / ภาพถ่าย (ประจำเคสนี้)</h3>
@@ -743,6 +760,7 @@
 
     </main>
 
+    <!-- Modal ยืนยันการลบ -->
     <div id="deleteModal" class="hidden fixed inset-0 z-[9999] flex items-center justify-center modal-overlay transition-opacity">
         <div class="bg-white rounded-2xl shadow-2xl max-w-sm w-full mx-4 p-6 transform transition-all border-t-8 border-red-500">
             <div class="flex flex-col items-center text-center">
@@ -759,6 +777,7 @@
         </div>
     </div>
 
+    <!-- Modal แจ้งเตือน HI สูง -->
     <div id="alertModal" class="hidden fixed inset-0 z-[300] flex items-center justify-center modal-overlay transition-opacity">
         <div class="bg-slate-900 rounded-2xl shadow-2xl max-w-sm w-full mx-4 p-6 transform transition-all border-4 border-red-600 alert-pulse">
             <div class="flex flex-col items-center text-center">
@@ -806,6 +825,12 @@
             if (hiValue > 20) return { class: 'hi-black', text: 'สีดำ (เสี่ยงสูง)', icon: '<i class="fa-solid fa-skull-crossbones mr-1 text-white animate-pulse"></i>' };
             if (hiValue > 10) return { class: 'hi-gray', text: 'สีเทา (เฝ้าระวัง)', icon: '<i class="fa-solid fa-triangle-exclamation mr-1 text-slate-500"></i>' };
             return { class: 'hi-white', text: 'สีขาว (ปลอดภัย)', icon: '<i class="fa-solid fa-check-circle mr-1 text-emerald-500"></i>' };
+        };
+
+        const getIcon = (level, total) => {
+            if(!level) return '<span class="text-slate-300 block w-full h-full text-[10px] py-1 opacity-40"><i class="fa-solid fa-minus"></i></span>';
+            const colors = { 'red': 'text-red-500 bg-red-100', 'orange': 'text-orange-500 bg-orange-100', 'yellow': 'text-yellow-600 bg-yellow-100', 'green': 'text-green-600 bg-green-100' };
+            return `<div class="flex items-center justify-center gap-1 w-full h-full rounded py-1 ${colors[level]}"><i class="fa-solid fa-circle text-[10px]"></i><span class="text-xs font-extrabold">${total}</span></div>`;
         };
 
         document.addEventListener('DOMContentLoaded', () => {
@@ -1013,7 +1038,7 @@
             });
 
             renderTrendChartStats(filteredPatients);
-            renderHICISummaryTables(filteredPatients); // เพิ่มการเรนเดอร์ตาราง HI/CI
+            renderHICISummaryTables(filteredPatients); 
 
             const villageMap = {}; let totalValidCases = 0;
             filteredPatients.forEach(p => {
@@ -1047,30 +1072,25 @@
             document.getElementById('box-green').innerHTML = statusSummary.green.length ? statusSummary.green.join('<br>') : '<span class="text-slate-400 italic">- ไม่มี -</span>';
 
             const tbody = document.getElementById('matrixTableBody'); tbody.innerHTML = '';
-            const getIcon = (level, total) => {
-                if(!level) return '<span class="text-slate-200 block bg-slate-50 rounded w-full h-full text-xs py-1">-</span>';
-                const colors = { 'red': 'text-red-500 bg-red-100', 'orange': 'text-orange-500 bg-orange-100', 'yellow': 'text-yellow-600 bg-yellow-100', 'green': 'text-green-600 bg-green-100' };
-                return `<div class="flex items-center justify-center gap-1 w-full h-full rounded py-1 ${colors[level]}"><i class="fa-solid fa-circle text-[10px]"></i><span class="text-xs font-extrabold">${total}</span></div>`;
-            };
-
             const subdistrictsToRender = fSubdist === 'all' ? SUBDISTRICTS : [fSubdist];
+            
+            let rowIndex = 0;
             subdistrictsToRender.forEach(sd => {
-                let rowHtml = `<tr><td class="py-2 px-4 text-left border-r border-slate-200 bg-slate-50 sticky left-0 z-10 font-bold text-rose-800">${sd}</td>`;
+                let rowClass = rowIndex % 2 === 0 ? "bg-white" : "bg-slate-50/80";
+                let rowHtml = `<tr class="${rowClass} hover:bg-slate-100 transition-colors border-b border-slate-200">
+                    <td class="py-2 px-4 text-left border-r border-slate-300 sticky left-0 z-10 font-bold text-rose-800 ${rowClass} shadow-[2px_0_5px_-2px_rgba(0,0,0,0.05)]">${sd}</td>`;
                 for(let i=1; i<=18; i++) {
                     const stat = finalVillageStatus[`${sd}_${i}`];
-                    rowHtml += `<td class="py-1 px-1 border-b border-slate-50">${stat ? getIcon(stat.level, stat.total) : getIcon(null)}</td>`;
+                    rowHtml += `<td class="py-1 px-1 border-r border-slate-200">${stat ? getIcon(stat.level, stat.total) : getIcon(null)}</td>`;
                 }
                 rowHtml += `</tr>`; tbody.innerHTML += rowHtml;
+                rowIndex++;
             });
         };
         
-        // ฟังก์ชันใหม่: แสดงตาราง HI/CI ในหน้าสถิติ
         function renderHICISummaryTables(filteredPatients) {
-            let mooStats = {};
-            let sdStats = {};
-            let distStats = { pts: 0, tH: 0, pH: 0, tC: 0, pC: 0 };
+            let mooStats = {}; let sdStats = {}; let distStats = { pts: 0, tH: 0, pH: 0, tC: 0, pC: 0 };
 
-            // 1. นับยอดผู้ป่วย
             filteredPatients.forEach(p => {
                 let mKey = p.subdistrict + '|' + p.moo;
                 if(!mooStats[mKey]) mooStats[mKey] = { sd: p.subdistrict, moo: p.moo, pts: 0, tH: 0, pH: 0, tC: 0, pC: 0 };
@@ -1079,15 +1099,12 @@
                 let sKey = p.subdistrict;
                 if(!sdStats[sKey]) sdStats[sKey] = { sd: p.subdistrict, pts: 0, tH: 0, pH: 0, tC: 0, pC: 0 };
                 sdStats[sKey].pts++;
-                
                 distStats.pts++;
             });
 
-            // 2. เอายอดลูกน้ำมาบวก (กรองเอาเฉพาะการสำรวจของเคสที่อยู่ใน filteredPatients)
             const validPatientIds = filteredPatients.map(p => p.id);
             const relevantSurveys = larvaeSurveys.filter(s => validPatientIds.includes(s.patientId));
             
-            // เพื่อไม่ให้บวกซ้ำซ้อน เอาเฉพาะ "การสำรวจล่าสุด" ของแต่ละเคสมาคิดภาพรวม
             const latestSurveysMap = {};
             relevantSurveys.forEach(s => {
                 if(!latestSurveysMap[s.patientId] || new Date(s.surveyDate) > new Date(latestSurveysMap[s.patientId].surveyDate)) {
@@ -1098,36 +1115,40 @@
             Object.values(latestSurveysMap).forEach(s => {
                 let mKey = s.subdistrict + '|' + s.moo;
                 if(mooStats[mKey]) { mooStats[mKey].tH += s.totH; mooStats[mKey].pH += s.posH; mooStats[mKey].tC += s.totC; mooStats[mKey].pC += s.posC; }
-                
                 let sKey = s.subdistrict;
                 if(sdStats[sKey]) { sdStats[sKey].tH += s.totH; sdStats[sKey].pH += s.posH; sdStats[sKey].tC += s.totC; sdStats[sKey].pC += s.posC; }
-                
                 distStats.tH += s.totH; distStats.pH += s.posH; distStats.tC += s.totC; distStats.pC += s.posC;
             });
 
-            // --- Render Village Table ---
+            // Render Village
             const vTbody = document.getElementById('hiVillageTableBody'); vTbody.innerHTML = '';
             Object.values(mooStats).sort((a,b)=>a.sd.localeCompare(b.sd) || a.moo-b.moo).forEach(row => {
                 const hi = row.tH > 0 ? ((row.pH / row.tH) * 100).toFixed(2) : '0.00';
                 const ci = row.tC > 0 ? ((row.pC / row.tC) * 100).toFixed(2) : '0.00';
-                vTbody.innerHTML += `<tr class="border-b border-slate-100 hover:bg-slate-50"><td class="py-2 px-2 text-left">${row.sd}</td><td class="py-2 px-2">${row.moo}</td><td class="py-2 px-2 font-bold text-rose-600">${row.pts}</td><td class="py-2 px-2">${row.tH}</td><td class="py-2 px-2 text-red-500">${row.pH}</td><td class="py-2 px-2 font-bold ${hi>10?'bg-red-100 text-red-600':'bg-rose-50'}">${hi}%</td><td class="py-2 px-2">${row.tC}</td><td class="py-2 px-2 text-blue-500">${row.pC}</td><td class="py-2 px-2 font-bold bg-blue-50 text-blue-600">${ci}%</td></tr>`;
+                const zone = getHIZoneDetails(parseFloat(hi));
+                const zoneHtml = `<span class="px-2 py-0.5 rounded text-[11px] font-bold shadow-sm ${zone.class}">${zone.icon} ${zone.text.split(' ')[0]}</span>`;
+                vTbody.innerHTML += `<tr class="border-b border-slate-100 hover:bg-slate-50 even:bg-slate-50/50"><td class="py-2 px-2 text-left border-r">${row.sd}</td><td class="py-2 px-2 border-r">${row.moo}</td><td class="py-2 px-2 font-bold text-rose-600 border-r">${row.pts}</td><td class="py-2 px-2 font-bold ${hi>10?'bg-red-100 text-red-600':'bg-rose-50'} border-r">${hi}%</td><td class="py-2 px-2 border-r bg-slate-50/50">${zoneHtml}</td><td class="py-2 px-2 font-bold bg-blue-50 text-blue-600">${ci}%</td></tr>`;
             });
-            if(Object.keys(mooStats).length===0) vTbody.innerHTML = '<tr><td colspan="9" class="py-4 text-slate-400">ไม่มีข้อมูลการสำรวจ</td></tr>';
+            if(Object.keys(mooStats).length===0) vTbody.innerHTML = '<tr><td colspan="6" class="py-4 text-slate-400">ไม่มีข้อมูลการสำรวจ</td></tr>';
 
-            // --- Render Subdistrict Table ---
+            // Render Subdistrict
             const sTbody = document.getElementById('hiSubdistrictTableBody'); sTbody.innerHTML = '';
             Object.values(sdStats).sort((a,b)=>a.sd.localeCompare(b.sd)).forEach(row => {
                 const hi = row.tH > 0 ? ((row.pH / row.tH) * 100).toFixed(2) : '0.00';
                 const ci = row.tC > 0 ? ((row.pC / row.tC) * 100).toFixed(2) : '0.00';
-                sTbody.innerHTML += `<tr class="border-b border-slate-100 hover:bg-slate-50"><td class="py-2 px-2 text-left font-bold text-teal-700">${row.sd}</td><td class="py-2 px-2 font-bold text-rose-600">${row.pts}</td><td class="py-2 px-2 font-bold ${hi>10?'bg-red-100 text-red-600':'bg-rose-50'}">${hi}%</td><td class="py-2 px-2 font-bold bg-blue-50 text-blue-600">${ci}%</td></tr>`;
+                const zone = getHIZoneDetails(parseFloat(hi));
+                const zoneHtml = `<span class="px-2 py-0.5 rounded text-[11px] font-bold shadow-sm ${zone.class}">${zone.icon} ${zone.text.split(' ')[0]}</span>`;
+                sTbody.innerHTML += `<tr class="border-b border-slate-100 hover:bg-slate-50 even:bg-slate-50/50"><td class="py-2 px-2 text-left font-bold text-teal-700 border-r">${row.sd}</td><td class="py-2 px-2 font-bold text-rose-600 border-r">${row.pts}</td><td class="py-2 px-2 font-bold ${hi>10?'bg-red-100 text-red-600':'bg-rose-50'} border-r">${hi}%</td><td class="py-2 px-2 border-r bg-slate-50/50">${zoneHtml}</td><td class="py-2 px-2 font-bold bg-blue-50 text-blue-600">${ci}%</td></tr>`;
             });
-            if(Object.keys(sdStats).length===0) sTbody.innerHTML = '<tr><td colspan="4" class="py-4 text-slate-400">ไม่มีข้อมูล</td></tr>';
+            if(Object.keys(sdStats).length===0) sTbody.innerHTML = '<tr><td colspan="5" class="py-4 text-slate-400">ไม่มีข้อมูล</td></tr>';
 
-            // --- Render District Table ---
+            // Render District
             const dTbody = document.getElementById('hiDistrictTableBody');
             const dhi = distStats.tH > 0 ? ((distStats.pH / distStats.tH) * 100).toFixed(2) : '0.00';
             const dci = distStats.tC > 0 ? ((distStats.pC / distStats.tC) * 100).toFixed(2) : '0.00';
-            dTbody.innerHTML = `<tr><td class="py-2 px-2 font-bold text-cyan-700">แม่อาย</td><td class="py-2 px-2 font-bold text-rose-600">${distStats.pts}</td><td class="py-2 px-2 font-bold ${dhi>10?'bg-red-100 text-red-600':'bg-rose-50 text-rose-700'}">${dhi}%</td><td class="py-2 px-2 font-bold bg-blue-50 text-blue-700">${dci}%</td></tr>`;
+            const dZone = getHIZoneDetails(parseFloat(dhi));
+            const dZoneHtml = `<span class="px-2 py-0.5 rounded text-[11px] font-bold shadow-sm ${dZone.class}">${dZone.icon} ${dZone.text.split(' ')[0]}</span>`;
+            dTbody.innerHTML = `<tr><td class="py-2 px-2 font-bold text-cyan-700 border-r">แม่อาย</td><td class="py-2 px-2 font-bold text-rose-600 border-r">${distStats.pts}</td><td class="py-2 px-2 font-bold ${dhi>10?'bg-red-100 text-red-600':'bg-rose-50 text-rose-700'} border-r">${dhi}%</td><td class="py-2 px-2 border-r bg-slate-50/50">${dZoneHtml}</td><td class="py-2 px-2 font-bold bg-blue-50 text-blue-700">${dci}%</td></tr>`;
         }
 
         window.exportMatrixExcel = function() {
@@ -1412,10 +1433,7 @@
             }; reader.readAsArrayBuffer(file);
         };
 
-        // ==========================================
-        // ---- LARVAE (HI/CI) & SPRAY CONTROL ----
-        // ==========================================
-
+        // --- LARVAE (HI/CI) & SPRAY CONTROL ---
         window.renderLarvaeCaseList = function() {
             const term = document.getElementById('l-caseSearch').value.trim().toLowerCase();
             const listArea = document.getElementById('larvaeCaseListArea'); listArea.innerHTML = '';
@@ -1470,8 +1488,8 @@
                 chartLabels.push(s.round); hiData.push(s.hi); ciData.push(s.ci);
                 const zone = getHIZoneDetails(s.hi);
                 const tr = document.createElement('tr'); tr.className = "border-b border-slate-100 hover:bg-slate-50";
-                // เพิ่มการแสดง บ้านสำรวจ/พบ และ ภาชนะสำรวจ/พบ
-                tr.innerHTML = `<td class="py-2 px-2 font-bold">${s.round}</td><td class="py-2 px-2 text-slate-500">${s.surveyDate}</td><td class="py-2 px-2 text-slate-600">${s.totH} / <span class="text-red-500 font-bold">${s.posH}</span></td><td class="py-2 px-2 text-slate-600">${s.totC} / <span class="text-blue-500 font-bold">${s.posC}</span></td><td class="py-2 px-2 font-bold">${s.hi}%</td><td class="py-2 px-2"><span class="px-2 py-0.5 rounded text-xs shadow-sm ${zone.class}">${zone.icon} ${zone.text.split(' ')[0]}</span></td><td class="py-2 px-2 text-blue-600">${s.ci}%</td><td class="py-2 px-2"><button onclick="editLarvae(${s.id})" class="text-amber-500 hover:text-amber-700 bg-amber-50 p-1.5 rounded mr-1"><i class="fa-solid fa-pen"></i></button><button onclick="confirmDelete(${s.id}, 'larvae')" class="text-red-500 hover:text-red-700 bg-red-50 p-1.5 rounded"><i class="fa-solid fa-trash"></i></button></td>`;
+                const zoneHtml = `<span class="px-2 py-0.5 rounded text-[11px] font-bold shadow-sm ${zone.class}">${zone.icon} ${zone.text.split(' ')[0]}</span>`;
+                tr.innerHTML = `<td class="py-2 px-2 font-bold">${s.round}</td><td class="py-2 px-2 text-slate-500">${s.surveyDate}</td><td class="py-2 px-2 text-slate-600">${s.totH} / <span class="text-red-500 font-bold">${s.posH}</span></td><td class="py-2 px-2 text-slate-600">${s.totC} / <span class="text-blue-500 font-bold">${s.posC}</span></td><td class="py-2 px-2 font-bold">${s.hi}%</td><td class="py-2 px-2 bg-slate-50/50">${zoneHtml}</td><td class="py-2 px-2 text-blue-600 font-bold">${s.ci}%</td><td class="py-2 px-2"><button onclick="editLarvae(${s.id})" class="text-amber-500 hover:text-amber-700 bg-amber-50 p-1.5 rounded mr-1"><i class="fa-solid fa-pen"></i></button><button onclick="confirmDelete(${s.id}, 'larvae')" class="text-red-500 hover:text-red-700 bg-red-50 p-1.5 rounded"><i class="fa-solid fa-trash"></i></button></td>`;
                 tbody.appendChild(tr);
             });
 
@@ -1549,7 +1567,7 @@
             document.getElementById('btn-save-larvae').innerHTML = '<i class="fa-solid fa-save mr-2"></i> บันทึกผลสำรวจ HI/CI'; document.getElementById('btn-cancel-larvae-edit').classList.add('hidden');
         };
 
-        // --- EXPORT MAP IMAGE ---
+        // --- MAP EXPORT ---
         window.toggleExportMap = function() {
             const w = document.getElementById('export-map-wrapper'); w.classList.toggle('hidden'); if(!w.classList.contains('hidden')) renderExportMap();
         };
@@ -1606,6 +1624,7 @@
                 const record = pRecords.find(r => r.round === round) || { date: '', latlng: patient.latlng || '' };
                 const tr = document.createElement('tr'); tr.className = "border-b border-emerald-100 bg-white hover:bg-emerald-50";
                 const displayLatLng = record.latlng ? record.latlng : (patient.latlng || '');
+
                 tr.innerHTML = `<td class="py-2 px-2 font-bold text-emerald-800 border-r border-emerald-100">${round}</td><td class="py-2 px-2 border-r border-emerald-100"><input type="date" id="s-date-${index}" value="${record.date}" class="border-0 bg-transparent text-center focus:ring-2 focus:ring-emerald-500 rounded p-1 w-32 font-medium"></td><td class="py-2 px-2 text-xs text-slate-700 border-r border-emerald-100">${locationStr}</td><td class="py-2 px-2 border-r border-emerald-100"><input type="text" id="s-ll-${index}" value="${displayLatLng}" placeholder="Lat,Long" class="border-0 bg-transparent text-center focus:ring-2 focus:ring-emerald-500 rounded p-1 w-full text-xs text-slate-500"></td><td class="py-2 px-2 no-export"><button onclick="saveSprayRecord('${round}', 's-date-${index}', 's-ll-${index}')" class="bg-emerald-500 hover:bg-emerald-600 text-white p-1.5 rounded shadow text-xs"><i class="fa-solid fa-save"></i></button></td>`;
                 tbody.appendChild(tr);
             });
