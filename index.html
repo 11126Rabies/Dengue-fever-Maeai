@@ -174,6 +174,7 @@
                 </div>
             </div>
             
+            <!-- ไฮไลท์กิจกรรมควบคุมโรคล่าสุด (ย้ายมาไว้ล่างสุด) -->
             <div id="dash-latest-activity" class="bg-emerald-50/50 rounded-2xl shadow-sm border border-emerald-200 p-5 mt-8 hidden">
                 <div class="flex justify-between items-center border-b border-emerald-200 pb-3 mb-4">
                     <h3 class="text-xl font-bold text-emerald-800 flex items-center"><i class="fa-solid fa-bullhorn text-emerald-500 mr-2 text-2xl"></i>อัปเดตกิจกรรมควบคุมโรคล่าสุด (HI/CI & พ่นเคมี)</h3>
@@ -184,13 +185,15 @@
                         <div class="bg-white p-5 rounded-xl border border-emerald-100 h-full shadow-sm">
                             <p class="text-sm font-bold text-emerald-500 mb-1"><i class="fa-solid fa-house-medical mr-1"></i> ดำเนินการที่บ้านผู้ป่วย</p>
                             <h4 class="text-xl font-black text-slate-800 mb-2" id="dash-act-name">...</h4>
-                            <p class="text-sm text-slate-600 mb-4 font-medium" id="dash-act-loc">...</p>
+                            <p class="text-sm text-slate-600 mb-4 font-medium" id="dash-act-loc">... </p>
                             <div class="text-sm text-slate-700 bg-slate-50 p-4 rounded-lg border border-slate-200 min-h-[100px]" id="dash-act-note">...</div>
                         </div>
                     </div>
                     <div class="w-full md:w-2/3">
                         <p class="text-sm font-bold text-emerald-600 mb-3"><i class="fa-solid fa-images mr-1"></i> ภาพถ่ายกิจกรรม</p>
-                        <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-3" id="dash-act-images"></div>
+                        <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-3" id="dash-act-images">
+                            <!-- JS Inject Images -->
+                        </div>
                     </div>
                 </div>
             </div>
@@ -246,6 +249,7 @@
                     <h3 class="text-xl font-bold text-emerald-800 mb-4 flex items-center"><i class="fa-solid fa-mosquito text-emerald-500 mr-2"></i> สรุปข้อมูลดัชนีลูกน้ำยุงลาย (HI/CI) ระดับหมู่บ้านและตำบล</h3>
                     
                     <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                        <!-- Table Village Level -->
                         <div class="bg-white border border-emerald-100 rounded-xl shadow-sm overflow-hidden stat-card">
                             <div class="bg-emerald-50 px-4 py-3 border-b border-emerald-100">
                                 <h4 class="font-bold text-emerald-700"><i class="fa-solid fa-map-location-dot mr-1"></i> ข้อมูลรายหมู่บ้าน</h4>
@@ -267,6 +271,7 @@
                             </div>
                         </div>
 
+                        <!-- Table Subdistrict Level -->
                         <div class="space-y-6">
                             <div class="bg-white border border-teal-100 rounded-xl shadow-sm overflow-hidden stat-card">
                                 <div class="bg-teal-50 px-4 py-3 border-b border-teal-100">
@@ -288,6 +293,7 @@
                                 </div>
                             </div>
                             
+                            <!-- Table District Level -->
                             <div class="bg-white border border-cyan-100 rounded-xl shadow-sm overflow-hidden stat-card">
                                 <div class="bg-cyan-50 px-4 py-3 border-b border-cyan-100">
                                     <h4 class="font-bold text-cyan-700"><i class="fa-solid fa-city mr-1"></i> ข้อมูลภาพรวมระดับอำเภอ</h4>
@@ -578,6 +584,7 @@
                                 <thead class="bg-slate-100 text-slate-700">
                                     <tr>
                                         <th class="py-2 px-2 border">รอบ</th><th class="py-2 px-2 border">วันที่</th>
+                                        <!-- เพิ่ม 2 คอลัมน์นี้ -->
                                         <th class="py-2 px-2 border">บ้าน (สำรวจ/พบ)</th><th class="py-2 px-2 border">ภาชนะ (สำรวจ/พบ)</th>
                                         <th class="py-2 px-2 border">HI (%)</th><th class="py-2 px-2 border">เกณฑ์</th><th class="py-2 px-2 border">CI (%)</th><th class="py-2 px-2 border">จัดการ</th>
                                     </tr>
@@ -705,7 +712,7 @@
                         </div>
                         
                         <div class="p-4 bg-slate-50 border-t flex justify-end">
-                            <button onclick="exportSprayImage()" class="bg-emerald-600 hover:bg-emerald-700 text-white font-bold py-2 px-6 rounded-lg shadow flex items-center transition-colors">
+                            <button onclick="exportSprayImage()" class="bg-sky-500 hover:bg-sky-600 text-white font-bold py-2 px-6 rounded-lg shadow flex items-center transition-colors">
                                 <i class="fa-solid fa-download mr-2"></i> ดาวน์โหลดตารางพ่นยา (ส่งไลน์ อปท.)
                             </button>
                         </div>
@@ -793,7 +800,6 @@
     </div>
 
     <script>
-        // === ตัวแปรหลักของระบบ ===
         const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbxy0TsodTv5jvD-lOZTjN1JvGC0AeJUiaUYrJMm7xIt0g0BSIykPbPHTbqPP2bGbBmOCA/exec';
         
         const storageKey = 'dengue_patients_data_maeai_v178'; 
@@ -859,16 +865,31 @@
         async function loadDataFromSheets() {
             document.getElementById('loading-overlay').classList.remove('hidden');
             try {
-                const response = await fetch(SCRIPT_URL);
+                // เติมพารามิเตอร์เพื่อโหลดใหม่แบบไม่แคชและดึงข้อมูลทั้ง 4 ชีต
+                const response = await fetch(SCRIPT_URL + "?t=" + new Date().getTime());
                 const json = await response.json();
-                if(json.status === 'success' && json.data) {
-                    patients = json.data.map(p => ({
-                        id: parseInt(p.id) || 0, fullName: p.fullName || '', hn: p.hn || '', age: parseInt(p.age) || 0, gender: getCleanGender(p.gender), addressNo: p.addressNo || '',
-                        moo: p.moo || '', villageName: p.villageName || '', subdistrict: p.subdistrict || 'แม่อาย', serviceUnit: p.serviceUnit || 'รพ.แม่อาย', latlng: p.latlng || '', 
-                        onsetDate: p.onsetDate ? p.onsetDate.split('T')[0] : '', foundDate: p.foundDate ? p.foundDate.split('T')[0] : '', 
-                        dx: getCleanDX(p.dx), workplace: p.workplace || '', workplaceMoo: p.workplaceMoo || '', updatedAt: p.updatedAt || ''
-                    })).filter(p => p.id > 0);
-                    localStorage.setItem(storageKey, JSON.stringify(patients));
+                if(json.status === 'success') {
+                    if(json.patients) {
+                        patients = json.patients.map(p => ({
+                            id: parseInt(p.id) || 0, fullName: p.fullName || '', hn: p.hn || '', age: parseInt(p.age) || 0, gender: getCleanGender(p.gender), addressNo: p.addressNo || '',
+                            moo: p.moo || '', villageName: p.villageName || '', subdistrict: p.subdistrict || 'แม่อาย', serviceUnit: p.serviceUnit || 'รพ.แม่อาย', latlng: p.latlng || '', 
+                            onsetDate: p.onsetDate ? p.onsetDate.split('T')[0] : '', foundDate: p.foundDate ? p.foundDate.split('T')[0] : '', 
+                            dx: getCleanDX(p.dx), workplace: p.workplace || '', workplaceMoo: p.workplaceMoo || '', updatedAt: p.updatedAt || ''
+                        })).filter(p => p.id > 0);
+                        localStorage.setItem(storageKey, JSON.stringify(patients));
+                    }
+                    if(json.larvae) {
+                        larvaeSurveys = json.larvae;
+                        localStorage.setItem(larvaeStorageKey, JSON.stringify(larvaeSurveys));
+                    }
+                    if(json.spray) {
+                        sprayRecords = json.spray;
+                        localStorage.setItem(sprayStorageKey, JSON.stringify(sprayRecords));
+                    }
+                    if(json.activity) {
+                        caseActivities = json.activity;
+                        localStorage.setItem(caseActivitiesStorageKey, JSON.stringify(caseActivities));
+                    }
                 }
             } catch (error) { console.error("Fetch Data Error", error); }
             document.getElementById('loading-overlay').classList.add('hidden');
@@ -1355,8 +1376,11 @@
                         updateYearDropdowns(); renderTable(); renderDashboard(); renderVillageStats(); renderLarvaeCaseList();
                     }).finally(() => document.getElementById('loading-overlay').classList.add('hidden'));
                 } else if (deleteTypePending === 'larvae') {
-                    larvaeSurveys = larvaeSurveys.filter(s => s.id !== deleteIdPending); localStorage.setItem(larvaeStorageKey, JSON.stringify(larvaeSurveys));
-                    renderLarvaeCaseDetail(); renderLarvaeCaseList();
+                    document.getElementById('loading-overlay').classList.remove('hidden');
+                    fetch(SCRIPT_URL, { method: 'POST', body: JSON.stringify({ action: 'delete_larvae', id: deleteIdPending }) }).then(res => res.json()).then(() => {
+                        larvaeSurveys = larvaeSurveys.filter(s => s.id !== deleteIdPending); localStorage.setItem(larvaeStorageKey, JSON.stringify(larvaeSurveys));
+                        renderLarvaeCaseDetail(); renderLarvaeCaseList();
+                    }).finally(() => document.getElementById('loading-overlay').classList.add('hidden'));
                 }
             }
         };
