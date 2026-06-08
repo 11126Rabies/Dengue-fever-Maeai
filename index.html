@@ -584,7 +584,6 @@
                                 <thead class="bg-slate-100 text-slate-700">
                                     <tr>
                                         <th class="py-2 px-2 border">รอบ</th><th class="py-2 px-2 border">วันที่</th>
-                                        <!-- เพิ่ม 2 คอลัมน์นี้ -->
                                         <th class="py-2 px-2 border">บ้าน (สำรวจ/พบ)</th><th class="py-2 px-2 border">ภาชนะ (สำรวจ/พบ)</th>
                                         <th class="py-2 px-2 border">HI (%)</th><th class="py-2 px-2 border">เกณฑ์</th><th class="py-2 px-2 border">CI (%)</th><th class="py-2 px-2 border">จัดการ</th>
                                     </tr>
@@ -800,7 +799,6 @@
     </div>
 
     <script>
-        // === ตัวแปรหลักของระบบ ===
         const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbxy0TsodTv5jvD-lOZTjN1JvGC0AeJUiaUYrJMm7xIt0g0BSIykPbPHTbqPP2bGbBmOCA/exec';
         
         const storageKey = 'dengue_patients_data_maeai_v178'; 
@@ -1334,13 +1332,17 @@
 
             if(!editId) patientData.id = patients.length > 0 ? Math.max(...patients.map(p => p.id)) + 1 : 1; else patientData.id = parseInt(editId);
 
-            fetch(SCRIPT_URL, { method: 'POST', body: JSON.stringify({...patientData, action: 'save_patient'}) })
+            fetch(SCRIPT_URL, { method: 'POST', headers: { "Content-Type": "text/plain;charset=utf-8" }, body: JSON.stringify({...patientData, action: 'save_patient'}) })
             .then(res => res.json()).then(data => {
-                if (editId) { const index = patients.findIndex(p => p.id === patientData.id); if (index !== -1) patients[index] = patientData; } else patients.push(patientData);
-                localStorage.setItem(storageKey, JSON.stringify(patients)); alert(editId ? 'อัปเดตข้อมูลสำเร็จ!' : 'บันทึกข้อมูลสำเร็จ!'); updateYearDropdowns();
-                if (!editId) { document.getElementById('dataForm').reset(); document.getElementById('f-id').value = patientData.id + 1; } else cancelEdit();
+                if (data.status === 'success') {
+                    if (editId) { const index = patients.findIndex(p => p.id === patientData.id); if (index !== -1) patients[index] = patientData; } else patients.push(patientData);
+                    localStorage.setItem(storageKey, JSON.stringify(patients)); alert(editId ? 'อัปเดตข้อมูลสำเร็จ!' : 'บันทึกข้อมูลสำเร็จ!'); updateYearDropdowns();
+                    if (!editId) { document.getElementById('dataForm').reset(); document.getElementById('f-id').value = patientData.id + 1; } else cancelEdit();
+                } else {
+                    alert('เกิดข้อผิดพลาดจากเซิร์ฟเวอร์: ' + data.message);
+                }
             }).catch(error => {
-                alert('เกิดข้อผิดพลาดในการส่งเข้า Google Sheets บันทึกสำรองในเครื่องแล้ว');
+                alert('เกิดข้อผิดพลาดในการเชื่อมต่อ (อาจจะถูกบล็อก) ระบบได้บันทึกสำรองในเครื่องไว้แล้ว');
                 if (editId) { const index = patients.findIndex(p => p.id === patientData.id); if (index !== -1) patients[index] = patientData; } else patients.push(patientData);
                 localStorage.setItem(storageKey, JSON.stringify(patients)); updateYearDropdowns(); cancelEdit();
             }).finally(() => { btnSave.innerHTML = originalBtnHtml; btnSave.disabled = false; renderTable(); });
@@ -1370,17 +1372,27 @@
                 closeDeleteModal();
                 if(deleteTypePending === 'patient') {
                     document.getElementById('loading-overlay').classList.remove('hidden');
-                    fetch(SCRIPT_URL, { method: 'POST', body: JSON.stringify({ action: 'delete', id: deleteIdPending }) }).then(res => res.json()).then(() => {
-                        patients = patients.filter(p => p.id !== deleteIdPending); localStorage.setItem(storageKey, JSON.stringify(patients));
-                        if(activePatientId === deleteIdPending) { document.getElementById('larvaeDetailSection').classList.add('hidden'); document.getElementById('larvaeEmptyState').classList.remove('hidden'); activePatientId = null; }
-                        updateYearDropdowns(); renderTable(); renderDashboard(); renderVillageStats(); renderLarvaeCaseList();
-                    }).finally(() => document.getElementById('loading-overlay').classList.add('hidden'));
+                    fetch(SCRIPT_URL, { method: 'POST', headers: { "Content-Type": "text/plain;charset=utf-8" }, body: JSON.stringify({ action: 'delete', id: deleteIdPending }) })
+                    .then(res => res.json()).then((res) => {
+                        if (res.status === 'success') {
+                            patients = patients.filter(p => p.id != deleteIdPending); localStorage.setItem(storageKey, JSON.stringify(patients));
+                            if(activePatientId == deleteIdPending) { document.getElementById('larvaeDetailSection').classList.add('hidden'); document.getElementById('larvaeEmptyState').classList.remove('hidden'); activePatientId = null; }
+                            updateYearDropdowns(); renderTable(); renderDashboard(); renderVillageStats(); renderLarvaeCaseList();
+                        } else {
+                            alert("เกิดข้อผิดพลาดในการลบข้อมูลที่ชีต: " + (res.message || ''));
+                        }
+                    }).catch(e => { alert("เกิดข้อผิดพลาดในการเชื่อมต่อ (ลบไม่สำเร็จ) กรุณาลองใหม่"); }).finally(() => document.getElementById('loading-overlay').classList.add('hidden'));
                 } else if (deleteTypePending === 'larvae') {
                     document.getElementById('loading-overlay').classList.remove('hidden');
-                    fetch(SCRIPT_URL, { method: 'POST', body: JSON.stringify({ action: 'delete_larvae', id: deleteIdPending }) }).then(res => res.json()).then(() => {
-                        larvaeSurveys = larvaeSurveys.filter(s => s.id !== deleteIdPending); localStorage.setItem(larvaeStorageKey, JSON.stringify(larvaeSurveys));
-                        renderLarvaeCaseDetail(); renderLarvaeCaseList();
-                    }).finally(() => document.getElementById('loading-overlay').classList.add('hidden'));
+                    fetch(SCRIPT_URL, { method: 'POST', headers: { "Content-Type": "text/plain;charset=utf-8" }, body: JSON.stringify({ action: 'delete_larvae', id: deleteIdPending }) })
+                    .then(res => res.json()).then((res) => {
+                        if (res.status === 'success') {
+                            larvaeSurveys = larvaeSurveys.filter(s => s.id != deleteIdPending); localStorage.setItem(larvaeStorageKey, JSON.stringify(larvaeSurveys));
+                            renderLarvaeCaseDetail(); renderLarvaeCaseList();
+                        } else {
+                            alert("เกิดข้อผิดพลาดในการลบข้อมูลที่ชีต: " + (res.message || ''));
+                        }
+                    }).catch(e => { alert("เกิดข้อผิดพลาดในการเชื่อมต่อ (ลบไม่สำเร็จ) กรุณาลองใหม่"); }).finally(() => document.getElementById('loading-overlay').classList.add('hidden'));
                 }
             }
         };
@@ -1570,15 +1582,16 @@
                 subdistrict: pt.subdistrict, moo: pt.moo, villageName: pt.villageName, totH, posH, totC, posC, hi, ci
             };
 
-            fetch(SCRIPT_URL, { method: 'POST', body: JSON.stringify({...newData, action: 'save_larvae'}) }).then(()=>{}).catch(e=>{console.log("Sheet save error", e)});
-
-            if (editingId) { const idx = larvaeSurveys.findIndex(s => s.id === parseInt(editingId)); if(idx > -1) larvaeSurveys[idx] = newData; } else { larvaeSurveys.push(newData); }
-            localStorage.setItem(larvaeStorageKey, JSON.stringify(larvaeSurveys));
-            
-            const lastSurv = document.getElementById('l-surveyor').value; cancelLarvaeEdit(); document.getElementById('l-surveyor').value = lastSurv;
-            renderLarvaeCaseDetail(); renderLarvaeCaseList(); btn.innerHTML = originBtn; btn.disabled = false;
-            
-            if(!editingId && hi > 20) showWarningAlert(`บ้านของ ${pt.fullName} <br><span class="text-3xl block mt-2 text-white">ค่า HI = ${hi}%</span>`);
+            fetch(SCRIPT_URL, { method: 'POST', headers: { "Content-Type": "text/plain;charset=utf-8" }, body: JSON.stringify({...newData, action: 'save_larvae'}) }).then(res => res.json()).then(res => {
+                if(res.status === 'success') {
+                    if (editingId) { const idx = larvaeSurveys.findIndex(s => s.id === parseInt(editingId)); if(idx > -1) larvaeSurveys[idx] = newData; } else { larvaeSurveys.push(newData); }
+                    localStorage.setItem(larvaeStorageKey, JSON.stringify(larvaeSurveys));
+                    const lastSurv = document.getElementById('l-surveyor').value; cancelLarvaeEdit(); document.getElementById('l-surveyor').value = lastSurv;
+                    renderLarvaeCaseDetail(); renderLarvaeCaseList();
+                    if(!editingId && hi > 20) showWarningAlert(`บ้านของ ${pt.fullName} <br><span class="text-3xl block mt-2 text-white">ค่า HI = ${hi}%</span>`);
+                    else alert('บันทึกผลสำรวจเรียบร้อยแล้ว');
+                } else alert('เกิดข้อผิดพลาดจากเซิร์ฟเวอร์: ' + res.message);
+            }).catch(e=>{ alert('เกิดข้อผิดพลาดการเชื่อมต่อ'); console.log(e); }).finally(() => { btn.innerHTML = originBtn; btn.disabled = false; });
         };
 
         window.editLarvae = function(id) {
@@ -1668,9 +1681,12 @@
             if(!dateVal) return alert('กรุณาระบุวันที่ดำเนินการ');
             const exIdx = sprayRecords.findIndex(s => s.patientId === activePatientId && s.round === round);
             const data = { patientId: activePatientId, round: round, date: dateVal, latlng: llVal };
-            fetch(SCRIPT_URL, { method: 'POST', body: JSON.stringify({...data, action: 'save_spray'}) }).then(()=>{}).catch(e=>{console.log("Sheet save error", e)});
-            if (exIdx > -1) sprayRecords[exIdx] = data; else sprayRecords.push(data);
-            localStorage.setItem(sprayStorageKey, JSON.stringify(sprayRecords)); alert(`บันทึกข้อมูลพ่นสารเคมีรอบ ${round} สำเร็จ!`);
+            fetch(SCRIPT_URL, { method: 'POST', headers: { "Content-Type": "text/plain;charset=utf-8" }, body: JSON.stringify({...data, action: 'save_spray'}) }).then(res=>res.json()).then(res=>{
+                if(res.status === 'success') {
+                    if (exIdx > -1) sprayRecords[exIdx] = data; else sprayRecords.push(data);
+                    localStorage.setItem(sprayStorageKey, JSON.stringify(sprayRecords)); alert(`บันทึกข้อมูลพ่นสารเคมีรอบ ${round} สำเร็จ!`);
+                } else alert("เกิดข้อผิดพลาดจากเซิร์ฟเวอร์");
+            }).catch(e=>{alert('เชื่อมต่อผิดพลาด');});
         };
 
         window.exportSprayImage = function() {
@@ -1750,13 +1766,14 @@
             const btn = document.getElementById('btn-save-activity'); const ob = btn.innerHTML; btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> บันทึก...';
             
             const data = { patientId: activePatientId, note, img1, img2, img3, img4, img5, updatedAt: Date.now() };
-            fetch(SCRIPT_URL, { method: 'POST', body: JSON.stringify({...data, action: 'save_activity'}) }).then(()=>{}).catch(e=>{console.log("Sheet save error", e)});
-            
-            const exIdx = caseActivities.findIndex(a => a.patientId === activePatientId);
-            if(exIdx > -1) caseActivities[exIdx] = data; else caseActivities.push(data);
-            localStorage.setItem(caseActivitiesStorageKey, JSON.stringify(caseActivities));
-            
-            setTimeout(()=>{ btn.innerHTML = ob; alert('บันทึกภาพและข้อความกิจกรรมสำเร็จ!'); renderDashboard(); }, 500);
+            fetch(SCRIPT_URL, { method: 'POST', headers: { "Content-Type": "text/plain;charset=utf-8" }, body: JSON.stringify({...data, action: 'save_activity'}) }).then(res=>res.json()).then(res=>{
+                if(res.status==='success') {
+                    const exIdx = caseActivities.findIndex(a => a.patientId === activePatientId);
+                    if(exIdx > -1) caseActivities[exIdx] = data; else caseActivities.push(data);
+                    localStorage.setItem(caseActivitiesStorageKey, JSON.stringify(caseActivities));
+                    alert('บันทึกภาพและข้อความกิจกรรมสำเร็จ!'); renderDashboard();
+                } else alert("เกิดข้อผิดพลาดจากเซิร์ฟเวอร์");
+            }).catch(e=>{alert('เชื่อมต่อผิดพลาด');}).finally(()=>{btn.innerHTML=ob;});
         };
 
         window.showWarningAlert = function(message) { document.getElementById('alertMessage').innerHTML = message; document.getElementById('alertModal').classList.remove('hidden'); };
