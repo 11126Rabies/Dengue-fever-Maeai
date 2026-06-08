@@ -580,7 +580,7 @@
                         <h3 class="font-bold text-slate-800 mb-4 border-b pb-2"><i class="fa-solid fa-chart-line text-amber-500 mr-2"></i>ประวัติการสำรวจควบคุมโรค (HI/CI)</h3>
                         <div class="chart-container-sm mb-6"><canvas id="chartLarvaeCase"></canvas></div>
                         <div class="overflow-x-auto mb-2">
-                            <table class="w-full text-center text-sm border-collapse border border-slate-200">
+                            <table class="w-full text-center text-sm border-collapse">
                                 <thead class="bg-slate-100 text-slate-700">
                                     <tr>
                                         <th class="py-2 px-2 border">รอบ</th><th class="py-2 px-2 border">วันที่</th>
@@ -800,6 +800,7 @@
     </div>
 
     <script>
+        // === ตัวแปรหลักของระบบ ===
         const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbxy0TsodTv5jvD-lOZTjN1JvGC0AeJUiaUYrJMm7xIt0g0BSIykPbPHTbqPP2bGbBmOCA/exec';
         
         const storageKey = 'dengue_patients_data_maeai_v178'; 
@@ -865,7 +866,6 @@
         async function loadDataFromSheets() {
             document.getElementById('loading-overlay').classList.remove('hidden');
             try {
-                // เติมพารามิเตอร์เพื่อโหลดใหม่แบบไม่แคชและดึงข้อมูลทั้ง 4 ชีต
                 const response = await fetch(SCRIPT_URL + "?t=" + new Date().getTime());
                 const json = await response.json();
                 if(json.status === 'success') {
@@ -1387,13 +1387,21 @@
 
         // --- PATIENT TABLE & EXCEL (เพิ่มตัวกรอง) ---
         window.renderTable = function() {
-            const term = document.getElementById('searchInput').value.toLowerCase(); 
-            const sd = document.getElementById('m-subdistrict').value;
-            const moo = document.getElementById('m-moo').value;
-            const dFrom = document.getElementById('m-dateFrom').value;
-            const dTo = document.getElementById('m-dateTo').value;
+            const searchInput = document.getElementById('searchInput');
+            const subdistrictSelect = document.getElementById('m-subdistrict');
+            const mooSelect = document.getElementById('m-moo');
+            const dateFromInput = document.getElementById('m-dateFrom');
+            const dateToInput = document.getElementById('m-dateTo');
+
+            const term = searchInput ? searchInput.value.toLowerCase() : ''; 
+            const sd = subdistrictSelect ? subdistrictSelect.value : '';
+            const moo = mooSelect ? mooSelect.value : '';
+            const dFrom = dateFromInput ? dateFromInput.value : '';
+            const dTo = dateToInput ? dateToInput.value : '';
             
-            const tbody = document.getElementById('tableBody'); tbody.innerHTML = '';
+            const tbody = document.getElementById('tableBody'); 
+            if(!tbody) return;
+            tbody.innerHTML = '';
             
             currentFilteredPatientsForExport = patients.filter(p => {
                 let match = true;
@@ -1405,7 +1413,8 @@
                 return match;
             }).sort((a, b) => { const dateA = new Date(a.foundDate || '1970-01-01'); const dateB = new Date(b.foundDate || '1970-01-01'); if (dateB > dateA) return 1; if (dateB < dateA) return -1; return b.id - a.id; });
             
-            document.getElementById('m-record-count').innerText = `${currentFilteredPatientsForExport.length} รายการ`;
+            const countEl = document.getElementById('m-record-count');
+            if(countEl) countEl.innerText = `${currentFilteredPatientsForExport.length} รายการ`;
 
             if(currentFilteredPatientsForExport.length === 0) { tbody.innerHTML = `<tr><td colSpan="9" class="p-8 text-center text-slate-400"><i class="fa-solid fa-circle-exclamation text-3xl mb-2 opacity-50 block"></i>ไม่พบข้อมูลผู้ป่วย</td></tr>`; return; }
 
